@@ -1,0 +1,23 @@
+.slate {
+  width: 100%;
+  text-align: center;
+  margin-top: 20vh;
+
+  .emoji {
+    font-family: "apple color emoji", "segoe ui emoji", "noto color emoji", "android emoji", "emojisymbols",
+      "emojione mozilla", "twemoji mozilla", "segoe ui symbol";
+    display: block;
+    font-size: 3em;
+    margin-bottom: 0.6em;
+  }
+
+  h1 {
+    color: #555;
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    span {
+      color: #d6156d;
+    }
+  }
+}

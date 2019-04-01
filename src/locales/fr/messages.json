@@ -1,0 +1,9 @@
+{
+  "/": "/fr/",
+  "LANGUAGES": { "FRENCH": "FFrench", "ENGLISH": "FEnglish" },
+  "HEADER": {
+    "SIGN_IN": "FSign in",
+    "SIGN_OUT": "FSign out",
+    "YOUR_PROFILE": "FYour Profile"
+  }
+}

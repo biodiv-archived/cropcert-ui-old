@@ -1,0 +1,61 @@
+@import "./variables";
+
+:root {
+  --eco-spacing: 24px;
+  --eco-header-spacing: 48px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.eco--grid {
+  margin-top: var(--eco-header-spacing);
+}
+
+@media (min-width: 1600px) {
+  .eco--grid {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
+
+.eco--w100 {
+  max-width: 100%;
+  width: 100%;
+}
+
+.eco--title {
+  padding-top: calc(var(--eco-header-spacing) / 2);
+  padding-bottom: calc(var(--eco-header-spacing) / 4);
+  font-size: 2.3em;
+  line-height: 1.5em;
+}
+
+.eco--form-title {
+  padding-bottom: calc(var(--eco-header-spacing) / 2);
+}
+
+.eco--spacing-bottom {
+  margin-bottom: var(--eco-spacing);
+}
+
+.bx--text-input {
+  font-family: inherit;
+}
+
+.toast-notification {
+  z-index: 6001 !important;
+  span {
+    background-color: $brand-01 !important;
+  }
+}
+
+.code {
+  font-family: monospace;
+  padding: 1em;
+  border-radius: 5px;
+  background: #f2f2f2;
+}

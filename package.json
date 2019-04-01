@@ -1,0 +1,74 @@
+{
+  "name": "cropcert-ui",
+  "private": true,
+  "description": "Rwenzori Mountain Coffee",
+  "version": "0.1.0",
+  "author": "Harsh Zalavadiya <harsh@strandls.com>",
+  "scripts": {
+    "build": "NODE_ENV=production yarn run licenses && gatsby build --prefix-paths",
+    "develop": "gatsby develop --prefix-paths",
+    "start": "npm run develop",
+    "serve": "NODE_ENV=production yarn run licenses && gatsby serve --prefix-paths",
+    "now-build": "npm run build",
+    "type-check": "tsc --noEmit",
+    "lint": "tslint --project .",
+    "licenses": "npx licext --mode merge --target ./static/LICENSES.txt --overwrite",
+    "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strandls/cropcert-ui"
+  },
+  "bugs": {
+    "url": "https://github.com/strandls/cropcert-ui/issues"
+  },
+  "dependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.4.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@lingui/react": "^2.7.4",
+    "@types/react-leaflet": "^2.2.1",
+    "axios": "^0.18.0",
+    "carbon-components": "10.0.0-rc.0",
+    "carbon-components-react": "^7.0.0",
+    "control-statements": "^1.0.2",
+    "flat": "^4.1.0",
+    "gatsby": "^2.3.4",
+    "gatsby-image": "^2.0.35",
+    "gatsby-plugin-manifest": "^2.0.26",
+    "gatsby-plugin-offline": "^2.0.25",
+    "gatsby-plugin-react-helmet": "^3.0.11",
+    "gatsby-plugin-react-leaflet": "^2.0.4",
+    "gatsby-plugin-sass": "^2.0.11",
+    "gatsby-plugin-typescript": "^2.0.11",
+    "gatsby-source-filesystem": "^2.0.28",
+    "leaflet": "^1.4.0",
+    "license-extractor": "^1.0.4",
+    "mobx": "^5.9.4",
+    "mobx-react": "^5.4.3",
+    "mobx-react-devtools": "^6.1.1",
+    "node-sass": "^4.11.0",
+    "prop-types": "^15.7.2",
+    "query-string": "^6.4.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-feather": "^1.1.6",
+    "react-helmet": "^5.2.0",
+    "react-leaflet": "^2.2.1",
+    "react-notify-toast": "^0.5.0",
+    "react-reactive-form": "^1.0.28"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@lingui/babel-preset-react": "^2.7.4",
+    "@lingui/cli": "^2.7.4",
+    "prettier": "^1.16.4"
+  },
+  "keywords": [
+    "cropcert",
+    "rwenzori",
+    "mountain",
+    "coffee"
+  ],
+  "license": "Apache-2.0"
+}
