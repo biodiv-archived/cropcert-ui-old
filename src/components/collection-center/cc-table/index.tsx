@@ -8,22 +8,15 @@ import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 
 import TableSub from "./table-sub";
 import { CCStore } from "/@stores/cc.store";
+import { MAP } from "/@utils/constants";
 
 @observer
 export default class CCTableComponent extends Component {
   ccstore = new CCStore();
-  position: [number, number] = [0.4363, 30.1675];
 
   componentDidMount = () => {
     delete L.Icon.Default.prototype["_getIconUrl"];
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: "/assets/marker-default@2x.png",
-      iconUrl: "/assets/marker-default.png",
-      iconSize: [30, 70],
-      shadowSize: [0, 0],
-      shadowAnchor: [0, 0],
-      popupAnchor: [3, -40],
-    });
+    L.Icon.Default.mergeOptions(MAP.MARKER_MERGEOPTIONS);
     this.ccstore.list(true);
   };
 
@@ -37,10 +30,10 @@ export default class CCTableComponent extends Component {
           </div>
           <div className="bx--col-lg-6 bx--col-md-12">
             <If condition={window}>
-              <Map center={this.position} zoom={9}>
+              <Map center={MAP.MAP_CENTER} zoom={9}>
                 <TileLayer
-                  attribution={`&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`}
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution={MAP.TILE.ATTRIBUTION}
+                  url={MAP.TILE.URL}
                 />
                 {this.ccstore.cc.map(cc => (
                   <Marker

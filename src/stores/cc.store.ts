@@ -2,10 +2,12 @@ import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
 import { TOAST_TYPE } from "/@utils/constants";
+import { parse } from "query-string";
 import http from "/@utils/http";
 
 export class CCStore {
   @observable cc: any[] = [];
+  @observable ccOne: any = {};
 
   @action
   list(reset) {
@@ -20,6 +22,23 @@ export class CCStore {
         console.error(error);
         notify.show(
           "❌ There was some error while listing collection centers",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
+  get() {
+    const ccId = parse(location.search).ccId;
+    http
+      .get(`${process.env.ENDPOINT_ENTITY}/cc/${ccId}`)
+      .then(r => {
+        this.ccOne = r.data;
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while loading collection center info",
           TOAST_TYPE.ERROR
         );
       });

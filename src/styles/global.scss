@@ -3,6 +3,7 @@
 :root {
   --eco-spacing: 24px;
   --eco-header-spacing: 48px;
+  --eco-gray: #929292;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -32,6 +33,9 @@ input[type="number"]::-webkit-outer-spin-button {
   padding-bottom: calc(var(--eco-header-spacing) / 4);
   font-size: 2.3em;
   line-height: 1.5em;
+  span {
+    color: var(--eco-gray);
+  }
 }
 
 .eco--form-title {
@@ -58,4 +62,8 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 1em;
   border-radius: 5px;
   background: #f2f2f2;
+}
+
+.eco--spacer {
+  margin-bottom: 2rem;
 }

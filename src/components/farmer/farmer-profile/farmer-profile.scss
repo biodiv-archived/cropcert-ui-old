@@ -1,0 +1,27 @@
+.eco--profile {
+  padding-top: var(--eco-spacing);
+  .leaflet-container {
+    margin-top: calc(var(--eco-spacing) / 1.5);
+    height: 200px;
+    border-radius: 5px;
+  }
+  th {
+    vertical-align: middle;
+  }
+}
+
+.eco--avatar {
+  .eco--avatar-title {
+    font-size: 26px;
+    margin-top: calc(var(--eco-spacing) / 2);
+    span {
+      color: var(--eco-gray);
+      display: block;
+      margin-top: calc(var(--eco-spacing) / 4);
+    }
+  }
+  img {
+    max-width: 100%;
+    border-radius: 5px;
+  }
+}

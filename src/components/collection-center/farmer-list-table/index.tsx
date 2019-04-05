@@ -1,11 +1,12 @@
 import "./farmer-table.component.scss";
 
-import { Button, DataTable } from "carbon-components-react";
+import { DataTable, InlineLoading } from "carbon-components-react";
 import { If } from "control-statements";
-import { Link, navigate } from "gatsby";
+import { Link } from "gatsby";
 import { observer } from "mobx-react";
 import { parse } from "query-string";
 import React, { Component } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { FormBuilder } from "react-reactive-form";
 
 import { TABLE_HEADER_FIELDS } from "./header.constants";
@@ -22,9 +23,10 @@ const {
 } = DataTable;
 
 @observer
-export default class CreateBatchingTableComponent extends Component {
+export default class FarmerListTable extends Component {
   farmerStore = new FarmerStore();
   isCSR = typeof location !== "undefined";
+  ccId;
 
   collectForm = FormBuilder.group({
     statusCollected: true,
@@ -33,29 +35,28 @@ export default class CreateBatchingTableComponent extends Component {
 
   componentDidMount = () => {
     if (this.isCSR) {
-      const ccId = parse(location.search).ccId || undefined;
-      this.farmerStore.list(true, ccId);
+      this.ccId = parse(location.search).ccId || undefined;
+      this.lazyListFarmers(true);
     }
   };
 
-  createFarmer() {
-    navigate("/collection-center/farmer/create");
-  }
+  lazyListFarmers = reset => {
+    this.farmerStore.lazyList(reset, this.ccId);
+  };
 
   renderDataTable = ({ rows, headers, getHeaderProps, getRowProps }) => {
     return (
-      <>
-        <Button
-          kind="primary"
-          className="eco--button-table-primary"
-          onClick={this.createFarmer}
-        >
-          Create Farmer
-        </Button>
-        <h1 className="eco--title">Collections</h1>
-        <div className="bx--row">
-          <div className="bx--col-lg-12">
-            <If condition={rows.length > 0}>
+      <div className="bx--row">
+        <div className="bx--col-lg-12">
+          <If condition={rows.length > 0}>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={() => {
+                this.lazyListFarmers(false);
+              }}
+              hasMore={this.farmerStore.lazyListHasMore}
+              loader={<InlineLoading description="Loading data..." />}
+            >
               <TableContainer>
                 <Table>
                   <TableHead>
@@ -93,13 +94,13 @@ export default class CreateBatchingTableComponent extends Component {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </If>
-            <If condition={rows.length < 1}>
-              No farmers found in this collection center
-            </If>
-          </div>
+            </InfiniteScroll>
+          </If>
+          <If condition={rows.length < 1}>
+            <InlineLoading description="Loading data..." />
+          </If>
         </div>
-      </>
+      </div>
     );
   };
 

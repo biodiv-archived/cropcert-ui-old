@@ -9,6 +9,10 @@ import http from "/@utils/http";
 export class FarmerStore {
   @observable farmers: any[] = [];
   @observable singleFarmer;
+  @observable singleFarmerCC;
+  @observable lazyListHasMore = true;
+  _offset = 0;
+  _limit = 20;
 
   @action
   create(payload) {
@@ -32,6 +36,11 @@ export class FarmerStore {
   get(farmerId) {
     http.get(`${process.env.ENDPOINT_USER}/farmer/${farmerId}`).then(r => {
       this.singleFarmer = r.data;
+      http
+        .get(`${process.env.ENDPOINT_ENTITY}/cc/${r.data.ccCode}`)
+        .then(r1 => {
+          this.singleFarmerCC = r1.data;
+        });
     });
   }
 
@@ -54,12 +63,38 @@ export class FarmerStore {
       });
   }
 
-  private transformCollections = (data, reset) => {
-    const rows = data
-      .map(o => {
-        return { ...o, id: o.id.toString() };
+  @action
+  lazyList(reset, ccId?) {
+    http
+      .get(`${process.env.ENDPOINT_USER}/farmer/${this.getSuffix(ccId)}`)
+      .then(r => {
+        if (Array.isArray(r.data)) {
+          if (r.data.length === 0) {
+            this.lazyListHasMore = false;
+          }
+          this.transformCollections(r.data, reset);
+          this._offset += this._limit;
+        }
       })
-      .reverse();
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while listing farmers",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  private transformCollections = (data, reset) => {
+    const rows = data.map(o => {
+      return { ...o, id: o.id.toString() };
+    });
     this.farmers = reset ? rows : [...this.farmers, ...rows];
+  };
+
+  private getSuffix = (ccId?) => {
+    let linkSuffix = ccId ? `collection?ccCode=${ccId}` : "all";
+    linkSuffix = `${linkSuffix}&limit=${this._limit}&offset=${this._offset}`;
+    return linkSuffix;
   };
 }
