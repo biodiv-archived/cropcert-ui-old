@@ -97,7 +97,12 @@ export default class FarmerListTable extends Component {
             </InfiniteScroll>
           </If>
           <If condition={rows.length < 1}>
-            <InlineLoading description="Loading data..." />
+            <If condition={this.farmerStore.lazyListHasMore}>
+              <InlineLoading description="Loading data..." />
+            </If>
+            <If condition={!this.farmerStore.lazyListHasMore}>
+              No Farmer found!
+            </If>
           </If>
         </div>
       </div>

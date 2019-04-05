@@ -69,7 +69,7 @@ export class FarmerStore {
       .get(`${process.env.ENDPOINT_USER}/farmer/${this.getSuffix(ccId)}`)
       .then(r => {
         if (Array.isArray(r.data)) {
-          if (r.data.length === 0) {
+          if (r.data.length === 0 || r.data.length < this._limit) {
             this.lazyListHasMore = false;
           }
           this.transformCollections(r.data, reset);
