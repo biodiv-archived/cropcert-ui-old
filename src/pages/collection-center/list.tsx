@@ -6,10 +6,8 @@ import { ROLES } from "/@utils/constants";
 
 export default function CCList() {
   return (
-    <>
-      <Layout roles={[ROLES.COLLECTION_CENTER]}>
-        <CCTable />
-      </Layout>
-    </>
+    <Layout roles={[ROLES.COLLECTION_CENTER]}>
+      <CCTable />
+    </Layout>
   );
 }

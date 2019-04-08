@@ -55,7 +55,12 @@ export default class FarmerListTable extends Component {
                 this.lazyListFarmers(false);
               }}
               hasMore={this.farmerStore.lazyListHasMore}
-              loader={<InlineLoading description="Loading data..." />}
+              loader={
+                <InlineLoading
+                  key={rows.length}
+                  description="Loading data..."
+                />
+              }
             >
               <TableContainer>
                 <Table>
@@ -74,7 +79,7 @@ export default class FarmerListTable extends Component {
                   </TableHead>
                   <TableBody>
                     {rows.map(row => (
-                      <TableRow {...getRowProps({ row })}>
+                      <TableRow {...getRowProps({ row })} key={row.id}>
                         {row.cells.map(cell => (
                           <If condition={true} key={cell.id}>
                             <TableCell>{cell.value}</TableCell>
