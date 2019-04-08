@@ -93,8 +93,8 @@ export class FarmerStore {
   };
 
   private getSuffix = (ccId?) => {
-    let linkSuffix = ccId ? `collection?ccCode=${ccId}` : "all";
-    linkSuffix = `${linkSuffix}&limit=${this._limit}&offset=${this._offset}`;
+    let linkSuffix = ccId ? `collection?ccCode=${ccId}&` : "all?";
+    linkSuffix = `${linkSuffix}limit=${this._limit}&offset=${this._offset}`;
     return linkSuffix;
   };
 }
