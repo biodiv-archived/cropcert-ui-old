@@ -44,7 +44,7 @@ export default class FarmerProfileView extends Component<IProps> {
                     <FarmerProfileDataTable farmer={farmer} />
                   </div>
                 </Tab>
-                <Tab label="Transactions">Here be dragons 🐉</Tab>
+                <Tab label="Transactions">TODO 🐉</Tab>
               </Tabs>
             </div>
           </div>

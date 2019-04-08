@@ -41,7 +41,7 @@ class CCView extends Component {
           <Tab label="Farmers">
             <FarmerListTable />
           </Tab>
-          <Tab label="Transactions">Here be dragons 🐉</Tab>
+          <Tab label="Transactions">TODO 🐉</Tab>
         </Tabs>
         <div className="eco--spacer" />
       </Layout>
