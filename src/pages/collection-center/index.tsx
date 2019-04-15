@@ -9,7 +9,7 @@ export default function CCIndexPage() {
   return (
     <Layout roles={[ROLES.COLLECTION_CENTER]}>
       <SEO title="Collection Center" />
-      <h1 className="eco--title">Traceability</h1>
+      <h1 className="eco--title">My Dashboard</h1>
       <div className="bx--row">
         <Tile
           title="Collect"
@@ -21,13 +21,19 @@ export default function CCIndexPage() {
           description="List all collections"
           to="collection/list"
         />
+      </div>
+      <div className="bx--row">
         <Tile
-          title="Collection Centers"
-          description="List all Collection Centers"
+          title="Create Batch"
+          description="Create batch from collections"
+          to="list"
+        />
+        <Tile
+          title="Batches"
+          description="List all Batches"
           to="list"
         />
       </div>
-      <h1 className="eco--title">Manage Users</h1>
       <div className="bx--row">
         <Tile
           title="Add Farmer"

@@ -1,12 +1,18 @@
 import { Button } from "carbon-components-react";
 import React, { Component } from "react";
-import { FieldControl, FieldGroup, FormBuilder, Validators } from "react-reactive-form";
+import {
+  FieldControl,
+  FieldGroup,
+  FormBuilder,
+  Validators,
+} from "react-reactive-form";
 
 import { dateInput, numberInput, textInput } from "/@components/@core/form";
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
 import { CollectionStore } from "/@stores/collections.store";
 import { ROLES } from "/@utils/constants";
+import { getUser } from "/@utils/auth";
 
 export default class CollectionCollectPage extends Component {
   collectionStore = new CollectionStore();
@@ -19,10 +25,9 @@ export default class CollectionCollectPage extends Component {
   constructor(props) {
     super(props);
     this.collectForm = FormBuilder.group({
+      ccCode: [getUser().ccCode, Validators.required],
       membershipId: ["", Validators.required],
-      ccCode: ["", Validators.required],
       quantity: ["", Validators.required],
-      batchId: ["", Validators.required],
       date: [this.getToday(), Validators.required],
       timestamp: [new Date(), Validators.required],
     });
@@ -43,22 +48,22 @@ export default class CollectionCollectPage extends Component {
     return (
       <form className="bx--form" onSubmit={this.handleSubmit}>
         <div className="bx--row">
-          <div className="bx--col-lg-6 bx--col-sm-12">
+          <div className="bx--col-lg-4 bx--col-sm-12">
+            <FieldControl
+              name="ccCode"
+              render={numberInput}
+              meta={{ label: "CC Code", readOnly: true }}
+            />
+          </div>
+        </div>
+        <div className="bx--row">
+          <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="membershipId"
               render={textInput}
               meta={{ label: "Membership Id" }}
             />
           </div>
-          <div className="bx--col-lg-6 bx--col-sm-12">
-            <FieldControl
-              name="ccCode"
-              render={numberInput}
-              meta={{ label: "CC Code" }}
-            />
-          </div>
-        </div>
-        <div className="bx--row">
           <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="quantity"
@@ -66,13 +71,8 @@ export default class CollectionCollectPage extends Component {
               meta={{ label: "Quantity" }}
             />
           </div>
-          <div className="bx--col-lg-4 bx--col-sm-12">
-            <FieldControl
-              name="batchId"
-              render={numberInput}
-              meta={{ label: "Batch Id" }}
-            />
-          </div>
+        </div>
+        <div className="bx--row">
           <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="date"

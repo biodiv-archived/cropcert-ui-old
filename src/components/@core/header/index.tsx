@@ -42,7 +42,14 @@ export default class HeaderComponent extends Component<IProps, IState> {
               to={getRedirect()}
             >
               <Home className="eco--dash-icon" size={16} />
-              Dashboard
+              My Dashboard
+            </Link>
+            <Link
+              className="bx--header__menu-item"
+              role="menuitem"
+              to="/collection-center/list"
+            >
+              Collection Centers
             </Link>
           </HeaderNavigation>
         </If>

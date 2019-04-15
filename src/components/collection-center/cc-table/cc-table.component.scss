@@ -1,19 +1,17 @@
-$container-height: 390px;
-
 .eco--button-table-primary {
   float: right;
   margin-top: calc(var(--eco-header-spacing) / 2);
 }
 
 .leaflet-container {
-  height: $container-height;
+  height: 70vh;
   margin-bottom: 2rem;
 }
 
 .eco--cctable {
   tbody {
     display: block;
-    max-height: $container-height - 48px;
+    height: calc(70vh - 48px);
     overflow-y: scroll;
   }
   thead,

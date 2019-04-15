@@ -14,7 +14,9 @@ export const textInput = ({ handler, touched, hasError, meta }) => (
         {...handler()}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />
-      {touched && hasError("required") && <div className="bx--form-requirement">{meta.label} is required</div>}
+      {touched && hasError("required") && (
+        <div className="bx--form-requirement">{meta.label} is required</div>
+      )}
     </div>
   </fieldset>
 );
@@ -30,7 +32,9 @@ export const passwordInput = ({ handler, touched, hasError, meta }) => (
         {...handler()}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />
-      {touched && hasError("required") && <div className="bx--form-requirement">{meta.label} is required</div>}
+      {touched && hasError("required") && (
+        <div className="bx--form-requirement">{meta.label} is required</div>
+      )}
     </div>
   </fieldset>
 );
@@ -46,7 +50,9 @@ export const dateInput = ({ handler, touched, hasError, meta }) => (
         {...handler()}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />
-      {touched && hasError("required") && <div className="bx--form-requirement">{meta.label} is required</div>}
+      {touched && hasError("required") && (
+        <div className="bx--form-requirement">{meta.label} is required</div>
+      )}
     </div>
   </fieldset>
 );
@@ -60,9 +66,12 @@ export const numberInput = ({ handler, touched, hasError, meta }) => (
         className="bx--text-input"
         placeholder={`Enter ${meta.label}`}
         {...handler()}
+        {...meta}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />
-      {touched && hasError("required") && <div className="bx--form-requirement">{meta.label} is required</div>}
+      {touched && hasError("required") && (
+        <div className="bx--form-requirement">{meta.label} is required</div>
+      )}
     </div>
   </fieldset>
 );
@@ -94,12 +103,19 @@ export const selectInput = ({ handler, touched, hasError, meta }) => (
             <path d="M5 6L0 1 .7.3 5 4.6 9.3.3l.7.7z" />
           </svg>
         </div>
-        {touched && hasError("required") && <div className="bx--form-requirement">{meta.label} is required</div>}
+        {touched && hasError("required") && (
+          <div className="bx--form-requirement">{meta.label} is required</div>
+        )}
       </div>
     </div>
   </fieldset>
 );
 
 export const checkBoxInput = ({ handler, touched, hasError, meta }) => (
-  <Checkbox {...handler()} labelText={meta.label} defaultChecked={meta.checked} id={meta.label} />
+  <Checkbox
+    {...handler()}
+    labelText={meta.label}
+    defaultChecked={meta.checked}
+    id={meta.label}
+  />
 );
