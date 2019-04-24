@@ -17,6 +17,7 @@ export class AuthStore {
   continue() {
     if (this.isCSR) {
       if (parse(location.search).ticket) {
+        this.pingAll();
         http
           .get(`${process.env.ENDPOINT_USER}/me`)
           .then(r => {
@@ -31,6 +32,12 @@ export class AuthStore {
         console.log("No ticket found");
       }
     }
+  }
+
+  pingAll() {
+    http.get(`${process.env.ENDPOINT_USER}/ping`);
+    http.get(`${process.env.ENDPOINT_ENTITY}/ping`);
+    http.get(`${process.env.ENDPOINT_TRACEABILITY}/ping`);
   }
 
   @action
