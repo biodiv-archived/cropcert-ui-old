@@ -12,15 +12,15 @@ export const TABLE_HEADER_FIELDS = [
     header: "Collection Center Id",
   },
   {
-    key: "quantity",
-    header: "Quantity",
-  },
-  {
     key: "date",
-    header: "Date",
+    header: "Collection Date",
   },
   {
-    key: "batchId",
-    header: "Batch ID",
+    key: "quantity",
+    header: "Total Quantity",
+  },
+  {
+    key: "availableQuantity",
+    header: "Available Quantity",
   },
 ];

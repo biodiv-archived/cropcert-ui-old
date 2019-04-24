@@ -8,7 +8,7 @@ import {
 import { If } from "control-statements";
 import { Link } from "gatsby";
 import React, { Component } from "react";
-import { Home, Info, LogOut, LogIn } from "react-feather";
+import { Home, Info, LogIn, LogOut } from "react-feather";
 
 import { AuthStore } from "/@stores/auth.store";
 import { getRedirect, hasAccess } from "/@utils/auth";

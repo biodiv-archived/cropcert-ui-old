@@ -16,10 +16,11 @@ const {
   TableCell,
   TableHeader,
   TableSelectRow,
+  TableSelectAll,
 } = DataTable;
 
 @observer
-export default class CreateBatchingTableComponent extends Component {
+export default class CollectionsListTableComponent extends Component {
   collectionStore = new CollectionStore();
 
   componentDidMount = () => {

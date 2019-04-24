@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 
-import { CounterStore } from "../stores/counter.store";
+import { CounterStore } from "/@stores/counter.store";
 
 class Counter extends Component<{ store: CounterStore }> {
   render() {

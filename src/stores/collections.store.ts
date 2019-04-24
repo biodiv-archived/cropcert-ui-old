@@ -7,7 +7,7 @@ import http from "/@utils/http";
 
 export class CollectionStore {
   @observable collections: any[] = [];
-  @observable nonSelectable: number[] = [];
+  @observable collectionsBatch = new Map();
 
   @action
   collect(data) {
@@ -39,26 +39,15 @@ export class CollectionStore {
       });
   }
 
+  @action
+  getBatchInfoFromCollectionId(collectionId) {
+    this.collectionsBatch.set(collectionId, { response: collectionId });
+  }
+
   private transformCollections = (data, reset) => {
-    const nonSelectable: any = [];
     const rows = data
-      .map(o => {
-        if (o.status !== "COLLECTED") {
-          nonSelectable.push(o.collectionId.toString());
-        }
-        return {
-          id: o.collectionId.toString(),
-          membershipId: o.membershipId,
-          ccCode: o.ccCode,
-          quantity: o.quantity,
-          date: o.date,
-          batchId: o.batchId,
-        };
-      })
+      .map(o => ({ ...o, id: o.collectionId.toString() }))
       .reverse();
-    this.nonSelectable = reset
-      ? nonSelectable
-      : [...this.nonSelectable, ...nonSelectable];
     this.collections = reset ? rows : [...this.collections, ...rows];
   };
 }

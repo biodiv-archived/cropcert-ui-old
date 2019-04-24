@@ -67,7 +67,11 @@ export const numberInput = ({ handler, touched, hasError, meta }) => (
         placeholder={`Enter ${meta.label}`}
         {...handler()}
         {...meta}
-        {...(touched && hasError("required") ? { "data-invalid": true } : {})}
+        {...((touched && hasError("required")) ||
+        hasError("max") ||
+        hasError("min")
+          ? { "data-invalid": true }
+          : {})}
       />
       {touched && hasError("required") && (
         <div className="bx--form-requirement">{meta.label} is required</div>

@@ -2,8 +2,8 @@ import { navigate } from "gatsby";
 import { action } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { TOAST_TYPE } from "../utils/constants";
-import http from "../utils/http";
+import { TOAST_TYPE } from "/@utils/constants";
+import http from "/@utils/http";
 
 export class BatchingStore {
   @action
