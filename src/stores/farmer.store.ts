@@ -3,7 +3,7 @@ import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
 import { getRedirect } from "/@utils/auth";
-import { TOAST_TYPE } from "/@utils/constants";
+import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
 import http from "/@utils/http";
 
 export class FarmerStore {
@@ -12,7 +12,7 @@ export class FarmerStore {
   @observable singleFarmerCC;
   @observable lazyListHasMore = true;
   _offset = 0;
-  _limit = 20;
+  _limit = GLOBAL_LIMIT;
 
   @action
   create(payload) {
