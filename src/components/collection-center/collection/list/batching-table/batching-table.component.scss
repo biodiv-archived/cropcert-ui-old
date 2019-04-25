@@ -2,6 +2,19 @@
   float: right;
   margin-top: calc(var(--eco-header-spacing) / 2);
 }
+
 .eco--form-filter {
   margin-top: calc(var(--eco-header-spacing) / 2);
+}
+
+.eco--form-table-number {
+  width: 60px;
+  margin-right: 0.4rem;
+  height: 2em;
+}
+
+.eco--form-total {
+  line-height: 48px;
+  text-align: right;
+  font-size: 1.6em;
 }

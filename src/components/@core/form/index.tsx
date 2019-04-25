@@ -80,6 +80,19 @@ export const numberInput = ({ handler, touched, hasError, meta }) => (
   </fieldset>
 );
 
+export const tableNumberInput = ({ handler, touched, hasError, meta }) => (
+  <input
+    type="number"
+    className="bx--text-input eco--form-table-number"
+    placeholder={`Enter ${meta.label}`}
+    {...handler()}
+    {...meta}
+    {...((touched && hasError("required")) || hasError("max") || hasError("min")
+      ? { "data-invalid": true }
+      : {})}
+  />
+);
+
 export const selectInput = ({ handler, touched, hasError, meta }) => (
   <fieldset className="bx--fieldset">
     <div className="bx--form-item">

@@ -1,7 +1,7 @@
-import { window } from "browser-monads";
-import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import ListIcon from "@carbon/icons-react/es/list/20";
-import { Button } from "carbon-components-react";
+import SettingsIcon from "@carbon/icons-react/es/settings/20";
+import { window } from "browser-monads";
+import { Button, DataTable } from "carbon-components-react";
 import { If } from "control-statements";
 import React, { Component } from "react";
 import {
@@ -11,16 +11,30 @@ import {
   Validators,
 } from "react-reactive-form";
 
-import { numberInput, selectInput } from "/@components/@core/form";
+import {
+  numberInput,
+  selectInput,
+  tableNumberInput,
+} from "/@components/@core/form";
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
 import { BatchingStore } from "/@stores/batching.store";
-import { ROLES } from "/@utils/constants";
 import { getUser } from "/@utils/auth";
+import { ROLES } from "/@utils/constants";
 
 interface IState {
   collectForm;
 }
+
+const {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableHeader,
+} = DataTable;
 
 export default class BatchCreatePage extends Component<{}, IState> {
   batchingStore = new BatchingStore();
@@ -33,6 +47,8 @@ export default class BatchCreatePage extends Component<{}, IState> {
     { name: "Great", value: "great" },
   ];
 
+  tableHeadings = ["Collection Id", "Quantity"];
+
   constructor(props) {
     super(props);
     let collectFormObj = {
@@ -40,7 +56,9 @@ export default class BatchCreatePage extends Component<{}, IState> {
       moistureContent: [, Validators.required],
       quality: [this.qualityOptions[0].value, Validators.required],
     };
+    let maxTargetWeight = 0;
     this.collections.forEach(c => {
+      maxTargetWeight += c.availableQuantity;
       collectFormObj = {
         ...collectFormObj,
         [`collectionId_${c.collectionId}`]: [
@@ -57,32 +75,92 @@ export default class BatchCreatePage extends Component<{}, IState> {
         ],
       };
     });
+    collectFormObj["targetWeight"] = [
+      maxTargetWeight,
+      Validators.max(maxTargetWeight),
+    ];
     this.state = {
       collectForm: FormBuilder.group(collectFormObj),
     };
   }
 
+  genBatchJSON = v => {
+    let cols: any = [];
+    this.collections.forEach(c => {
+      if (v[`quantity_${c.collectionId}`] > 0) {
+        cols.push({
+          collectionId: c.collectionId,
+          quantity: parseInt(v[`quantity_${c.collectionId}`]),
+          quality: v[`quality_${c.collectionId}`],
+        });
+      }
+    });
+    return {
+      ccCode: v.ccCode,
+      moistureContent: parseInt(v.moistureContent),
+      quality: v.quality,
+      collections: cols,
+    };
+  };
+
   handleSubmit = e => {
     e.preventDefault();
-    this.batchingStore.createBatchfromCollections(this.state.collectForm.value);
+    this.batchingStore.createBatchfromCollections(
+      this.genBatchJSON(this.state.collectForm.value)
+    );
   };
 
   renderFieldGroup = ({ get, invalid }) => {
     return (
       <form className="bx--form" onSubmit={this.handleSubmit}>
-        <h2 className="eco--form-heading">
-          <SettingsIcon />
-          &ensp;Batch Configuration
-        </h2>
         <div className="bx--row">
-          <div className="bx--col-lg-4 bx--col-sm-12">
+          <div className="bx--col-lg-8 bx--col-md-12">
+            <h2 className="eco--form-title">
+              <ListIcon />
+              &ensp;{this.collections.length} Collection(s)
+            </h2>
+
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {this.tableHeadings.map(h => (
+                      <TableHeader key={h}>
+                        <span className="bx--table-header-label">{h}</span>
+                      </TableHeader>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.collections.map(c => (
+                    <TableRow key={c.collectionId}>
+                      <TableCell>{c.collectionId}</TableCell>
+                      <TableCell>
+                        <FieldControl
+                          name={`quantity_${c.collectionId}`}
+                          render={tableNumberInput}
+                          meta={{
+                            label: `Quantity (Max ${c.availableQuantity})`,
+                          }}
+                        />
+                        out of {c.availableQuantity}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="bx--col-lg-4 bx--col-md-12">
+            <h2 className="eco--form-title">
+              <SettingsIcon />
+              &ensp;Batch Configuration
+            </h2>
             <FieldControl
               name="moistureContent"
               render={numberInput}
               meta={{ label: "Moisture Content" }}
             />
-          </div>
-          <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="quality"
               render={selectInput}
@@ -91,66 +169,41 @@ export default class BatchCreatePage extends Component<{}, IState> {
                 options: this.qualityOptions,
               }}
             />
+            <div className="bx--row">
+              <div className="bx--col-lg-6 bx--col-md-12 eco--form-total">
+                {this.collections.reduce((acc, c) => {
+                  return (
+                    acc +
+                    parseInt(
+                      this.state.collectForm.value[
+                        "quantity_" + c.collectionId
+                      ].toString()
+                    )
+                  );
+                }, 0)}
+                KG
+              </div>
+              <div className="bx--col-lg-6 bx--col-md-12">
+                <Button
+                  className="btn btn-primary btn-lg btn-block"
+                  type="submit"
+                  disabled={invalid}
+                >
+                  Create Batch
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
-        <h2 className="eco--form-heading">
-          <ListIcon />
-          &ensp;Collection(s)
-        </h2>
-        {this.collections.map(c => (
-          <div className="bx--row" key={c.collectionId}>
-            <div className="bx--col-lg-4 bx--col-sm-12">
-              <FieldControl
-                name={`collectionId_${c.collectionId}`}
-                render={numberInput}
-                meta={{
-                  label: `Collection #${c.collectionId}`,
-                  readOnly: true,
-                }}
-              />
-            </div>
-            <div className="bx--col-lg-4 bx--col-sm-12">
-              <FieldControl
-                name={`quantity_${c.collectionId}`}
-                render={numberInput}
-                meta={{ label: `Quantity (Max ${c.availableQuantity})` }}
-              />
-            </div>
-            <div className="bx--col-lg-4 bx--col-sm-12">
-              <FieldControl
-                name={`quality_${c.collectionId}`}
-                render={selectInput}
-                meta={{
-                  label: "Quality",
-                  options: this.qualityOptions,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-        <Button
-          className="btn btn-primary btn-lg btn-block"
-          type="submit"
-          disabled={invalid}
-        >
-          Create Batch
-        </Button>
       </form>
     );
   };
 
   render() {
-    // this.collectForm
-    //   .get("moistureContentCalculationType")
-    //   .valueChanges.subscribe(value => {
-    //     this.showMoistureContent = value === "MANUAL";
-    //   });
     return (
       <Layout roles={[ROLES.AUTHORIZED]}>
         <SEO title="Create Batch" />
-        <h1 className="eco--title">
-          Create Batch &rarr; {this.collections.length} Collection(s)
-        </h1>
+        <h1 className="eco--title">Create Batch</h1>
         <If condition={this.collections.length > 0}>
           <FieldGroup
             control={this.state.collectForm}

@@ -8,7 +8,7 @@ export default class CollectionsListPage extends Component {
   render() {
     return (
       <Layout roles={[ROLES.AUTHORIZED]}>
-        <CollectionsListTable />
+        <CollectionsListTable isAvailableOnly={false} />
       </Layout>
     );
   }

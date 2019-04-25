@@ -9,15 +9,20 @@ export class BatchingStore {
   @action
   createBatchfromCollections(collectionsData) {
     http
-      .post(`batch`, collectionsData)
+      .post(`${process.env.ENDPOINT_TRACEABILITY}/batch`, collectionsData)
       .then(response => {
-        console.info(response);
-        notify.show("✅ Batch Created Successfully", TOAST_TYPE.SUCCESS);
+        notify.show(
+          `✅ Batch #${response.data.batchId} Created Successfully`,
+          TOAST_TYPE.SUCCESS
+        );
         navigate("/collection-center/collection/list");
       })
       .catch(error => {
         console.error(error);
-        notify.show("❌ There was some error while creating Batch", TOAST_TYPE.ERROR);
+        notify.show(
+          "❌ There was some error while creating Batch",
+          TOAST_TYPE.ERROR
+        );
       });
   }
 }

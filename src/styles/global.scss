@@ -39,12 +39,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .eco--form-title {
-  padding-bottom: calc(var(--eco-header-spacing) / 2);
-}
-
-.eco--form-heading {
   font-size: 1.6em;
-  padding-bottom: calc(var(--eco-header-spacing) / 4);
+  padding-bottom: calc(var(--eco-header-spacing) / 2);
 }
 
 .eco--spacing-bottom {

@@ -1,10 +1,13 @@
-import "./batching-table.component.scss";
+import "../../list/batching-table/batching-table.component.scss";
 
-import { DataTable } from "carbon-components-react";
+import { Button, Checkbox, DataTable } from "carbon-components-react";
+import { If } from "control-statements";
+import { navigate } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 
-import { TABLE_HEADER_FIELDS } from "./header.constants";
+import { TABLE_HEADER_FIELDS } from "../../list/batching-table/header.constants";
+import ExpandRow from "../../list/batching-table/expandrow";
 import { CollectionStore } from "/@stores/collections.store";
 
 const {
@@ -17,18 +20,44 @@ const {
   TableHeader,
   TableSelectRow,
   TableSelectAll,
+  TableExpandRow,
+  TableExpandHeader,
 } = DataTable;
 
+interface IProps {
+  isAvailableOnly: boolean;
+}
+
+interface IState {
+  isAvailableOnly: boolean;
+}
+
 @observer
-export default class CollectionsListTableComponent extends Component {
+export default class CollectionListComponent extends Component<IProps, IState> {
   collectionStore = new CollectionStore();
 
   componentDidMount = () => {
     this.collectionStore.list(true);
+    this.setState({ isAvailableOnly: this.props.isAvailableOnly });
   };
 
   handleSubmit = e => {
     e.preventDefault();
+  };
+
+  updateByAvailability = v => {
+    this.setState({ isAvailableOnly: v });
+  };
+
+  createBatch = selectedRows => {
+    const sRows = selectedRows.map(row => ({
+      collectionId: parseInt(row.id),
+      quantity: row.cells[4].value,
+      availableQuantity: row.cells[5].value,
+    }));
+    navigate("/collection-center/batch/create", {
+      state: { selectedCollections: sRows },
+    });
   };
 
   renderDataTable = ({
@@ -37,16 +66,26 @@ export default class CollectionsListTableComponent extends Component {
     getHeaderProps,
     getSelectionProps,
     selectedRows,
+    getRowProps,
   }) => {
     return (
       <>
-        <h1 className="eco--title">Collections</h1>
         <div className="bx--row">
-          <div className="bx--col-lg-12 bx--col-sm-12">
+          <div className="bx--col-lg-9 bx--col-sm-12">
+            <Button
+              kind="primary"
+              className="eco--button-table-primary"
+              onClick={() => this.createBatch(selectedRows)}
+            >
+              Create Batch
+            </Button>
+            <h1 className="eco--title">Collections</h1>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
+                    <TableSelectAll {...getSelectionProps()} />
                     {headers.map(header => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -55,16 +94,49 @@ export default class CollectionsListTableComponent extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map(row => (
-                    <TableRow key={row.id}>
-                      {row.cells.map(cell => (
-                        <TableCell key={cell.id}>{cell.value}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
+                  {rows.map(row => {
+                    const availableKgs = row.cells[5].value > 0;
+                    return (
+                      <React.Fragment key={row.id}>
+                        <If
+                          condition={
+                            this.state.isAvailableOnly ? availableKgs : true
+                          }
+                        >
+                          <TableExpandRow {...getRowProps({ row })}>
+                            <TableSelectRow {...getSelectionProps({ row })} />
+                            {row.cells.map(cell => (
+                              <TableCell key={cell.id}>{cell.value}</TableCell>
+                            ))}
+                          </TableExpandRow>
+                          {row.isExpanded && (
+                            <ExpandRow
+                              collectionStore={this.collectionStore}
+                              colSpan={headers.length + 2}
+                              collectionId={row.id}
+                            />
+                          )}
+                        </If>
+                      </React.Fragment>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
+          </div>
+          <div className="bx--col-lg-3 bx--col-sm-12">
+            <h1 className="eco--title">Filter</h1>
+            <fieldset className="bx--fieldset">
+              <legend className="bx--label">Available for batching</legend>
+              <Checkbox
+                {...(this.props.isAvailableOnly
+                  ? { defaultChecked: true }
+                  : null)}
+                labelText="Available Only"
+                onChange={this.updateByAvailability}
+                id="availability"
+              />
+            </fieldset>
           </div>
         </div>
       </>
