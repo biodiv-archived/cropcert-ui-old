@@ -28,7 +28,7 @@ export default function CCIndexPage() {
           description="Create batch from collections"
           to="collection/available"
         />
-        <Tile title="Batches" description="List all Batches" to="todo" />
+        <Tile title="Batches" description="List all Batches" to="batch/list" />
       </div>
       <div className="bx--row">
         <Tile

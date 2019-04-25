@@ -10,6 +10,7 @@ export class BatchingStore {
   _offset = 0;
   _limit = GLOBAL_LIMIT;
   @observable batches: any[] = [];
+  @observable batchCollections = new Map();
 
   @action
   createBatchfromCollections(collectionsData) {
@@ -34,7 +35,7 @@ export class BatchingStore {
   @action
   lazyList(reset) {
     http
-      .get(`${process.env.ENDPOINT_USER}/batch/all`, {
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/batch/all`, {
         params: {
           limit: this._limit,
           offset: this._offset,
@@ -58,9 +59,14 @@ export class BatchingStore {
       });
   }
 
+  @action
+  getCollectionInfoFrombatchId(collectionId) {
+    this.batchCollections.set(collectionId, { response: collectionId });
+  }
+
   private transformCollections = (data, reset) => {
     const rows = data.map(o => {
-      return { ...o, id: o.id.toString() };
+      return { ...o, id: o.batchId.toString() };
     });
     this.batches = reset ? rows : [...this.batches, ...rows];
   };
