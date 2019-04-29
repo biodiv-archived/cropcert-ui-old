@@ -21,10 +21,3 @@
 .eco--form-submit {
   text-align: right;
 }
-
-table [data-child-row] {
-  .bx--data-table-container,
-  > td[colspan] {
-    padding: 0 !important;
-  }
-}

@@ -60,8 +60,23 @@ export class BatchingStore {
   }
 
   @action
-  getCollectionInfoFrombatchId(collectionId) {
-    this.batchCollections.set(collectionId, { response: collectionId });
+  getCollectionInfoFrombatchId(batchId) {
+    http
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/batching/batch/${batchId}`)
+      .then(r => {
+        const data = r.data.map(ci => ({
+          ...ci,
+          id: ci.collectionId.toString(),
+        }));
+        this.batchCollections.set(batchId, data);
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while listing batches",
+          TOAST_TYPE.ERROR
+        );
+      });
   }
 
   private transformCollections = (data, reset) => {
