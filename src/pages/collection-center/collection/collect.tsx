@@ -13,6 +13,7 @@ import SEO from "/@components/@core/seo.component";
 import { CollectionStore } from "/@stores/collections.store";
 import { ROLES } from "/@utils/constants";
 import { getUser } from "/@utils/auth";
+import { getToday } from "/@utils/basic";
 
 export default class CollectionCollectPage extends Component {
   collectionStore = new CollectionStore();
@@ -28,16 +29,10 @@ export default class CollectionCollectPage extends Component {
       ccCode: [getUser().ccCode, Validators.required],
       membershipId: ["", Validators.required],
       quantity: ["", Validators.required],
-      date: [this.getToday(), Validators.required],
+      date: [getToday(), Validators.required],
       timestamp: [new Date(), Validators.required],
     });
   }
-
-  getToday = () => {
-    const local = new Date();
-    local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-    return local.toJSON().slice(0, 10);
-  };
 
   handleSubmit = e => {
     e.preventDefault();

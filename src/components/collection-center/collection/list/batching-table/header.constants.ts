@@ -24,3 +24,22 @@ export const TABLE_HEADER_FIELDS = [
     header: "Available Quantity",
   },
 ];
+
+export const TABLE_HEADER_EXPAND = [
+  {
+    key: "id",
+    header: "Batch Id",
+  },
+  {
+    key: "quantity",
+    header: "Quantity",
+  },
+  {
+    key: "quality",
+    header: "Quality",
+  },
+  {
+    key: "transferTimestamp",
+    header: "Timestamp",
+  },
+];

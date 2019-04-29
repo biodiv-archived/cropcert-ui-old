@@ -84,6 +84,7 @@ export default class CollectionListComponent extends Component<IProps, IState> {
           <div className="bx--col-lg-9 bx--col-sm-12">
             <Button
               kind="primary"
+              disabled={selectedRows.length <= 0}
               className="eco--button-table-primary"
               onClick={() => this.createBatch(selectedRows)}
             >

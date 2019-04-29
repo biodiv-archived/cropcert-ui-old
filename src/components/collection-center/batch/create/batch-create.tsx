@@ -18,6 +18,7 @@ import {
 } from "/@components/@core/form";
 import { BatchingStore } from "/@stores/batching.store";
 import { getUser } from "/@utils/auth";
+import { getToday } from "/@utils/basic";
 
 interface IState {
   collectForm;
@@ -97,6 +98,8 @@ export default class BatchCreateComponent extends Component<{}, IState> {
       moistureContent: parseInt(v.moistureContent),
       quality: v.quality,
       collections: cols,
+      date: getToday(),
+      transferTimestamp: new Date().getTime().toString(),
     };
   };
 
