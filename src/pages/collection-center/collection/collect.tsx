@@ -58,8 +58,6 @@ export default class CollectionCollectPage extends Component {
               meta={{ label: "CC Code", readOnly: true }}
             />
           </div>
-        </div>
-        <div className="bx--row">
           <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="membershipId"
@@ -67,20 +65,13 @@ export default class CollectionCollectPage extends Component {
               meta={{ label: "Membership Id" }}
             />
           </div>
+        </div>
+        <div className="bx--row">
           <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="quantity"
               render={numberInput}
               meta={{ label: "Quantity" }}
-            />
-          </div>
-        </div>
-        <div className="bx--row">
-          <div className="bx--col-lg-4 bx--col-sm-12">
-            <FieldControl
-              name="date"
-              render={dateInput}
-              meta={{ label: "Date" }}
             />
           </div>
           <div className="bx--col-lg-4 bx--col-sm-12">
@@ -93,11 +84,20 @@ export default class CollectionCollectPage extends Component {
               }}
             />
           </div>
+        </div>
+        <div className="bx--row">
           <div className="bx--col-lg-4 bx--col-sm-12">
             <FieldControl
               name="note"
               render={textInput}
               meta={{ label: "Note" }}
+            />
+          </div>
+          <div className="bx--col-lg-4 bx--col-sm-12">
+            <FieldControl
+              name="date"
+              render={dateInput}
+              meta={{ label: "Date" }}
             />
           </div>
         </div>

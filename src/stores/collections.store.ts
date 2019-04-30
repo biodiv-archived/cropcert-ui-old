@@ -19,7 +19,7 @@ export class CollectionStore {
       .then(response => {
         console.info(response);
         notify.show("✅ Collection done successfully", TOAST_TYPE.SUCCESS);
-        navigate("/collection-center/collection/list");
+        navigate("/collection-center");
       })
       .catch(error => {
         console.error(error);

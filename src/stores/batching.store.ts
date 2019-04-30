@@ -21,7 +21,7 @@ export class BatchingStore {
           `✅ Batch #${response.data.batchId} Created Successfully`,
           TOAST_TYPE.SUCCESS
         );
-        navigate("/collection-center/collection/list");
+        navigate("/collection-center");
       })
       .catch(error => {
         console.error(error);
