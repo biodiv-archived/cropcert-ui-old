@@ -1,4 +1,8 @@
+import { navigate } from "gatsby";
+import { notify } from "react-notify-toast";
+
 import { ROLES } from "./constants";
+import { TOAST_TYPE } from "/@utils/constants";
 
 const isBrowser = typeof window !== `undefined`;
 
@@ -12,7 +16,10 @@ export const getUser = () => {
 };
 
 export const setUser = user => {
-  window.localStorage.ecoUser = JSON.stringify(user);
+  window.localStorage.ecoUser = JSON.stringify({
+    ...user,
+    lts: new Date().toString(),
+  });
 };
 
 export const getToken = () => {
@@ -28,12 +35,24 @@ export const hasAccess = (roles: string[]) => {
   } else {
     const user = getUser();
     if (user.hasOwnProperty("role")) {
+      checkSessionExpired(user.lts);
       if (roles.includes(ROLES.AUTHORIZED) || roles.includes(user.role)) {
         return true;
       }
     }
   }
   return false;
+};
+
+/*
+ * Temp Fix for session expiration after 2 Hours
+ */
+const checkSessionExpired = (lts = 0) => {
+  const diff = (new Date().getTime() - new Date(lts).getTime()) / 6000;
+  if (diff > 120) {
+    notify.show("❌ Session expired", TOAST_TYPE.ERROR);
+    navigate("/auth/sign-out");
+  }
 };
 
 export const getCurrentUser = () => {
