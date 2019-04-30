@@ -32,7 +32,6 @@ export class CollectionStore {
 
   @action
   lazyList(reset = false) {
-    console.log(reset);
     http
       .get(`${process.env.ENDPOINT_TRACEABILITY}/collection/all`, {
         params: {

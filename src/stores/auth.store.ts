@@ -29,7 +29,7 @@ export class AuthStore {
             alert(`Error Occurred`);
           });
       } else {
-        console.log("No ticket found");
+        console.error("No ticket found");
       }
     }
   }
