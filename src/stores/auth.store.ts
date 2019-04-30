@@ -17,7 +17,7 @@ export class AuthStore {
   continue() {
     if (this.isCSR) {
       if (parse(location.search).ticket) {
-        this.pingAll();
+        this.getAll();
         http
           .get(`${process.env.ENDPOINT_USER}/me`)
           .then(r => {
@@ -34,16 +34,17 @@ export class AuthStore {
     }
   }
 
-  pingAll() {
-    http.get(`${process.env.ENDPOINT_USER}/ping`);
-    http.get(`${process.env.ENDPOINT_ENTITY}/ping`);
-    http.get(`${process.env.ENDPOINT_TRACEABILITY}/ping`);
+  getAll(path = "ping") {
+    http.get(`${process.env.ENDPOINT_USER}/${path}`);
+    http.get(`${process.env.ENDPOINT_ENTITY}/${path}`);
+    http.get(`${process.env.ENDPOINT_TRACEABILITY}/${path}`);
   }
 
   @action
   signOut() {
     so(() => {
       http.get(`${CAS_LOGOUT_URL}`).then(r => {
+        this.getAll("logout");
         navigate("/");
       });
     });
