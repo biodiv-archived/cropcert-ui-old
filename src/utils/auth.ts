@@ -18,7 +18,7 @@ export const getUser = () => {
 export const setUser = user => {
   window.localStorage.ecoUser = JSON.stringify({
     ...user,
-    lts: new Date().toString(),
+    lts: new Date().getTime(),
   });
 };
 
@@ -48,7 +48,7 @@ export const hasAccess = (roles: string[]) => {
  * Temp Fix for session expiration after 2 Hours
  */
 const checkSessionExpired = (lts = 0) => {
-  const diff = (new Date().getTime() - new Date(lts).getTime()) / 6000;
+  const diff = (new Date().getTime() - lts) / 60000;
   if (diff > 120) {
     notify.show("❌ Session expired", TOAST_TYPE.ERROR);
     navigate("/auth/sign-out");
