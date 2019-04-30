@@ -7,19 +7,25 @@ import {
   Validators,
 } from "react-reactive-form";
 
-import { dateInput, numberInput, textInput } from "/@components/@core/form";
+import {
+  dateInput,
+  numberInput,
+  selectInput,
+  textInput,
+} from "/@components/@core/form";
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
 import { CollectionStore } from "/@stores/collections.store";
-import { ROLES } from "/@utils/constants";
 import { getUser } from "/@utils/auth";
 import { getToday } from "/@utils/basic";
+import { ROLES } from "/@utils/constants";
 
 export default class CollectionCollectPage extends Component {
   collectionStore = new CollectionStore();
-  statusOptions = [
-    { name: "Collected", value: "COLLECTED" },
-    { name: "Not Collected", value: "NOT_COLLECTED" },
+  qualityOptions = [
+    { name: "Default", value: "default" },
+    { name: "Good", value: "good" },
+    { name: "Great", value: "great" },
   ];
   collectForm;
 
@@ -31,6 +37,8 @@ export default class CollectionCollectPage extends Component {
       quantity: ["", Validators.required],
       date: [getToday(), Validators.required],
       timestamp: [new Date(), Validators.required],
+      quality: [this.qualityOptions[0].value],
+      note: [,],
     });
   }
 
@@ -73,6 +81,23 @@ export default class CollectionCollectPage extends Component {
               name="date"
               render={dateInput}
               meta={{ label: "Date" }}
+            />
+          </div>
+          <div className="bx--col-lg-4 bx--col-sm-12">
+            <FieldControl
+              name="quality"
+              render={selectInput}
+              meta={{
+                label: "Quality",
+                options: this.qualityOptions,
+              }}
+            />
+          </div>
+          <div className="bx--col-lg-4 bx--col-sm-12">
+            <FieldControl
+              name="note"
+              render={textInput}
+              meta={{ label: "Note" }}
             />
           </div>
         </div>

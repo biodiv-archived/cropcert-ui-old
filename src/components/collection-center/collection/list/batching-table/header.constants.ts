@@ -23,6 +23,14 @@ export const TABLE_HEADER_FIELDS = [
     key: "availableQuantity",
     header: "Available Quantity",
   },
+  {
+    key: "quality",
+    header: "Quality",
+  },
+  {
+    key: "note",
+    header: "Note",
+  },
 ];
 
 export const TABLE_HEADER_EXPAND = [
