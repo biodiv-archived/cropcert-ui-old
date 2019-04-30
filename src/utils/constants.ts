@@ -6,6 +6,8 @@ export const HEADERS = {
   "Content-Type": "application/json",
 };
 
+export const GLOBAL_LIMIT = 20;
+
 export const TOAST_TYPE = {
   SUCCESS: "success",
   WARNING: "warning",

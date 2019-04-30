@@ -11,9 +11,6 @@ ax.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response.status === 401) {
-      console.log("unauthorized, logging out ...");
-    }
     return Promise.reject(error.response);
   }
 );
