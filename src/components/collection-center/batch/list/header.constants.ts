@@ -1,4 +1,4 @@
-export const TABLE_HEADER_FIELDS = [
+export const FIELDS_DRY = [
   {
     key: "id",
     header: "Batch Id",
@@ -12,16 +12,39 @@ export const TABLE_HEADER_FIELDS = [
     header: "Total Quantity",
   },
   {
-    key: "availableQuantity",
-    header: "Available Quantity",
+    key: "date",
+    header: "Batched On",
+  },
+];
+
+export const FIELDS_WET = [
+  {
+    key: "id",
+    header: "Batch Id",
+  },
+  {
+    key: "ccCode",
+    header: "CC Code",
+  },
+  {
+    key: "quantity",
+    header: "Total Quantity",
   },
   {
     key: "date",
     header: "Batched On",
   },
   {
-    key: "quality",
-    header: "Quality",
+    key: "dryingEndTime",
+    header: "Drying Ended on",
+  },
+  {
+    key: "fermentationEndTime",
+    header: "Fermentation Ended on",
+  },
+  {
+    key: "perchmentQuantity",
+    header: "Perchment Quantity",
   },
 ];
 

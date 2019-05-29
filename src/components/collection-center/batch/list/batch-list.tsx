@@ -1,10 +1,9 @@
-import { DataTable, InlineLoading } from "carbon-components-react";
+import { DataTable, InlineLoading, Tabs, Tab } from "carbon-components-react";
 import { Observer, useObservable } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
-import ExpandRow from "./expandrow";
-import { TABLE_HEADER_FIELDS } from "./header.constants";
+import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
 
 const {
@@ -15,22 +14,30 @@ const {
   TableBody,
   TableCell,
   TableHeader,
-  TableExpandRow,
-  TableExpandHeader,
+  TableSelectAll,
+  TableSelectRow,
 } = DataTable;
 
 export default function BatchListComponent() {
   const batchingStore = useObservable(new BatchingStore());
+  const [batchType, setBatchType] = useState("DRY");
+  const [headerFields, setHeaderFields] = useState(FIELDS_DRY);
 
   useEffect(() => {
-    batchingStore.lazyList(true);
-  }, []);
+    batchingStore.lazyList(true, batchType);
+  }, [batchType]);
 
-  const renderDataTable = ({ rows, headers, getHeaderProps, getRowProps }) => (
+  const renderDataTable = ({
+    rows,
+    headers,
+    getHeaderProps,
+    getSelectionProps,
+    getRowProps,
+  }) => (
     <InfiniteScroll
       pageStart={0}
       loadMore={() => {
-        rows.length > 0 ? batchingStore.lazyList(false) : null;
+        rows.length > 0 ? batchingStore.lazyList(false, batchType) : null;
       }}
       hasMore={batchingStore.lazyListHasMore}
       loader={<InlineLoading key={rows.length} description="Loading data..." />}
@@ -39,7 +46,7 @@ export default function BatchListComponent() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableExpandHeader />
+              <TableSelectAll {...getSelectionProps()} />
               {headers.map(header => (
                 <TableHeader {...getHeaderProps({ header })}>
                   {header.header}
@@ -51,18 +58,13 @@ export default function BatchListComponent() {
             {rows.map(row => {
               return (
                 <React.Fragment key={row.id}>
-                  <TableExpandRow {...getRowProps({ row })}>
+                  <TableRow {...getRowProps({ row })}>
+                    <TableSelectRow {...getSelectionProps({ row })} />
+                    {console.log(row.cells)}
                     {row.cells.map(cell => (
                       <TableCell key={cell.id}>{cell.value}</TableCell>
                     ))}
-                  </TableExpandRow>
-                  {row.isExpanded && (
-                    <ExpandRow
-                      batchingStore={batchingStore}
-                      colSpan={headers.length + 1}
-                      batchId={row.id}
-                    />
-                  )}
+                  </TableRow>
                 </React.Fragment>
               );
             })}
@@ -77,9 +79,25 @@ export default function BatchListComponent() {
       {() => (
         <>
           <h1 className="eco--title">Batches</h1>
+          <Tabs>
+            <Tab
+              label="Dry"
+              onClick={() => {
+                setBatchType("DRY");
+                setHeaderFields(FIELDS_DRY);
+              }}
+            />
+            <Tab
+              label="Wet"
+              onClick={() => {
+                setBatchType("WET");
+                setHeaderFields(FIELDS_WET);
+              }}
+            />
+          </Tabs>
           <DataTable
             rows={batchingStore.batches || []}
-            headers={TABLE_HEADER_FIELDS}
+            headers={headerFields}
             render={renderDataTable}
           />
         </>

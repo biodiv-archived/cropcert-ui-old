@@ -13,6 +13,31 @@ export class BatchingStore {
   @observable batchCollections = new Map();
 
   @action
+  collect(data) {
+    const { type, ..._payload } = data;
+    http
+      .post(
+        `${process.env.ENDPOINT_TRACEABILITY}/${this.getEndpoint(type)}`,
+        _payload
+      )
+      .then(response => {
+        console.info(response);
+        notify.show(
+          "✅ Batch Collection done successfully",
+          TOAST_TYPE.SUCCESS
+        );
+        navigate("/collection-center");
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while collecting",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
   createBatchfromCollections(collectionsData) {
     http
       .post(`${process.env.ENDPOINT_TRACEABILITY}/batch`, collectionsData)
@@ -33,20 +58,26 @@ export class BatchingStore {
   }
 
   @action
-  lazyList(reset) {
+  lazyList(reset, type) {
+    if (reset) {
+      this._offset = 0;
+    }
     http
-      .get(`${process.env.ENDPOINT_TRACEABILITY}/batch/all`, {
-        params: {
-          limit: this._limit,
-          offset: this._offset,
-        },
-      })
+      .get(
+        `${process.env.ENDPOINT_TRACEABILITY}/${this.getEndpoint(type)}/all`,
+        {
+          params: {
+            limit: this._limit,
+            offset: this._offset,
+          },
+        }
+      )
       .then(r => {
         if (Array.isArray(r.data)) {
           if (r.data.length === 0 || r.data.length < this._limit) {
             this.lazyListHasMore = false;
           }
-          this.transformCollections(r.data, reset);
+          this.transformCollections(r.data.filter(o => o.type === type), reset);
           this._offset += this._limit;
         }
       })
@@ -84,5 +115,9 @@ export class BatchingStore {
       return { ...o, id: o.batchId.toString() };
     });
     this.batches = reset ? rows : [...this.batches, ...rows];
+  };
+
+  private getEndpoint = type => {
+    return type === "WET" ? "wetbatch" : "batch";
   };
 }

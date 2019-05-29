@@ -50,7 +50,7 @@ export const hasAccess = (roles: string[]) => {
 const checkSessionExpired = (lts = 0) => {
   const diff = (new Date().getTime() - lts) / 60000;
   if (diff > 120) {
-    notify.show("❌ Session expired", TOAST_TYPE.ERROR);
+    // notify.show("❌ Session expired", TOAST_TYPE.ERROR);
     navigate("/auth/sign-out");
   }
 };
