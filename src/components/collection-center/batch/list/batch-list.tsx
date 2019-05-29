@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroller";
 
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
+import BatchListCell from "./batch-list-cell";
 
 const {
   TableContainer,
@@ -60,10 +61,7 @@ export default function BatchListComponent() {
                 <React.Fragment key={row.id}>
                   <TableRow {...getRowProps({ row })}>
                     <TableSelectRow {...getSelectionProps({ row })} />
-                    {console.log(row.cells)}
-                    {row.cells.map(cell => (
-                      <TableCell key={cell.id}>{cell.value}</TableCell>
-                    ))}
+                    {row.cells.map(cell => BatchListCell(cell))}
                   </TableRow>
                 </React.Fragment>
               );
