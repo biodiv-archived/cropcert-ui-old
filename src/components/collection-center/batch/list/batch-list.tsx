@@ -1,4 +1,10 @@
-import { DataTable, InlineLoading, Tab, Tabs } from "carbon-components-react";
+import {
+  Button,
+  ContentSwitcher,
+  DataTable,
+  InlineLoading,
+  Switch,
+} from "carbon-components-react";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -47,47 +53,82 @@ export default class BatchListComponent extends Component<{}, IState> {
     headers,
     getHeaderProps,
     getSelectionProps,
+    selectedRows,
     getRowProps,
   }) => (
-    <InfiniteScroll
-      pageStart={0}
-      loadMore={() => {
-        rows.length > 0
-          ? this.batchingStore.lazyList(false, this.state.batchType)
-          : null;
-      }}
-      hasMore={this.batchingStore.lazyListHasMore}
-      loader={<InlineLoading key={rows.length} description="Loading data..." />}
-    >
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableSelectAll {...getSelectionProps()} />
-              {headers.map(header => (
-                <TableHeader {...getHeaderProps({ header })}>
-                  {header.header}
-                </TableHeader>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => {
-              return (
-                <React.Fragment key={row.id}>
-                  <TableRow {...getRowProps({ row })}>
-                    <TableSelectRow {...getSelectionProps({ row })} />
-                    {row.cells.map(cell =>
-                      BatchListCell(cell, row.id, this.openModal)
-                    )}
-                  </TableRow>
-                </React.Fragment>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </InfiniteScroll>
+    <>
+      <div className="bx--row">
+        <div className="bx--col-lg-4 bx--col-md-12">
+          <h1 className="eco--title">Batches</h1>
+        </div>
+        <div className="bx--col-lg-2 bx--col-md-12">
+          <ContentSwitcher
+            className="eco--button-switcher"
+            onChange={({ name }) => {
+              this.setState({ batchType: name });
+              this.batchingStore.lazyList(true, name);
+            }}
+          >
+            <Switch name="DRY" text="DRY" />
+            <Switch name="WET" text="WET" />
+          </ContentSwitcher>
+        </div>
+        <div className="bx--col-lg-6 bx--col-md-12 text-right">
+          <Button
+            kind="primary"
+            className="eco--button-table-primary"
+            disabled={selectedRows.length <= 0}
+            onClick={() => {
+              console.log(selectedRows);
+            }}
+          >
+            Create Batch
+          </Button>
+        </div>
+      </div>
+      <br />
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={() => {
+          rows.length > 0
+            ? this.batchingStore.lazyList(false, this.state.batchType)
+            : null;
+        }}
+        hasMore={this.batchingStore.lazyListHasMore}
+        loader={
+          <InlineLoading key={rows.length} description="Loading data..." />
+        }
+      >
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableSelectAll {...getSelectionProps()} />
+                {headers.map(header => (
+                  <TableHeader {...getHeaderProps({ header })}>
+                    {header.header}
+                  </TableHeader>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map(row => {
+                return (
+                  <React.Fragment key={row.id}>
+                    <TableRow {...getRowProps({ row })}>
+                      <TableSelectRow {...getSelectionProps({ row })} />
+                      {row.cells.map(cell =>
+                        BatchListCell(cell, row.id, this.openModal)
+                      )}
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </InfiniteScroll>
+    </>
   );
 
   openModal = (modalType, id, value) => {
@@ -108,29 +149,12 @@ export default class BatchListComponent extends Component<{}, IState> {
   render() {
     return (
       <>
-        <h1 className="eco--title">Batches</h1>
         <BatchListModal
           isModalOpen={this.state.isModalOpen}
           closeModal={this.closeModal}
           modalData={this.state.modalData}
           updateBatchInfo={this.batchingStore.updateBatchInfo}
         />
-        <Tabs>
-          <Tab
-            label="Dry"
-            onClick={() => {
-              this.setState({ batchType: "DRY" });
-              this.batchingStore.lazyList(true, "DRY");
-            }}
-          />
-          <Tab
-            label="Wet"
-            onClick={() => {
-              this.setState({ batchType: "WET" });
-              this.batchingStore.lazyList(true, "WET");
-            }}
-          />
-        </Tabs>
         <DataTable
           rows={this.batchingStore.batches || []}
           headers={this.state.batchType === "DRY" ? FIELDS_DRY : FIELDS_WET}
