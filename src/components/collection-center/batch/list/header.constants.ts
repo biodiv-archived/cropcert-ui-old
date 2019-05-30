@@ -35,12 +35,16 @@ export const FIELDS_WET = [
     header: "Batched On",
   },
   {
-    key: "dryingEndTime",
-    header: "Drying Ended on",
+    key: "startTime",
+    header: "Start Time",
   },
   {
     key: "fermentationEndTime",
     header: "Fermentation Ended on",
+  },
+  {
+    key: "dryingEndTime",
+    header: "Drying Ended on",
   },
   {
     key: "perchmentQuantity",
@@ -66,3 +70,10 @@ export const TABLE_HEADER_EXPAND = [
     header: "Quality",
   },
 ];
+
+export const MODAL_TYPE = {
+  START_TIME: "startTime",
+  FERMENTATION_END_TIME: "fermentationEndTime",
+  DRYING_END_TIME: "dryingEndTime",
+  PERCHMENT_QUANTITY: "perchmentQuantity",
+};

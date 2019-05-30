@@ -1,11 +1,12 @@
-import { DataTable, InlineLoading, Tabs, Tab } from "carbon-components-react";
-import { Observer, useObservable } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import { DataTable, InlineLoading, Tab, Tabs } from "carbon-components-react";
+import { observer } from "mobx-react";
+import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
+import BatchListCell from "./batch-list-cell";
+import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
-import BatchListCell from "./batch-list-cell";
 
 const {
   TableContainer,
@@ -19,16 +20,30 @@ const {
   TableSelectRow,
 } = DataTable;
 
-export default function BatchListComponent() {
-  const batchingStore = useObservable(new BatchingStore());
-  const [batchType, setBatchType] = useState("DRY");
-  const [headerFields, setHeaderFields] = useState(FIELDS_DRY);
+interface IState {
+  batchType;
+  modalData;
+  isModalOpen;
+}
 
-  useEffect(() => {
-    batchingStore.lazyList(true, batchType);
-  }, [batchType]);
+@observer
+export default class BatchListComponent extends Component<{}, IState> {
+  batchingStore = new BatchingStore();
 
-  const renderDataTable = ({
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      batchType: "DRY",
+      modalData: { type: null, id: null, value: null },
+    };
+  }
+
+  componentDidMount() {
+    this.batchingStore.lazyList(true, this.state.batchType);
+  }
+
+  renderDataTable = ({
     rows,
     headers,
     getHeaderProps,
@@ -38,9 +53,11 @@ export default function BatchListComponent() {
     <InfiniteScroll
       pageStart={0}
       loadMore={() => {
-        rows.length > 0 ? batchingStore.lazyList(false, batchType) : null;
+        rows.length > 0
+          ? this.batchingStore.lazyList(false, this.state.batchType)
+          : null;
       }}
-      hasMore={batchingStore.lazyListHasMore}
+      hasMore={this.batchingStore.lazyListHasMore}
       loader={<InlineLoading key={rows.length} description="Loading data..." />}
     >
       <TableContainer>
@@ -61,7 +78,9 @@ export default function BatchListComponent() {
                 <React.Fragment key={row.id}>
                   <TableRow {...getRowProps({ row })}>
                     <TableSelectRow {...getSelectionProps({ row })} />
-                    {row.cells.map(cell => BatchListCell(cell))}
+                    {row.cells.map(cell =>
+                      BatchListCell(cell, row.id, this.openModal)
+                    )}
                   </TableRow>
                 </React.Fragment>
               );
@@ -72,34 +91,52 @@ export default function BatchListComponent() {
     </InfiniteScroll>
   );
 
-  return (
-    <Observer>
-      {() => (
-        <>
-          <h1 className="eco--title">Batches</h1>
-          <Tabs>
-            <Tab
-              label="Dry"
-              onClick={() => {
-                setBatchType("DRY");
-                setHeaderFields(FIELDS_DRY);
-              }}
-            />
-            <Tab
-              label="Wet"
-              onClick={() => {
-                setBatchType("WET");
-                setHeaderFields(FIELDS_WET);
-              }}
-            />
-          </Tabs>
-          <DataTable
-            rows={batchingStore.batches || []}
-            headers={headerFields}
-            render={renderDataTable}
+  openModal = (modalType, id, value) => {
+    this.setState({
+      modalData: {
+        modalType,
+        id,
+        value,
+      },
+      isModalOpen: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  render() {
+    return (
+      <>
+        <h1 className="eco--title">Batches</h1>
+        <BatchListModal
+          isModalOpen={this.state.isModalOpen}
+          closeModal={this.closeModal}
+          modalData={this.state.modalData}
+        />
+        <Tabs>
+          <Tab
+            label="Dry"
+            onClick={() => {
+              this.setState({ batchType: "DRY" });
+              this.batchingStore.lazyList(true, "DRY");
+            }}
           />
-        </>
-      )}
-    </Observer>
-  );
+          <Tab
+            label="Wet"
+            onClick={() => {
+              this.setState({ batchType: "WET" });
+              this.batchingStore.lazyList(true, "WET");
+            }}
+          />
+        </Tabs>
+        <DataTable
+          rows={this.batchingStore.batches || []}
+          headers={this.state.batchType === "DRY" ? FIELDS_DRY : FIELDS_WET}
+          render={this.renderDataTable}
+        />
+      </>
+    );
+  }
 }

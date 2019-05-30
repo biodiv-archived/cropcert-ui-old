@@ -1,20 +1,23 @@
 import { DataTable } from "carbon-components-react";
 import React from "react";
 
+import { MODAL_TYPE } from "./header.constants";
+
 const { TableCell } = DataTable;
 
-export default function BatchListCell(cell) {
-  switch (cell.info.header) {
-    case "dryingEndTime":
-      return <TableCell key={cell.id}>x{cell.value}</TableCell>;
-
-    case "fermentationEndTime":
-      return <TableCell key={cell.id}>y{cell.value}</TableCell>;
-
-    case "perchmentQuantity":
-      return <TableCell key={cell.id}>z{cell.value}</TableCell>;
-
-    default:
-      return <TableCell key={cell.id}>{cell.value}</TableCell>;
-  }
+export default function BatchListCell(cell, id, openModal) {
+  return Object.values(MODAL_TYPE).includes(cell.info.header) ? (
+    <TableCell key={cell.id}>
+      {cell.value}
+      <button
+        onClick={() => {
+          openModal(cell.info.header, id, cell.value);
+        }}
+      >
+        Edit
+      </button>
+    </TableCell>
+  ) : (
+    <TableCell key={cell.id}>{cell.value}</TableCell>
+  );
 }
