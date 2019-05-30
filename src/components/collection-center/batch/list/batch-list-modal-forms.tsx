@@ -12,6 +12,7 @@ import { formattedDate, formattedTime } from "/@utils/basic";
 
 interface IProps {
   modalData;
+  updateBatchInfo;
 }
 
 interface IState {
@@ -39,6 +40,14 @@ export class BatchListModalFormDate extends Component<IProps, IState> {
     });
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.updateBatchInfo(
+      this.props.modalData.modalType,
+      this.dateForm.value
+    );
+  };
+
   render() {
     return (
       <FieldGroup
@@ -46,11 +55,7 @@ export class BatchListModalFormDate extends Component<IProps, IState> {
         render={() => (
           <>
             <div className="eco--modal-container">
-              <form
-                className="bx--form"
-                onSubmit={e => e.preventDefault()}
-                onChange={e => console.log(this.dateForm)}
-              >
+              <form className="bx--form" onSubmit={this.handleSubmit}>
                 <div className="bx--row">
                   <div className="bx--col-lg-6 bx--col-sm-12">
                     <FieldControl
@@ -71,6 +76,7 @@ export class BatchListModalFormDate extends Component<IProps, IState> {
             </div>
             <ModalFooter
               primaryButtonText="Save"
+              onRequestSubmit={this.handleSubmit}
               primaryButtonDisabled={this.dateForm.invalid}
             />
           </>
@@ -94,6 +100,14 @@ export class BatchListModalFormNumber extends Component<IProps> {
     });
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.updateBatchInfo(
+      this.props.modalData.modalType,
+      this.numberForm.value
+    );
+  };
+
   render() {
     return (
       <FieldGroup
@@ -101,11 +115,7 @@ export class BatchListModalFormNumber extends Component<IProps> {
         render={() => (
           <>
             <div className="eco--modal-container">
-              <form
-                className="bx--form"
-                onSubmit={e => e.preventDefault()}
-                onChange={e => console.log(this.numberForm.valid)}
-              >
+              <form className="bx--form" onSubmit={this.handleSubmit}>
                 <div className="bx--row">
                   <div className="bx--col-lg-6 bx--col-sm-12">
                     <FieldControl
@@ -119,6 +129,7 @@ export class BatchListModalFormNumber extends Component<IProps> {
             </div>
             <ModalFooter
               primaryButtonText="Save"
+              onRequestSubmit={this.handleSubmit}
               primaryButtonDisabled={this.numberForm.invalid}
             />
           </>

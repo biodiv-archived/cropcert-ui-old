@@ -11,6 +11,7 @@ interface IProps {
   isModalOpen;
   closeModal;
   modalData;
+  updateBatchInfo;
 }
 
 export default class BatchListModal extends Component<IProps> {
@@ -28,9 +29,15 @@ export default class BatchListModal extends Component<IProps> {
             closeModal={this.props.closeModal}
           />
           {this.props.modalData.modalType !== MODAL_TYPE.PERCHMENT_QUANTITY ? (
-            <BatchListModalFormDate modalData={this.props.modalData} />
+            <BatchListModalFormDate
+              updateBatchInfo={this.props.updateBatchInfo}
+              modalData={this.props.modalData}
+            />
           ) : (
-            <BatchListModalFormNumber modalData={this.props.modalData} />
+            <BatchListModalFormNumber
+              updateBatchInfo={this.props.updateBatchInfo}
+              modalData={this.props.modalData}
+            />
           )}
         </ComposedModal>
       </>

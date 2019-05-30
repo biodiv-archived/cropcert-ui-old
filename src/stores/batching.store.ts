@@ -38,6 +38,11 @@ export class BatchingStore {
   }
 
   @action
+  updateBatchInfo(modalType, modalData) {
+    console.log("TODO", modalType, modalData);
+  }
+
+  @action
   createBatchfromCollections(collectionsData) {
     http
       .post(`${process.env.ENDPOINT_TRACEABILITY}/batch`, collectionsData)

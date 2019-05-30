@@ -14,7 +14,6 @@ const {
   TableHead,
   TableRow,
   TableBody,
-  TableCell,
   TableHeader,
   TableSelectAll,
   TableSelectRow,
@@ -114,6 +113,7 @@ export default class BatchListComponent extends Component<{}, IState> {
           isModalOpen={this.state.isModalOpen}
           closeModal={this.closeModal}
           modalData={this.state.modalData}
+          updateBatchInfo={this.batchingStore.updateBatchInfo}
         />
         <Tabs>
           <Tab
