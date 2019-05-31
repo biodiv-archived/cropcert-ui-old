@@ -4,6 +4,7 @@ import { notify } from "react-notify-toast";
 
 import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
 import http from "/@utils/http";
+import { MODAL_TYPE } from "/@components/collection-center/batch/list/header.constants";
 
 export class BatchingStore {
   @observable lazyListHasMore = true;
@@ -39,7 +40,32 @@ export class BatchingStore {
 
   @action
   updateBatchInfo(modalType, modalData) {
-    console.log("TODO", modalType, modalData);
+    http
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/wetbatch/${modalType}`, {
+        id: modalData.id,
+        [modalType]:
+          modalType !== MODAL_TYPE.PERCHMENT_QUANTITY
+            ? `${modalData.date} ${modalData.time}:00`
+            : modalData.qty,
+      })
+      .then(response => {
+        this.batches = this.batches.map(_ =>
+          _.batchId === response.data.batchId
+            ? { ...response.data, id: response.data.batchId.toString() }
+            : _
+        );
+        notify.show(
+          `✅ Batch #${response.data.batchId} Updated Successfully`,
+          TOAST_TYPE.SUCCESS
+        );
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while creating Batch",
+          TOAST_TYPE.ERROR
+        );
+      });
   }
 
   @action
@@ -82,7 +108,7 @@ export class BatchingStore {
           if (r.data.length === 0 || r.data.length < this._limit) {
             this.lazyListHasMore = false;
           }
-          this.transformCollections(r.data.filter(o => o.type === type), reset);
+          this.transformBatches(r.data.filter(o => o.type === type), reset);
           this._offset += this._limit;
         }
       })
@@ -115,7 +141,7 @@ export class BatchingStore {
       });
   }
 
-  private transformCollections = (data, reset) => {
+  private transformBatches = (data, reset) => {
     const rows = data.map(o => {
       return { ...o, id: o.batchId.toString() };
     });

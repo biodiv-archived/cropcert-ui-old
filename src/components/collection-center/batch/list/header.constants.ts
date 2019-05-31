@@ -8,12 +8,12 @@ export const FIELDS_DRY = [
     header: "CC Code",
   },
   {
-    key: "quantity",
-    header: "Total Quantity",
-  },
-  {
     key: "date",
     header: "Batched On",
+  },
+  {
+    key: "quantity",
+    header: "Total Quantity",
   },
 ];
 

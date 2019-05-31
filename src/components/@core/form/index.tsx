@@ -1,7 +1,6 @@
+import { Checkbox } from "carbon-components-react";
 import { For } from "control-statements";
 import React from "react";
-
-import { Checkbox } from "carbon-components-react";
 
 export const textInput = ({ handler, touched, hasError, meta }) => (
   <fieldset className="bx--fieldset">
@@ -11,6 +10,7 @@ export const textInput = ({ handler, touched, hasError, meta }) => (
         type="text"
         className="bx--text-input"
         placeholder={`Enter ${meta.label}`}
+        {...meta}
         {...handler()}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />

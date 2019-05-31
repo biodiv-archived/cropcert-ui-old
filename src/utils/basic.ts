@@ -26,3 +26,15 @@ export const formattedTime = d => {
 
   return [h, m].join(":");
 };
+
+export const toFriendlyCellValue = c => {
+  if (c.info.header === "perchmentQuantity" || !c.value) {
+    return c.value || "NA";
+  }
+  const d = new Date(c.value);
+  let mm: any = d.getMonth() + 1;
+  if (mm < 9) mm = "0" + mm;
+  let dd: any = d.getDay() + 1;
+  if (dd < 9) dd = "0" + dd;
+  return `${d.getFullYear()}-${mm}-${dd} ${d.getHours()}:${d.getMinutes()}`;
+};

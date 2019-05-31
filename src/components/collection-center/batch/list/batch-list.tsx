@@ -13,6 +13,7 @@ import BatchListCell from "./batch-list-cell";
 import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
+import { navigate } from "gatsby";
 
 const {
   TableContainer,
@@ -48,6 +49,11 @@ export default class BatchListComponent extends Component<{}, IState> {
     this.batchingStore.lazyList(true, this.state.batchType);
   }
 
+  handleSubmit = (modalType, form) => {
+    this.batchingStore.updateBatchInfo(modalType, form);
+    this.closeModal();
+  };
+
   renderDataTable = ({
     rows,
     headers,
@@ -79,7 +85,9 @@ export default class BatchListComponent extends Component<{}, IState> {
             className="eco--button-table-primary"
             disabled={selectedRows.length <= 0}
             onClick={() => {
-              console.log(selectedRows);
+              navigate("/collection-center/lot/create", {
+                state: { selectedRows, lotType: this.state.batchType },
+              });
             }}
           >
             Create Batch
@@ -152,8 +160,8 @@ export default class BatchListComponent extends Component<{}, IState> {
         <BatchListModal
           isModalOpen={this.state.isModalOpen}
           closeModal={this.closeModal}
+          handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
-          updateBatchInfo={this.batchingStore.updateBatchInfo}
         />
         <DataTable
           rows={this.batchingStore.batches || []}

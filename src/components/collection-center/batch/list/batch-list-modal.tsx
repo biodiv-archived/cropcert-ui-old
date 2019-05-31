@@ -10,8 +10,8 @@ import { MODAL_TYPE } from "./header.constants";
 interface IProps {
   isModalOpen;
   closeModal;
+  handleSubmit;
   modalData;
-  updateBatchInfo;
 }
 
 export default class BatchListModal extends Component<IProps> {
@@ -30,13 +30,13 @@ export default class BatchListModal extends Component<IProps> {
           />
           {this.props.modalData.modalType !== MODAL_TYPE.PERCHMENT_QUANTITY ? (
             <BatchListModalFormDate
-              updateBatchInfo={this.props.updateBatchInfo}
               modalData={this.props.modalData}
+              handleSubmit={this.props.handleSubmit}
             />
           ) : (
             <BatchListModalFormNumber
-              updateBatchInfo={this.props.updateBatchInfo}
               modalData={this.props.modalData}
+              handleSubmit={this.props.handleSubmit}
             />
           )}
         </ComposedModal>
