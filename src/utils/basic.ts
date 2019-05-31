@@ -28,10 +28,13 @@ export const formattedTime = d => {
 };
 
 export const toFriendlyCellValue = c => {
-  if (c.info.header === "perchmentQuantity" || !c.value) {
+  if (["perchmentQuantity", "processingTime"].includes(c.info.header)) {
     return c.value || "NA";
   }
   const d = new Date(c.value);
+  if (d.getFullYear() < 2000) {
+    return c.value;
+  }
   let mm: any = d.getMonth() + 1;
   if (mm < 9) mm = "0" + mm;
   let dd: any = d.getDay() + 1;

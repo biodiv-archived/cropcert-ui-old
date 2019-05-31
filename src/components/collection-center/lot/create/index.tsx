@@ -171,7 +171,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
   render() {
     return (
       <>
-        <h1 className="eco--title">Create Batch</h1>
+        <h1 className="eco--title">Create Lot</h1>
         <If condition={this.state.batchesRows.length > 0}>
           <FieldGroup
             control={this.state.lotForm}

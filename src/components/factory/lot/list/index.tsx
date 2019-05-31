@@ -1,25 +1,20 @@
-import {
-  Button,
-  ContentSwitcher,
-  DataTable,
-  InlineLoading,
-  Switch,
-} from "carbon-components-react";
+import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import { navigate } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
-import BatchListCell from "./batch-list-cell";
-import BatchListModal from "./batch-list-modal";
-import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
-import { BatchingStore } from "/@stores/batching.store";
-import { navigate } from "gatsby";
+import { LOT_BASIC } from "./header.constants";
+import { LotStore } from "/@stores/lot.store";
+import LotListCell from "./lot-list-cell";
+import LotListModal from "./lot-list-modal";
 
 const {
   TableContainer,
   Table,
   TableHead,
   TableRow,
+  TableCell,
   TableBody,
   TableHeader,
   TableSelectAll,
@@ -27,30 +22,45 @@ const {
 } = DataTable;
 
 interface IState {
-  batchType;
+  lotType;
   modalData;
   isModalOpen;
 }
 
 @observer
-export default class BatchListComponent extends Component<{}, IState> {
-  batchingStore = new BatchingStore();
+export default class LotListComponent extends Component<{}, IState> {
+  lotStore = new LotStore();
 
   constructor(props) {
     super(props);
     this.state = {
       ...this.state,
-      batchType: "DRY",
       modalData: { type: null, id: null, value: null },
+      isModalOpen: false,
     };
   }
 
   componentDidMount() {
-    this.batchingStore.lazyList(true, this.state.batchType);
+    this.lotStore.lazyListLot(true);
   }
 
+  openModal = (modalType, id, value) => {
+    this.setState({
+      modalData: {
+        modalType,
+        id,
+        value,
+      },
+      isModalOpen: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   handleSubmit = (modalType, form) => {
-    this.batchingStore.updateBatchInfo(modalType, form);
+    this.lotStore.updateLotInfo(modalType, form);
     this.closeModal();
   };
 
@@ -64,20 +74,10 @@ export default class BatchListComponent extends Component<{}, IState> {
   }) => (
     <>
       <div className="bx--row">
-        <div className="bx--col-lg-4 bx--col-md-12">
-          <h1 className="eco--title">Batches</h1>
-        </div>
-        <div className="bx--col-lg-2 bx--col-md-12">
-          <ContentSwitcher
-            className="eco--button-switcher"
-            onChange={({ name }) => {
-              this.setState({ batchType: name });
-              this.batchingStore.lazyList(true, name);
-            }}
-          >
-            <Switch name="DRY" text="DRY" />
-            <Switch name="WET" text="WET" />
-          </ContentSwitcher>
+        <div className="bx--col-lg-6 bx--col-md-12">
+          <h1 className="eco--title">
+            Lots
+          </h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
@@ -85,12 +85,14 @@ export default class BatchListComponent extends Component<{}, IState> {
             className="eco--button-table-primary"
             disabled={selectedRows.length <= 0}
             onClick={() => {
-              navigate("/collection-center/lot/create", {
-                state: { selectedRows, lotType: this.state.batchType },
-              });
+              alert("TODO");
+              // console.log(selectedRows);
+              // navigate("/collection-center/lot-processing/create", {
+              //   state: { selectedRows },
+              // });
             }}
           >
-            Create Lot
+            Send to NUCAFE
           </Button>
         </div>
       </div>
@@ -98,11 +100,9 @@ export default class BatchListComponent extends Component<{}, IState> {
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
-          rows.length > 0
-            ? this.batchingStore.lazyList(false, this.state.batchType)
-            : null;
+          rows.length > 0 ? this.lotStore.lazyListLot(false) : null;
         }}
-        hasMore={this.batchingStore.lazyListHasMore}
+        hasMore={this.lotStore.lazyListHasMore}
         loader={
           <InlineLoading key={rows.length} description="Loading data..." />
         }
@@ -126,7 +126,7 @@ export default class BatchListComponent extends Component<{}, IState> {
                     <TableRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
                       {row.cells.map(cell =>
-                        BatchListCell(cell, row.id, this.openModal)
+                        LotListCell(cell, row.id, this.openModal)
                       )}
                     </TableRow>
                   </React.Fragment>
@@ -139,33 +139,18 @@ export default class BatchListComponent extends Component<{}, IState> {
     </>
   );
 
-  openModal = (modalType, id, value) => {
-    this.setState({
-      modalData: {
-        modalType,
-        id,
-        value,
-      },
-      isModalOpen: true,
-    });
-  };
-
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  };
-
   render() {
     return (
       <>
-        <BatchListModal
+        <LotListModal
           isModalOpen={this.state.isModalOpen}
           closeModal={this.closeModal}
           handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
         />
         <DataTable
-          rows={this.batchingStore.batches || []}
-          headers={this.state.batchType === "DRY" ? FIELDS_DRY : FIELDS_WET}
+          rows={this.lotStore.lots || []}
+          headers={LOT_BASIC}
           render={this.renderDataTable}
         />
       </>
