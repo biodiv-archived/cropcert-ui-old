@@ -7,9 +7,17 @@ import { ROLES } from "/@utils/constants";
 
 export default function FactoryIndexPage() {
   return (
-    <Layout roles={[ROLES.AUTHORIZED]}>
+    <Layout roles={[ROLES.FACTORY]}>
       <SEO title="Collection Center" />
       <h1 className="eco--title">My Dashboard</h1>
+      <div className="bx--row">
+      <Tile
+          title="Collect Batch"
+          description="Create batch from collections"
+          to="../collection-center/batch/collect"
+        />
+        <Tile title="Batches" description="List all Batches" to="../collection-center/batch/list" />
+      </div>
       <div className="bx--row">
         <Tile title="Merge Lots" description="Merge Lots" to="lot/merge" />
         <Tile

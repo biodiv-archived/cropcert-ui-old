@@ -93,7 +93,6 @@ export class LotListModalFormNumber extends Component<IProps> {
   });
 
   componentDidUpdate() {
-    console.log(this.props.modalData);
     this.numberForm.setValue({
       id: this.props.modalData.id,
       value: this.props.modalData.value,

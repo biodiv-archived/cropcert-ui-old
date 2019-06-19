@@ -4,6 +4,7 @@ import {
   DataTable,
   InlineLoading,
   Switch,
+  Dropdown,
 } from "carbon-components-react";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
@@ -30,10 +31,15 @@ interface IState {
   batchType;
   modalData;
   isModalOpen;
+  ccCode;
+}
+
+interface IProps {
+  accessibleCCs;
 }
 
 @observer
-export default class BatchListComponent extends Component<{}, IState> {
+export default class BatchListComponent extends Component<IProps, IState> {
   batchingStore = new BatchingStore();
 
   constructor(props) {
@@ -41,12 +47,13 @@ export default class BatchListComponent extends Component<{}, IState> {
     this.state = {
       ...this.state,
       batchType: "DRY",
+      ccCode: this.props.accessibleCCs[0].id,
       modalData: { type: null, id: null, value: null },
     };
   }
 
   componentDidMount() {
-    this.batchingStore.lazyList(true, this.state.batchType);
+    this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCode);
   }
 
   handleSubmit = (modalType, form) => {
@@ -64,20 +71,8 @@ export default class BatchListComponent extends Component<{}, IState> {
   }) => (
     <>
       <div className="bx--row">
-        <div className="bx--col-lg-4 bx--col-md-12">
+        <div className="bx--col-lg-6 bx--col-md-12">
           <h1 className="eco--title">Batches</h1>
-        </div>
-        <div className="bx--col-lg-2 bx--col-md-12">
-          <ContentSwitcher
-            className="eco--button-switcher"
-            onChange={({ name }) => {
-              this.setState({ batchType: name });
-              this.batchingStore.lazyList(true, name);
-            }}
-          >
-            <Switch name="DRY" text="DRY" />
-            <Switch name="WET" text="WET" />
-          </ContentSwitcher>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
@@ -86,7 +81,11 @@ export default class BatchListComponent extends Component<{}, IState> {
             disabled={selectedRows.length <= 0}
             onClick={() => {
               navigate("/collection-center/lot/create", {
-                state: { selectedRows, lotType: this.state.batchType },
+                state: {
+                  selectedRows,
+                  lotType: this.state.batchType,
+                  ccCode: this.state.ccCode,
+                },
               });
             }}
           >
@@ -94,12 +93,50 @@ export default class BatchListComponent extends Component<{}, IState> {
           </Button>
         </div>
       </div>
+
+      <div className="bx--row">
+        <div className="bx--col-lg-4 bx--col-md-12">
+          <Dropdown
+            id="cc-selector"
+            label="Collection Center"
+            titleText="Collection Center"
+            initialSelectedItem={this.props.accessibleCCs[0]}
+            items={this.props.accessibleCCs}
+            onChange={({ selectedItem }) => {
+              this.setState({ ccCode: selectedItem.id });
+              this.batchingStore.lazyList(
+                true,
+                this.state.batchType,
+                selectedItem.id
+              );
+            }}
+          />
+        </div>
+        <div className="bx--col-lg-2 bx--offset-lg-6">
+          <ContentSwitcher
+            className="eco--button-switcher"
+            onChange={({ name }) => {
+              this.setState({ batchType: name });
+              this.batchingStore.lazyList(true, name, this.state.ccCode);
+            }}
+          >
+            <Switch name="DRY" text="DRY" />
+            <Switch name="WET" text="WET" />
+          </ContentSwitcher>
+        </div>
+      </div>
+
       <br />
+
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
           rows.length > 0
-            ? this.batchingStore.lazyList(false, this.state.batchType)
+            ? this.batchingStore.lazyList(
+                false,
+                this.state.batchType,
+                this.state.ccCode
+              )
             : null;
         }}
         hasMore={this.batchingStore.lazyListHasMore}
