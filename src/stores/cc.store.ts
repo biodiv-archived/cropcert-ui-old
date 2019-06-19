@@ -41,7 +41,7 @@ export class CCStore {
 
     const _user = getCurrentUser();
     const _endpoint = hasAccess([ROLES.FACTORY])
-      ? `someFactoryEndpoint/${_user["factoryCode"]}`
+      ? `cc/all`//`someFactoryEndpoint/${_user["factoryCode"]}`
       : `cc/${_user["ccCode"]}`;
     http
       .get(`${process.env.ENDPOINT_ENTITY}/${_endpoint}`)

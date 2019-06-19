@@ -44,13 +44,15 @@ export default class HeaderComponent extends Component<IProps, IState> {
               <Home className="eco--dash-icon" size={16} />
               My Dashboard
             </Link>
-            <Link
-              className="bx--header__menu-item"
-              role="menuitem"
-              to="/collection-center/list"
-            >
-              Collection Centers
-            </Link>
+            <If condition={hasAccess([ROLES.COLLECTION_CENTER])}>
+              <Link
+                className="bx--header__menu-item"
+                role="menuitem"
+                to="/collection-center/list"
+              >
+                Collection Centers
+              </Link>
+            </If>
           </HeaderNavigation>
         </If>
         <HeaderGlobalBar>
