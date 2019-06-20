@@ -19,6 +19,7 @@ export const ROLES = {
   FARMER: "farmer",
   COLLECTION_CENTER: "manager",
   FACTORY: "factory",
+  COOPERATIVE: "co",
   ADMIN: "admin",
 };
 export const CAS_AUTH_URL =

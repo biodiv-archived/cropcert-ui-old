@@ -1,3 +1,4 @@
+import Edit from "@carbon/icons-react/es/edit/16";
 import { DataTable } from "carbon-components-react";
 import React from "react";
 
@@ -12,11 +13,13 @@ export default function BatchListCell(cell, id, openModal) {
       {toFriendlyCellValue(cell)}
       &emsp;
       <button
+        className="eco--btn-transparent"
+        aria-label="Edit"
         onClick={() => {
           openModal(cell.info.header, id, cell.value);
         }}
       >
-        Edit
+        <Edit />
       </button>
     </TableCell>
   ) : (
