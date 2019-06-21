@@ -1,5 +1,6 @@
+import "./list.scss";
+
 import { Button, DataTable, InlineLoading } from "carbon-components-react";
-import { navigate } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -43,16 +44,23 @@ export default class MergeLotListComponent extends Component {
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
             kind="primary"
-            className="eco--button-table-primary"
+            className="eco--button-table-primary multiple"
             disabled={selectedRows.length <= 0}
             onClick={() => {
               alert("TODO");
-              // navigate("/collection-center/lot-processing/create", {
-              //   state: { selectedRows },
-              // });
             }}
           >
-            Merge Lots
+            Merge & Process
+          </Button>
+          <Button
+            kind="primary"
+            className="eco--button-table-primary multiple"
+            disabled={selectedRows.length <= 0}
+            onClick={() => {
+              this.lotStore.processLot(selectedRows);
+            }}
+          >
+            Process
           </Button>
         </div>
       </div>

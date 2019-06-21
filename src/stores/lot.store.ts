@@ -62,6 +62,31 @@ export class LotStore {
   }
 
   @action
+  processLot(rows) {
+    const _requests = rows.map(r =>
+      http.post(`${process.env.ENDPOINT_TRACEABILITY}/processing`, {
+        lotName: r.cells[1].value,
+        ids: [r.id],
+      })
+    );
+    Promise.all(_requests)
+      .then(r => {
+        console.log(r);
+        notify.show(
+          `✅ Lot(s) Processed Successfully`,
+          TOAST_TYPE.SUCCESS
+        );
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while processing lots",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
   updateLotInfo(modalType, modalData) {
     console.log(modalType, modalData);
     alert("TODO");

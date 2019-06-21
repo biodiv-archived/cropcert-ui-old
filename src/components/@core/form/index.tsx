@@ -48,6 +48,7 @@ export const dateInput = ({ handler, touched, hasError, meta }) => (
         className="bx--text-input"
         placeholder={`Enter ${meta.label}`}
         {...handler()}
+        {...meta}
         {...(touched && hasError("required") ? { "data-invalid": true } : {})}
       />
       {touched && hasError("required") && (

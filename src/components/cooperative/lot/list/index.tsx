@@ -1,12 +1,13 @@
-import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import Add from "@carbon/icons-react/es/add/16";
+import Edit from "@carbon/icons-react/es/edit/16";
+import { DataTable, InlineLoading } from "carbon-components-react";
+import { Link } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import Edit from "@carbon/icons-react/es/edit/16";
 
 import { LOT_BASIC } from "./header.constants";
 import { LotStore } from "/@stores/lot.store";
-import { Link } from "gatsby";
 
 const {
   TableContainer,
@@ -98,6 +99,7 @@ export default class CoopLotListComponent extends Component<{}, IState> {
                   </TableHeader>
                 ))}
                 <TableHeader>Report</TableHeader>
+                <TableHeader>Cupping</TableHeader>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,8 +111,13 @@ export default class CoopLotListComponent extends Component<{}, IState> {
                         <TableCell key={cell.id}>{cell.value}</TableCell>
                       ))}
                       <TableCell key={row.id}>
-                        <Link to={`../../qa?lotId=${row.id}`}>
+                        <Link to={`/cooperative/qa?lotId=${row.id}`}>
                           <Edit />
+                        </Link>
+                      </TableCell>
+                      <TableCell key={row.id}>
+                        <Link to={`/cooperative/cupping?lotId=${row.id}`}>
+                          <Add />
                         </Link>
                       </TableCell>
                     </TableRow>
