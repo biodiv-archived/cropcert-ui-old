@@ -5,6 +5,7 @@ import { notify } from "react-notify-toast";
 import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
 import http from "/@utils/http";
 import { MODAL_TYPE } from "/@components/collection-center/batch/list/header.constants";
+import { getRedirect } from "/@utils/auth";
 
 export class BatchingStore {
   @observable lazyListHasMore = true;
@@ -27,7 +28,7 @@ export class BatchingStore {
           "✅ Batch Collection done successfully",
           TOAST_TYPE.SUCCESS
         );
-        navigate("/collection-center");
+        navigate(getRedirect());
       })
       .catch(error => {
         console.error(error);
@@ -77,7 +78,7 @@ export class BatchingStore {
           `✅ Batch #${response.data.batchId} Created Successfully`,
           TOAST_TYPE.SUCCESS
         );
-        navigate("/collection-center");
+        navigate(getRedirect());
       })
       .catch(error => {
         console.error(error);
