@@ -94,7 +94,7 @@ export default class LotListComponent extends Component<{}, IState> {
               // });
             }}
           >
-            Send to NUCAFE
+            Send to Union
           </Button>
         </div>
       </div>
