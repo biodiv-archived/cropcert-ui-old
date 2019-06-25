@@ -6,10 +6,33 @@
   --eco-gray: #929292;
 }
 
+.eco--modal-container {
+  padding: 0 1rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+a.bx--header__menu-item[role="menuitem"]:hover svg {
+  fill: transparent;
+}
+
+.hidden {
+  display: none;
+}
+
+.eco--btn-transparent {
+  background: none;
+  border: none;
+  vertical-align: top;
+  cursor: pointer;
 }
 
 .eco--grid {
@@ -67,4 +90,11 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .eco--spacer {
   margin-bottom: 2rem;
+}
+
+.eco--btn-table {
+  background: none;
+  color: #4caf50;
+  padding: 0;
+  min-height: 1em;
 }

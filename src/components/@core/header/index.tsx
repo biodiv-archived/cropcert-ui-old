@@ -5,7 +5,6 @@ import {
   HeaderGlobalBar,
   HeaderNavigation,
 } from "carbon-components-react/lib/components/UIShell";
-import { If } from "control-statements";
 import { Link } from "gatsby";
 import React, { Component } from "react";
 import { Home, Info, LogIn, LogOut } from "react-feather";
@@ -34,7 +33,7 @@ export default class HeaderComponent extends Component<IProps, IState> {
         <Link className="bx--header__name" to="/">
           {this.props.siteTitle}
         </Link>
-        <If condition={hasAccess([ROLES.AUTHORIZED])}>
+        {hasAccess([ROLES.AUTHORIZED]) && (
           <HeaderNavigation aria-label={this.props.siteTitle}>
             <Link
               className="bx--header__menu-item"
@@ -45,14 +44,18 @@ export default class HeaderComponent extends Component<IProps, IState> {
               My Dashboard
             </Link>
             <Link
-              className="bx--header__menu-item"
+              className={
+                hasAccess([ROLES.COLLECTION_CENTER])
+                  ? "bx--header__menu-item"
+                  : "hidden"
+              }
               role="menuitem"
               to="/collection-center/list"
             >
               Collection Centers
             </Link>
           </HeaderNavigation>
-        </If>
+        )}
         <HeaderGlobalBar>
           <a
             className="bx--header__menu-item"
@@ -62,7 +65,7 @@ export default class HeaderComponent extends Component<IProps, IState> {
             <Info className="eco--dash-icon" size={16} />
             Licenses
           </a>
-          <If condition={hasAccess([ROLES.AUTHORIZED])}>
+          {hasAccess([ROLES.AUTHORIZED]) && (
             <Link
               className="bx--header__menu-item"
               role="menuitem"
@@ -72,8 +75,8 @@ export default class HeaderComponent extends Component<IProps, IState> {
               &emsp;
               <LogOut className="eco--dash-icon" size={16} />
             </Link>
-          </If>
-          <If condition={!hasAccess([ROLES.AUTHORIZED])}>
+          )}
+          {!hasAccess([ROLES.AUTHORIZED]) && (
             <a
               className="bx--header__menu-item"
               role="menuitem"
@@ -82,7 +85,7 @@ export default class HeaderComponent extends Component<IProps, IState> {
               <LogIn className="eco--dash-icon" size={16} />
               Sign In
             </a>
-          </If>
+          )}
         </HeaderGlobalBar>
       </Header>
     );

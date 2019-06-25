@@ -1,4 +1,23 @@
-export const TABLE_HEADER_FIELDS = [
+export const FIELDS_DRY = [
+  {
+    key: "id",
+    header: "Batch Id",
+  },
+  {
+    key: "ccCode",
+    header: "CC Code",
+  },
+  {
+    key: "date",
+    header: "Batched On",
+  },
+  {
+    key: "quantity",
+    header: "Total Quantity",
+  },
+];
+
+export const FIELDS_WET = [
   {
     key: "id",
     header: "Batch Id",
@@ -12,16 +31,24 @@ export const TABLE_HEADER_FIELDS = [
     header: "Total Quantity",
   },
   {
-    key: "availableQuantity",
-    header: "Available Quantity",
-  },
-  {
     key: "date",
     header: "Batched On",
   },
   {
-    key: "quality",
-    header: "Quality",
+    key: "startTime",
+    header: "Start Time",
+  },
+  {
+    key: "fermentationEndTime",
+    header: "Fermentation Ended on",
+  },
+  {
+    key: "dryingEndTime",
+    header: "Drying Ended on",
+  },
+  {
+    key: "perchmentQuantity",
+    header: "Perchment Quantity",
   },
 ];
 
@@ -43,3 +70,10 @@ export const TABLE_HEADER_EXPAND = [
     header: "Quality",
   },
 ];
+
+export const MODAL_TYPE = {
+  START_TIME: "startTime",
+  FERMENTATION_END_TIME: "fermentationEndTime",
+  DRYING_END_TIME: "dryingEndTime",
+  PERCHMENT_QUANTITY: "perchmentQuantity",
+};

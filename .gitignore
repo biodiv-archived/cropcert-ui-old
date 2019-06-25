@@ -70,3 +70,5 @@ yarn-error.log
 
 # Custom
 static/LICENSES.txt
+
+package-lock.json

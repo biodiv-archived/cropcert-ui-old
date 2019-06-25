@@ -1,8 +1,6 @@
 import { navigate } from "gatsby";
-import { notify } from "react-notify-toast";
 
 import { ROLES } from "./constants";
-import { TOAST_TYPE } from "/@utils/constants";
 
 const isBrowser = typeof window !== `undefined`;
 
@@ -50,7 +48,7 @@ export const hasAccess = (roles: string[]) => {
 const checkSessionExpired = (lts = 0) => {
   const diff = (new Date().getTime() - lts) / 60000;
   if (diff > 120) {
-    notify.show("❌ Session expired", TOAST_TYPE.ERROR);
+    console.info("❌ Session expired");
     navigate("/auth/sign-out");
   }
 };
@@ -78,6 +76,10 @@ export const getRedirect = () => {
       return "/admin";
     case ROLES.COLLECTION_CENTER:
       return "/collection-center";
+    case ROLES.FACTORY:
+      return "/factory";
+    case ROLES.COOPERATIVE:
+      return "/cooperative";
     default:
       return "/401";
   }
