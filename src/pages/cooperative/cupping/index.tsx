@@ -41,7 +41,7 @@ export default class CuppingList extends Component<{}, IState> {
     return (
       <Layout roles={[ROLES.COOPERATIVE]}>
         <SEO title={`Quality Report - Lot#${this.state.lotId}`} />
-        <h1 className="eco--title">Quantitative Analysis</h1>
+        <h1 className="eco--title">Cupping</h1>
         {this.state.lotInfo !== null && <CuppingComponent {...this.state} />}
       </Layout>
     );

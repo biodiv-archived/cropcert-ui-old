@@ -105,23 +105,23 @@ export default class CoopLotListComponent extends Component<{}, IState> {
             <TableBody>
               {rows.map(row => {
                 return (
-                  <React.Fragment key={row.id}>
-                    <TableRow {...getRowProps({ row })}>
-                      {row.cells.map(cell => (
-                        <TableCell key={cell.id}>{cell.value}</TableCell>
-                      ))}
-                      <TableCell key={row.id}>
-                        <Link to={`/cooperative/qa?lotId=${row.id}`}>
-                          <Edit />
-                        </Link>
-                      </TableCell>
-                      <TableCell key={row.id}>
-                        <Link to={`/cooperative/cupping?lotId=${row.id}`}>
-                          <Add />
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  </React.Fragment>
+                  <TableRow {...getRowProps({ row })} key={row.id}>
+                    {row.cells.map(cell => (
+                      <TableCell key={cell.id}>{cell.value}</TableCell>
+                    ))}
+                    <TableCell key={`qa_${row.id}`}>
+                      <Link to={`/cooperative/qa?lotId=${row.cells[1].value}`}>
+                        <Edit />
+                      </Link>
+                    </TableCell>
+                    <TableCell key={`cupping_${row.id}`}>
+                      <Link
+                        to={`/cooperative/cupping?lotId=${row.cells[1].value}`}
+                      >
+                        <Add />
+                      </Link>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
             </TableBody>

@@ -23,41 +23,41 @@ export default class QAComponent extends Component<IProps> {
 
   state = {
     form: FormBuilder.group({
-      lot_id: [this.props.lotId, Validators.required],
-      lot_reception_date: [getToday(), Validators.required],
+      lotName: [this.props.lotId, Validators.required],
+      date: [getToday(), Validators.required],
       cfa: [this.props.lotInfo.cfa, Validators.required],
-      cc_code: [this.props.lotInfo.cc_code, Validators.required],
+      ccCode: [this.props.lotInfo.cc_code, Validators.required],
 
-      coffee_type: [this.props.lotInfo.coffee_type, Validators.required],
-      over_turn_percentage: [100, Validators.required],
+      coffeeType: [this.props.lotInfo.coffee_type, Validators.required],
+      overTurnPercentage: [100, Validators.required],
       mc: ["", Validators.required],
 
       // Grades
-      grade_aa: [0, Validators.required],
-      grade_a: [0, Validators.required],
-      grade_b: [0, Validators.required],
-      grade_ab: [0, Validators.required],
-      c: [0, Validators.required],
-      pb: [0, Validators.required],
-      triage: [0, Validators.required],
+      gradeAA: [0, Validators.required],
+      gradeA: [0, Validators.required],
+      gradeB: [0, Validators.required],
+      gradeAB: [0, Validators.required],
+      gradeC: [0, Validators.required],
+      gradePB: [0, Validators.required],
+      gradeTriage: [0, Validators.required],
 
       // Severe defects
-      full_black: [0, Validators.required],
-      full_sour: [0, Validators.required],
+      fullBlack: [0, Validators.required],
+      fullSour: [0, Validators.required],
       pods: [0, Validators.required],
-      fungas_damaged: [0, Validators.required],
+      fungasDamaged: [0, Validators.required],
       em: [0, Validators.required],
-      severe_insect: [0, Validators.required],
+      severeInsect: [0, Validators.required],
 
       // Less Severe defects
-      partial_black: [0, Validators.required],
-      partial_sour: [0, Validators.required],
+      partialBlack: [0, Validators.required],
+      partialSour: [0, Validators.required],
       patchment: [0, Validators.required],
-      floaters_chalky: [0, Validators.required],
+      floatersChalky: [0, Validators.required],
       immature: [0, Validators.required],
       withered: [0, Validators.required],
       shells: [0, Validators.required],
-      broken_chipped: [0, Validators.required],
+      brokenChipped: [0, Validators.required],
       husks: [0, Validators.required],
       pinHole: [0, Validators.required],
     }),
@@ -66,39 +66,39 @@ export default class QAComponent extends Component<IProps> {
   gradeTotal = () => {
     const _v = this.state.form.value;
     return (
-      parseInt(_v.grade_aa.toString()) +
-      parseInt(_v.grade_a.toString()) +
-      parseInt(_v.grade_b.toString()) +
-      parseInt(_v.grade_ab.toString()) +
-      parseInt(_v.c.toString()) +
-      parseInt(_v.pb.toString()) +
-      parseInt(_v.triage.toString())
+      parseInt(_v.gradeAA.toString()) +
+      parseInt(_v.gradeA.toString()) +
+      parseInt(_v.gradeB.toString()) +
+      parseInt(_v.gradeAB.toString()) +
+      parseInt(_v.gradeC.toString()) +
+      parseInt(_v.gradePB.toString()) +
+      parseInt(_v.gradeTriage.toString())
     );
   };
 
   severeDefectsTotal = () => {
     const _v = this.state.form.value;
     return (
-      parseInt(_v.full_black.toString()) +
-      parseInt(_v.full_sour.toString()) +
+      parseInt(_v.fullBlack.toString()) +
+      parseInt(_v.fullSour.toString()) +
       parseInt(_v.pods.toString()) +
-      parseInt(_v.fungas_damaged.toString()) +
+      parseInt(_v.fungasDamaged.toString()) +
       parseInt(_v.em.toString()) +
-      parseInt(_v.severe_insect.toString())
+      parseInt(_v.severeInsect.toString())
     );
   };
 
   lessSevereDefectsTotal = () => {
     const _v = this.state.form.value;
     return (
-      parseInt(_v.partial_black.toString()) +
-      parseInt(_v.partial_sour.toString()) +
+      parseInt(_v.partialBlack.toString()) +
+      parseInt(_v.partialSour.toString()) +
       parseInt(_v.patchment.toString()) +
-      parseInt(_v.floaters_chalky.toString()) +
+      parseInt(_v.floatersChalky.toString()) +
       parseInt(_v.immature.toString()) +
       parseInt(_v.withered.toString()) +
       parseInt(_v.shells.toString()) +
-      parseInt(_v.broken_chipped.toString()) +
+      parseInt(_v.brokenChipped.toString()) +
       parseInt(_v.husks.toString()) +
       parseInt(_v.pinHole.toString())
     );
@@ -112,7 +112,7 @@ export default class QAComponent extends Component<IProps> {
     e.preventDefault();
     this.qualityStore.createQualityReport({
       ...this.state.form.value,
-      percentage_out_turn: this.outturnTotal(),
+      percentageOutTurn: this.outturnTotal(),
       timestamp: new Date().getTime(),
     });
   };
@@ -124,14 +124,14 @@ export default class QAComponent extends Component<IProps> {
         <div className="bx--row">
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="lot_id"
+              name="lotName"
               render={textInput}
-              meta={{ label: "Lot Id", readOnly: true }}
+              meta={{ label: "Lot Name", readOnly: true }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="lot_reception_date"
+              name="date"
               render={dateInput}
               meta={{ label: "Lot Reception Date", readOnly: true }}
             />
@@ -145,7 +145,7 @@ export default class QAComponent extends Component<IProps> {
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="cc_code"
+              name="ccCode"
               render={textInput}
               meta={{ label: "CC Code", readOnly: true }}
             />
@@ -155,14 +155,14 @@ export default class QAComponent extends Component<IProps> {
         <div className="bx--row">
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="coffee_type"
+              name="coffeeType"
               render={textInput}
-              meta={{ label: "coffee_type" }}
+              meta={{ label: "Coffee Type" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="over_turn_percentage"
+              name="overTurnPercentage"
               render={numberInput}
               meta={{ label: "Outturn Percentage" }}
             />
@@ -182,47 +182,51 @@ export default class QAComponent extends Component<IProps> {
         <div className="bx--row">
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="grade_aa"
+              name="gradeAA"
               render={numberInput}
               meta={{ label: "AA" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="grade_a"
+              name="gradeA"
               render={numberInput}
               meta={{ label: "A" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="grade_b"
+              name="gradeB"
               render={numberInput}
               meta={{ label: "B" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="grade_ab"
+              name="gradeAB"
               render={numberInput}
               meta={{ label: "AB" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl name="c" render={numberInput} meta={{ label: "C" }} />
+            <FieldControl
+              name="gradeC"
+              render={numberInput}
+              meta={{ label: "C" }}
+            />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="pb"
+              name="gradePB"
               render={numberInput}
               meta={{ label: "PB" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="triage"
+              name="gradeTriage"
               render={numberInput}
-              meta={{ label: "Triage" }}
+              meta={{ label: "gradeTriage" }}
             />
           </div>
         </div>
@@ -233,14 +237,14 @@ export default class QAComponent extends Component<IProps> {
         <div className="bx--row">
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="full_black"
+              name="fullBlack"
               render={numberInput}
               meta={{ label: "Full Black" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="full_sour"
+              name="fullSour"
               render={numberInput}
               meta={{ label: "Full Sour" }}
             />
@@ -254,7 +258,7 @@ export default class QAComponent extends Component<IProps> {
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="fungas_damaged"
+              name="fungasDamaged"
               render={numberInput}
               meta={{ label: "Fungas Damaged" }}
             />
@@ -268,7 +272,7 @@ export default class QAComponent extends Component<IProps> {
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="severe_insect"
+              name="severeInsect"
               render={numberInput}
               meta={{ label: "Severe Insect" }}
             />
@@ -281,14 +285,14 @@ export default class QAComponent extends Component<IProps> {
         <div className="bx--row">
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="partial_black"
+              name="partialBlack"
               render={numberInput}
               meta={{ label: "Partial Black" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="partial_sour"
+              name="partialSour"
               render={numberInput}
               meta={{ label: "Partial Sour" }}
             />
@@ -302,7 +306,7 @@ export default class QAComponent extends Component<IProps> {
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="floaters_chalky"
+              name="floatersChalky"
               render={numberInput}
               meta={{ label: "Floaters/Chalky" }}
             />
@@ -330,7 +334,7 @@ export default class QAComponent extends Component<IProps> {
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
             <FieldControl
-              name="broken_chipped"
+              name="brokenChipped"
               render={numberInput}
               meta={{ label: "Broken/Chipped" }}
             />
