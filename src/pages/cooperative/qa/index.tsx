@@ -14,10 +14,12 @@ interface IState {
 
 @observer
 export default class QuantitativeAnalysisPage extends Component<{}, IState> {
+  isCSR = typeof location !== "undefined";
+
   constructor(props) {
     super(props);
     this.state = {
-      lotId: parse(location.search).lotId,
+      lotId: this.isCSR ? parse(location.search).lotId : 0,
       lotInfo: null,
     };
   }

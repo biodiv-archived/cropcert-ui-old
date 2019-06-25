@@ -15,23 +15,25 @@ interface IState {
 
 @observer
 export default class CuppingList extends Component<{}, IState> {
+  isCSR = typeof location !== "undefined";
+
   constructor(props) {
     super(props);
     this.state = {
-      lotId: parse(location.search).lotId,
+      lotId: this.isCSR ? parse(location.search).lotId : 0,
       lotInfo: null,
     };
   }
 
   componentWillMount() {
-    // TODO: fetch lot info dynamically
+    const _cu = getCurrentUser() || {};
     setTimeout(() => {
       this.setState({
         lotInfo: {
           cfa: "__CFA__",
           cc_code: 1,
           coffee_type: "WET",
-          cupper: getCurrentUser()["userName"],
+          cupper: _cu.hasOwnProperty("userName") || "NA",
         },
       });
     }, 100);

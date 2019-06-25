@@ -53,11 +53,7 @@ const checkSessionExpired = (lts = 0) => {
   }
 };
 
-export const getCurrentUser = () => {
-  if (isBrowser) {
-    return getUser();
-  }
-};
+export const getCurrentUser = () => (isBrowser ? getUser() : {});
 
 export const signOut = callback => {
   if (!isBrowser) {
