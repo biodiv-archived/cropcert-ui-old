@@ -32,6 +32,7 @@ interface IState {
   modalData;
   isModalOpen;
   ccCode;
+  ccName;
 }
 
 interface IProps {
@@ -48,6 +49,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
       ...this.state,
       batchType: "DRY",
       ccCode: this.props.accessibleCCs[0].id,
+      ccName: this.props.accessibleCCs[0].ccName,
       modalData: { type: null, id: null, value: null },
     };
   }
@@ -85,6 +87,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
                   selectedRows,
                   lotType: this.state.batchType,
                   ccCode: this.state.ccCode,
+                  ccName: this.state.ccName,
                 },
               });
             }}
@@ -103,7 +106,10 @@ export default class BatchListComponent extends Component<IProps, IState> {
             initialSelectedItem={this.props.accessibleCCs[0]}
             items={this.props.accessibleCCs}
             onChange={({ selectedItem }) => {
-              this.setState({ ccCode: selectedItem.id });
+              this.setState({
+                ccCode: selectedItem.id,
+                ccName: selectedItem.ccName,
+              });
               this.batchingStore.lazyList(
                 true,
                 this.state.batchType,

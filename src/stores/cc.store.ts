@@ -52,6 +52,7 @@ export class CCStore {
           label: `${c.ccId} - ${c.ccName}`,
           value: c.ccId,
           id: c.ccId,
+          ccName: c.ccName
         }));
       })
       .catch(error => {

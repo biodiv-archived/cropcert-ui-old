@@ -38,6 +38,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
   lotStore = new LotStore();
   batches = (window.history.state || {}).selectedRows || [];
   lotType = (window.history.state || {}).lotType || [];
+  ccName = (window.history.state || {}).ccName || [];
 
   constructor(props) {
     super(props);
@@ -57,7 +58,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
     const form = FormBuilder.group({
       batchIds: [batchIds, Validators.required],
       totalWeight: [totalWeight, Validators.required],
-      lotName: [`${new Date().getTime()}`],
+      lotName: [`${this.ccName}_Lot_${new Date().toISOString()}`],
       date: [getToday(), Validators.required],
       timestamp: [new Date(), Validators.required],
       type: [this.lotType],

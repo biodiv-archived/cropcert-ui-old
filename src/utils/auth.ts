@@ -48,7 +48,7 @@ export const hasAccess = (roles: string[]) => {
 const checkSessionExpired = (lts = 0) => {
   const diff = (new Date().getTime() - lts) / 60000;
   if (diff > 120) {
-    alert("❌ Session expired");
+    console.info("❌ Session expired");
     navigate("/auth/sign-out");
   }
 };
