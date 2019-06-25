@@ -7,6 +7,7 @@ import http from "/@utils/http";
 
 export class LotStore {
   @observable lazyListHasMore = true;
+  @observable lotsBatch = new Map();
   _offset = 0;
   _limit = GLOBAL_LIMIT;
   @observable lots: any[] = [];
@@ -56,6 +57,22 @@ export class LotStore {
         console.error(error);
         notify.show(
           "❌ There was some error while listing batches",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
+  getLotById(lotId) {
+    http
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/lot/${lotId}`)
+      .then(r => {
+        this.lotsBatch.set(lotId, r.data);
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while getting lot information",
           TOAST_TYPE.ERROR
         );
       });

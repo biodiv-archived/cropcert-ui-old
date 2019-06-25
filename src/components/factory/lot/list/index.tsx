@@ -9,6 +9,8 @@ import { LotStore } from "/@stores/lot.store";
 import LotListCell from "./lot-list-cell";
 import LotListModal from "./lot-list-modal";
 
+import ExpandRow from "./lot-list-expandrow";
+
 const {
   TableContainer,
   Table,
@@ -19,6 +21,8 @@ const {
   TableHeader,
   TableSelectAll,
   TableSelectRow,
+  TableExpandHeader,
+  TableExpandRow,
 } = DataTable;
 
 interface IState {
@@ -109,6 +113,7 @@ export default class LotListComponent extends Component<{}, IState> {
           <Table>
             <TableHead>
               <TableRow>
+                <TableExpandHeader />
                 <TableSelectAll {...getSelectionProps()} />
                 {headers.map(header => (
                   <TableHeader {...getHeaderProps({ header })}>
@@ -121,12 +126,19 @@ export default class LotListComponent extends Component<{}, IState> {
               {rows.map(row => {
                 return (
                   <React.Fragment key={row.id}>
-                    <TableRow {...getRowProps({ row })}>
+                    <TableExpandRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
                       {row.cells.map(cell =>
                         LotListCell(cell, row.id, this.openModal)
                       )}
-                    </TableRow>
+                    </TableExpandRow>
+                    {row.isExpanded && (
+                      <ExpandRow
+                        colSpan={headers.length + 2}
+                        lotId={row.cells[1].value}
+                        lotStore={this.lotStore}
+                      />
+                    )}
                   </React.Fragment>
                 );
               })}
