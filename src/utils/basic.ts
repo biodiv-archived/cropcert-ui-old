@@ -28,7 +28,7 @@ export const formattedTime = d => {
 };
 
 export const toFriendlyCellValue = c => {
-  if (["perchmentQuantity", "processingTime"].includes(c.info.header)) {
+  if (["perchmentQuantity", "processingTime", "outTurn"].includes(c.info.header)) {
     return c.value || "NA";
   }
   const d = new Date(c.value);

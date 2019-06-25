@@ -32,12 +32,12 @@ export class LotStore {
   }
 
   @action
-  lazyListLot(reset) {
+  lazyListLot(reset, type = "lot") {
     if (reset) {
       this._offset = 0;
     }
     http
-      .get(`${process.env.ENDPOINT_TRACEABILITY}/lot/all`, {
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/${type}/all`, {
         params: {
           limit: this._limit,
           offset: this._offset,
@@ -72,10 +72,7 @@ export class LotStore {
     Promise.all(_requests)
       .then(r => {
         console.log(r);
-        notify.show(
-          `✅ Lot(s) Processed Successfully`,
-          TOAST_TYPE.SUCCESS
-        );
+        notify.show(`✅ Lot(s) Processed Successfully`, TOAST_TYPE.SUCCESS);
       })
       .catch(error => {
         console.error(error);

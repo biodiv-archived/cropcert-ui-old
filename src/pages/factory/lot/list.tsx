@@ -8,7 +8,7 @@ import { ROLES } from "/@utils/constants";
 export default function LotListPage() {
   return (
     <Layout roles={[ROLES.AUTHORIZED]}>
-      <SEO title="Unprocessed Lots" />
+      <SEO title="Process Lot(s)" />
       <LotListComponent />
     </Layout>
   );

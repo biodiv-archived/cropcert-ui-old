@@ -16,7 +16,7 @@ export default function LotListCell(cell, id, openModal) {
         className="eco--btn-transparent"
         aria-label="Edit"
         onClick={() => {
-          openModal(cell.info.header, id, cell.value);
+          openModal(cell.info.header, id, cell.value || 0);
         }}
       >
         <Edit />

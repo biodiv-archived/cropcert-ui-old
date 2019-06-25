@@ -41,7 +41,7 @@ export default class LotListComponent extends Component<{}, IState> {
   }
 
   componentDidMount() {
-    this.lotStore.lazyListLot(true);
+    this.lotStore.lazyListLot(true, "processing");
   }
 
   openModal = (modalType, id, value) => {
@@ -75,9 +75,7 @@ export default class LotListComponent extends Component<{}, IState> {
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">
-            Lots
-          </h1>
+          <h1 className="eco--title">Process Lot(s)</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
