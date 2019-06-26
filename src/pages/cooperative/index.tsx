@@ -12,8 +12,8 @@ export default function FactoryIndexPage() {
       <h1 className="eco--title">My Dashboard</h1>
       <div className="bx--row">
         <Tile
-          title="Processed Lots"
-          description="Processed lots from factories"
+          title="Milling Lots"
+          description="Milling lots from factories"
           to="lots/list"
         />
       </div>

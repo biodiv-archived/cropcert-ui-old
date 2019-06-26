@@ -12,7 +12,7 @@ export default function FactoryIndexPage() {
       <h1 className="eco--title">My Dashboard</h1>
       <div className="bx--row">
         <Tile
-          title="Collect Batch"
+          title="Create Batch"
           description="Create batch from collections"
           to="../collection-center/batch/collect"
         />
@@ -24,8 +24,8 @@ export default function FactoryIndexPage() {
       </div>
       <div className="bx--row">
         <Tile
-          title="Merge/Process Lots"
-          description="Merge or Process Lots"
+          title="Dispatch Lots"
+          description="Dispatch Lots to Factory/Union"
           to="lot/merge-process"
         />
         <Tile

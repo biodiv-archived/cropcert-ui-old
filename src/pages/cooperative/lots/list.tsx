@@ -9,7 +9,7 @@ export default class ProcessedLotsList extends Component {
   render() {
     return (
       <Layout roles={[ROLES.COOPERATIVE]}>
-        <SEO title="Processed Lots" />
+        <SEO title="Milling Lots" />
         <CoopLotListComponent />
       </Layout>
     );

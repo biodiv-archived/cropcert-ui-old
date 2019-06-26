@@ -24,7 +24,7 @@ export default function CCIndexPage() {
       </div> */}
       <div className="bx--row">
         <Tile
-          title="Collect Batch"
+          title="Create Batch"
           description="Create batch from collections"
           to="batch/collect"
         />

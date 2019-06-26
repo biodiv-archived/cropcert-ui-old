@@ -40,8 +40,8 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
   render() {
     return (
       <Layout roles={[ROLES.COOPERATIVE]}>
-        <SEO title={`Quality Report - Lot#${this.state.lotId}`} />
-        <h1 className="eco--title">Quantitative Analysis</h1>
+        <SEO title={`Green Analysis - Lot#${this.state.lotId}`} />
+        <h1 className="eco--title">Green Analysis</h1>
         {this.state.lotInfo !== null && <QAComponent {...this.state} />}
       </Layout>
     );

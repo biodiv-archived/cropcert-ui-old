@@ -39,7 +39,7 @@ export default class MergeLotListComponent extends Component {
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">Merge Lots</h1>
+          <h1 className="eco--title">Lots</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button

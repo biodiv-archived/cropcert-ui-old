@@ -87,7 +87,7 @@ export default class BatchCollect extends Component<IProps> {
           </div>
         </div>
         <Button type="submit" disabled={invalid}>
-          Collect Batch
+          Create Batch
         </Button>
       </form>
     );
