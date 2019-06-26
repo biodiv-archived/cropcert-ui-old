@@ -4,7 +4,6 @@ import { notify } from "react-notify-toast";
 
 import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
 import http from "/@utils/http";
-import { getRedirect } from "/@utils/auth";
 
 export class LotStore {
   @observable lazyListHasMore = true;
@@ -22,7 +21,7 @@ export class LotStore {
           `✅ Lot #${response.data.id} Created Successfully`,
           TOAST_TYPE.SUCCESS
         );
-        navigate(getRedirect());
+        navigate("/collection-center");
       })
       .catch(error => {
         console.error(error);
