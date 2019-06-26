@@ -40,7 +40,7 @@ export class CCStore {
     }
 
     const _user = getCurrentUser();
-    const _endpoint = hasAccess([ROLES.FACTORY])
+    const _endpoint = hasAccess([ROLES.COOPERATIVE])
       ? `cc/all`//`someFactoryEndpoint/${_user["factoryCode"]}`
       : `cc/${_user["ccCode"]}`;
     http

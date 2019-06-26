@@ -46,7 +46,7 @@ export default class BatchCollect extends Component<IProps> {
               meta={{
                 label: "Collection Center",
                 options: this.props.accessibleCCs,
-                readOnly: !hasAccess([ROLES.FACTORY]),
+                readOnly: !hasAccess([ROLES.COOPERATIVE]),
               }}
             />
           </div>
