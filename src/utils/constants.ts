@@ -17,9 +17,10 @@ export const ROLES = {
   UNAUTHORIZED: "role_unauthorized",
   AUTHORIZED: "authorized",
   FARMER: "farmer",
-  COLLECTION_CENTER: "manager",
-  COOPERATIVE: "factory",
-  UNION: "co",
+  COLLECTION_CENTER: "cc",
+  COOPERATIVE: "co",
+  FACTORY: "factory",
+  UNION: "union",
   ADMIN: "admin",
 };
 export const CAS_AUTH_URL =

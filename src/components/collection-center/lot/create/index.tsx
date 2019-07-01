@@ -79,7 +79,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
       timeToFactory: new Date().getTime(),
       type: _formValues.type,
       batchIds: _formValues.batchIds,
-      timestamp: new Date().getTime(),
+      createdOn: new Date().getTime(),
     };
   };
 

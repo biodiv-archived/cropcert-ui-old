@@ -41,7 +41,7 @@ export class CCStore {
 
     const _user = getCurrentUser();
     const _endpoint = hasAccess([ROLES.COOPERATIVE])
-      ? `cc/all`//`someFactoryEndpoint/${_user["factoryCode"]}`
+      ? `cc/coOperativeId/${_user["factoryCode"]}` // As of now key is wrong but code is of CoOperative
       : `cc/${_user["ccCode"]}`;
     http
       .get(`${process.env.ENDPOINT_ENTITY}/${_endpoint}`)

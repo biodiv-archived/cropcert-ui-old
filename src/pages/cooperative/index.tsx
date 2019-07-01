@@ -17,8 +17,8 @@ export default function FactoryIndexPage() {
           to="../collection-center/batch/collect"
         />
         <Tile
-          title="Batches"
-          description="List all Batches"
+          title="Create Lot"
+          description="Create lot from batches"
           to="../collection-center/batch/list"
         />
       </div>

@@ -15,6 +15,7 @@ import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
 import { navigate } from "gatsby";
+import MultiSelect from "@khanacademy/react-multi-select";
 
 const {
   TableContainer,
@@ -31,12 +32,12 @@ interface IState {
   batchType;
   modalData;
   isModalOpen;
-  ccCode;
-  ccName;
+  ccCodes;
 }
 
 interface IProps {
   accessibleCCs;
+  title;
 }
 
 @observer
@@ -48,14 +49,13 @@ export default class BatchListComponent extends Component<IProps, IState> {
     this.state = {
       ...this.state,
       batchType: "DRY",
-      ccCode: this.props.accessibleCCs[0].id,
-      ccName: this.props.accessibleCCs[0].ccName,
+      ccCodes: this.props.accessibleCCs.map(i => i.id),
       modalData: { type: null, id: null, value: null },
     };
   }
 
   componentDidMount() {
-    this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCode);
+    this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCodes);
   }
 
   handleSubmit = (modalType, form) => {
@@ -74,7 +74,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">Batches</h1>
+          <h1 className="eco--title">{this.props.title}</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
@@ -86,8 +86,8 @@ export default class BatchListComponent extends Component<IProps, IState> {
                 state: {
                   selectedRows,
                   lotType: this.state.batchType,
-                  ccCode: this.state.ccCode,
-                  ccName: this.state.ccName,
+                  ccCode: this.state.ccCodes,
+                  ccName: `TODO___`,
                 },
               });
             }}
@@ -99,22 +99,14 @@ export default class BatchListComponent extends Component<IProps, IState> {
 
       <div className="bx--row">
         <div className="bx--col-lg-4 bx--col-md-12">
-          <Dropdown
-            id="cc-selector"
-            label="Collection Center"
-            titleText="Collection Center"
-            initialSelectedItem={this.props.accessibleCCs[0]}
-            items={this.props.accessibleCCs}
-            onChange={({ selectedItem }) => {
+          <MultiSelect
+            options={this.props.accessibleCCs}
+            selected={this.state.ccCodes}
+            onSelectedChanged={selected => {
               this.setState({
-                ccCode: selectedItem.id,
-                ccName: selectedItem.ccName,
+                ccCodes: selected,
               });
-              this.batchingStore.lazyList(
-                true,
-                this.state.batchType,
-                selectedItem.id
-              );
+              this.batchingStore.lazyList(true, this.state.batchType, selected);
             }}
           />
         </div>
@@ -123,7 +115,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
             className="eco--button-switcher"
             onChange={({ name }) => {
               this.setState({ batchType: name });
-              this.batchingStore.lazyList(true, name, this.state.ccCode);
+              this.batchingStore.lazyList(true, name, this.state.ccCodes);
             }}
           >
             <Switch name="DRY" text="DRY" />
@@ -141,7 +133,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
             ? this.batchingStore.lazyList(
                 false,
                 this.state.batchType,
-                this.state.ccCode
+                this.state.ccCodes
               )
             : null;
         }}

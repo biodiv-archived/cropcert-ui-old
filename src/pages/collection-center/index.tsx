@@ -28,16 +28,16 @@ export default function CCIndexPage() {
           description="Create batch from collections"
           to="batch/collect"
         />
-        <Tile title="Batches" description="List all Batches" to="batch/list" />
+        <Tile title="View/Update Batch" description="View/Update Batch" to="batch/list" />
       </div>
-      <div className="bx--row">
+      {/* <div className="bx--row">
         <Tile
           title="Add Farmer"
           description="Create farmer Id"
           to="farmer/create"
         />
         <Tile title="Farmers" description="List all farmers" to="farmer/list" />
-      </div>
+      </div> */}
     </Layout>
   );
 }

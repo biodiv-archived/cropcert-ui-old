@@ -22,9 +22,10 @@ export default class BatchCollect extends Component<IProps> {
     super(props);
     this.collectForm = FormBuilder.group({
       ccCode: [this.props.accessibleCCs[0].value, Validators.required],
+      batchName: [`${this.props.accessibleCCs[0].ccName}_${getToday()}`, Validators.required],
       quantity: ["", Validators.required],
       date: [getToday(), Validators.required],
-      timestamp: [new Date(), Validators.required],
+      createdOn: [new Date(), Validators.required],
       type: [this.typeOptions[0].value],
       note: [,],
     });
