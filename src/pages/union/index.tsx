@@ -20,9 +20,19 @@ export default function FactoryIndexPage() {
       <h1 className="eco--title">Union Actions</h1>
       <div className="bx--row">
         <Tile
-          title="Union XYZ"
-          description="Milling lots from factories"
-          to="lots/list"
+          title="Add GRN Number"
+          description="Add GRN Number to Lots"
+          to="grn"
+        />
+        <Tile
+          title="Add Green Report"
+          description="Add Green report for Lot(s)"
+          to="green-report"
+        />
+        <Tile
+          title="Add Cupping Report"
+          description="Add Cupping report for Lot(s)"
+          to="cupping-report"
         />
       </div>
     </Layout>

@@ -97,17 +97,17 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
   }
 
   getHeader = () => {
-    switch (this.props.action) {
-      case LOT_ACTIONS.AT_FACTORY.action:
+    switch (this.props.title) {
+      case LOT_ACTIONS.AT_FACTORY.title:
         return LOT_FACTORY;
 
-      case LOT_ACTIONS.AT_UNION_GRN.action:
+      case LOT_ACTIONS.AT_UNION_GRN.title:
         return LOT_UNION_GRN;
 
-      case LOT_ACTIONS.AT_UNION_GREEN.action:
+      case LOT_ACTIONS.AT_UNION_GREEN.title:
         return LOT_UNION_GREEN;
 
-      case LOT_ACTIONS.AT_UNION_CUPPING.action:
+      case LOT_ACTIONS.AT_UNION_CUPPING.title:
         return LOT_UNION_CUPPING;
 
       default:
@@ -211,6 +211,7 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
           handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
         />
+        {console.log(this.getHeader())}
         <DataTable
           rows={this.lotStore.lots || []}
           headers={this.getHeader()}

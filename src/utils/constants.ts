@@ -66,6 +66,7 @@ export const LOT_ACTIONS = {
     title: "Add GRN",
     action: "NA",
     endpoint: "NA",
+    to: "grn",
   },
   AT_UNION_GREEN: {
     title: "Add Green Report",
@@ -82,6 +83,7 @@ export const LOT_ACTIONS = {
 export const MODAL_TYPES = {
   MILLING_TIME: "millingTime",
   OUTTURN: "outTurn",
+  GRN: "grn",
   PERCHMENT_QUANTITY: "perchmentQuantity",
 };
 

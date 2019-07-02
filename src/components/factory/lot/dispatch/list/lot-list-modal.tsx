@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import {
   LotListModalFormDate,
   LotListModalFormNumber,
+  LotListModalFormString,
 } from "./lot-list-modal-forms";
 import { MODAL_TYPES } from "/@utils/constants";
 
@@ -15,6 +16,34 @@ interface IProps {
 }
 
 export default class LotListModal extends Component<IProps> {
+  renderModal = () => {
+    switch (this.props.modalData.modalType) {
+      case MODAL_TYPES.OUTTURN:
+        return (
+          <LotListModalFormNumber
+            modalData={this.props.modalData}
+            handleSubmit={this.props.handleSubmit}
+          />
+        );
+
+      case MODAL_TYPES.GRN:
+        return (
+          <LotListModalFormString
+            modalData={this.props.modalData}
+            handleSubmit={this.props.handleSubmit}
+          />
+        );
+
+      default:
+        return (
+          <LotListModalFormDate
+            modalData={this.props.modalData}
+            handleSubmit={this.props.handleSubmit}
+          />
+        );
+    }
+  };
+
   render() {
     return (
       <>
@@ -28,17 +57,7 @@ export default class LotListModal extends Component<IProps> {
             title={this.props.modalData.modalType}
             closeModal={this.props.closeModal}
           />
-          {this.props.modalData.modalType !== MODAL_TYPES.OUTTURN ? (
-            <LotListModalFormDate
-              modalData={this.props.modalData}
-              handleSubmit={this.props.handleSubmit}
-            />
-          ) : (
-            <LotListModalFormNumber
-              modalData={this.props.modalData}
-              handleSubmit={this.props.handleSubmit}
-            />
-          )}
+          {this.renderModal()}
         </ComposedModal>
       </>
     );

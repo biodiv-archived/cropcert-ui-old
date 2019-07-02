@@ -1,5 +1,10 @@
 import { MODAL_TYPES } from "/@utils/constants";
 
+export const LOT_LINK_ACTIONS = {
+  green: "/union/green-report/report?id=",
+  cupping: "/union/cupping-report/report?id=",
+};
+
 export const LOT_BASIC = [
   {
     key: "id",
@@ -50,8 +55,8 @@ export const LOT_UNION_CUPPING = [
 export const LOT_UNION_GRN = [
   ...LOT_BASIC,
   {
-    key: "grn",
-    header: "GRN",
+    key: MODAL_TYPES.GRN,
+    header: "GNR",
   },
 ];
 

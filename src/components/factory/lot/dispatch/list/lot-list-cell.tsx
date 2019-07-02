@@ -4,6 +4,8 @@ import React from "react";
 
 import { MODAL_TYPES } from "/@utils/constants";
 import { toFriendlyCellValue } from "/@utils/basic";
+import { LOT_LINK_ACTIONS } from "./header.constants";
+import { Link } from "gatsby";
 
 const { TableCell } = DataTable;
 
@@ -21,6 +23,12 @@ export default function LotListCell(cell, id, openModal) {
       >
         <Edit />
       </button>
+    </TableCell>
+  ) : Object.keys(LOT_LINK_ACTIONS).includes(cell.info.header) ? (
+    <TableCell key={cell.id}>
+      <Link to={LOT_LINK_ACTIONS[cell.info.header] + id}>
+        Update {cell.info.header} &rarr;
+      </Link>
     </TableCell>
   ) : (
     <TableCell key={cell.id}>{cell.value}</TableCell>
