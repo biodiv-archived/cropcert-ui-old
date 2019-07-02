@@ -30,6 +30,13 @@ export const CAS_AUTH_URL =
   "/auth/continue";
 export const CAS_LOGOUT_URL = process.env.ENDPOINT_CAS + "/logout";
 
+export const LCS = {
+  NOT_CREATED: "not_created",
+  CREATING: "creating",
+  CREATED: "created",
+  ERROR: "error",
+};
+
 export const MAP: { MAP_CENTER: [number, number]; [key: string]: any } = {
   MAP_CENTER: [0.4363, 30.1675],
   MARKER_MERGEOPTIONS: {

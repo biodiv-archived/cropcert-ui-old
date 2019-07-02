@@ -1,8 +1,8 @@
 import ListIcon from "@carbon/icons-react/es/list/20";
 import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import { window } from "browser-monads";
-import { Button, DataTable } from "carbon-components-react";
-import { If } from "control-statements";
+import { Button, DataTable, InlineNotification } from "carbon-components-react";
+import { Link } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import {
@@ -15,12 +15,15 @@ import {
 import { FIELDS_DRY, FIELDS_WET } from "../../batch/list/header.constants";
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
+import { getRedirect } from "/@utils/auth";
 import { getToday } from "/@utils/basic";
+import { LCS } from "/@utils/constants";
 
 interface IState {
   totalWeight;
   batchesRows;
   lotForm;
+  lotCreationStatus;
 }
 
 const {
@@ -68,6 +71,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
       batchesRows: _batchesRows,
       totalWeight,
       lotForm: form,
+      lotCreationStatus: LCS.NOT_CREATED,
     };
   }
 
@@ -85,7 +89,15 @@ export default class LotCreateComponent extends Component<{}, IState> {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.lotStore.createLotfromBatches(this.genBatchJSON());
+    this.setState({ lotCreationStatus: LCS.CREATING });
+    this.lotStore
+      .createLotfromBatches(this.genBatchJSON())
+      .then(response => {
+        this.setState({ lotCreationStatus: LCS.CREATED });
+      })
+      .catch(error => {
+        this.setState({ lotCreationStatus: LCS.ERROR });
+      });
   };
 
   renderFieldGroup = ({ get, invalid }) => {
@@ -155,7 +167,9 @@ export default class LotCreateComponent extends Component<{}, IState> {
                 <Button
                   className="btn btn-primary btn-lg btn-block"
                   type="submit"
-                  disabled={invalid}
+                  disabled={
+                    invalid || this.state.lotCreationStatus !== LCS.NOT_CREATED
+                  }
                 >
                   Create Lot
                 </Button>
@@ -167,19 +181,59 @@ export default class LotCreateComponent extends Component<{}, IState> {
     );
   };
 
-  render() {
-    return (
-      <>
-        <h1 className="eco--title">Create Lot</h1>
-        <If condition={this.state.batchesRows.length > 0}>
+  renderSwitch = () => {
+    switch (this.state.lotCreationStatus) {
+      case LCS.NOT_CREATED:
+        return this.state.batchesRows.length > 0 ? (
           <FieldGroup
             control={this.state.lotForm}
             render={this.renderFieldGroup}
           />
-        </If>
-        <If condition={this.state.batchesRows.length <= 0}>
-          Please select collections first
-        </If>
+        ) : (
+          <>Please select collections first</>
+        );
+
+      case LCS.CREATED:
+        return (
+          <>
+            <InlineNotification
+              kind="success"
+              lowContrast
+              title="Success"
+              subtitle="Your lot was created successfully"
+            />
+            <Link
+              to={getRedirect()}
+              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary"
+            >
+              Go to Dashboard
+            </Link>
+            <Link
+              to="/collection-center/batch/list/"
+              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary ml-2"
+            >
+              Create another lot
+            </Link>
+          </>
+        );
+
+      case LCS.ERROR:
+        return (
+          <InlineNotification
+            kind="error"
+            lowContrast
+            title="Error"
+            subtitle="There was some error while creating lot"
+          />
+        );
+    }
+  };
+
+  render() {
+    return (
+      <>
+        <h1 className="eco--title">Create Lot</h1>
+        {this.renderSwitch()}
       </>
     );
   }

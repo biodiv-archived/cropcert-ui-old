@@ -7,6 +7,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import { LOT_BASIC } from "./header.constants";
 import { LotStore } from "/@stores/lot.store";
 import { toJS } from "mobx";
+import ExpandRow from "./expandrow";
 
 const {
   TableContainer,
@@ -18,6 +19,8 @@ const {
   TableHeader,
   TableSelectAll,
   TableSelectRow,
+  TableExpandHeader,
+  TableExpandRow,
 } = DataTable;
 
 @observer
@@ -82,6 +85,7 @@ export default class DispatchLotComponent extends Component {
           <Table>
             <TableHead>
               <TableRow>
+                <TableExpandHeader />
                 <TableSelectAll {...getSelectionProps()} />
                 {headers.map(header => (
                   <TableHeader {...getHeaderProps({ header })}>
@@ -94,12 +98,19 @@ export default class DispatchLotComponent extends Component {
               {rows.map(row => {
                 return (
                   <React.Fragment key={row.id}>
-                    <TableRow {...getRowProps({ row })}>
+                    <TableExpandRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
                       {row.cells.map(cell => (
                         <TableCell key={cell.id}>{cell.value}</TableCell>
                       ))}
-                    </TableRow>
+                    </TableExpandRow>
+                    {row.isExpanded && (
+                      <ExpandRow
+                        lotStore={this.lotStore}
+                        colSpan={headers.length + 2}
+                        lotId={row.id}
+                      />
+                    )}
                   </React.Fragment>
                 );
               })}

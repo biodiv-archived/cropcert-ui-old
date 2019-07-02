@@ -1,8 +1,6 @@
-import { navigate } from "gatsby";
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { getRedirect } from "/@utils/auth";
 import { formattedTimeStamp } from "/@utils/basic";
 import { GLOBAL_LIMIT, TOAST_TYPE } from "/@utils/constants";
 import http from "/@utils/http";
@@ -10,28 +8,17 @@ import http from "/@utils/http";
 export class LotStore {
   @observable lazyListHasMore = true;
   @observable lotsBatch = new Map();
+  @observable lotsBatches = new Map();
   _offset = 0;
   _limit = GLOBAL_LIMIT;
   @observable lots: any[] = [];
 
   @action
   createLotfromBatches(batchData) {
-    http
-      .post(`${process.env.ENDPOINT_TRACEABILITY}/lotcreation`, batchData)
-      .then(response => {
-        notify.show(
-          `✅ Lot #${response.data.id} Created Successfully`,
-          TOAST_TYPE.SUCCESS
-        );
-        navigate(getRedirect());
-      })
-      .catch(error => {
-        console.error(error);
-        notify.show(
-          "❌ There was some error while creating Lot",
-          TOAST_TYPE.ERROR
-        );
-      });
+    return http.post(
+      `${process.env.ENDPOINT_TRACEABILITY}/lotCreation`,
+      batchData
+    );
   }
 
   @action
@@ -70,6 +57,27 @@ export class LotStore {
       .get(`${process.env.ENDPOINT_TRACEABILITY}/lot/${lotId}`)
       .then(r => {
         this.lotsBatch.set(lotId, r.data);
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while getting lot information",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
+  getBatchsByLotId(lotId) {
+    http
+      .get(
+        `${process.env.ENDPOINT_TRACEABILITY}/lotCreation/lotId?lotId=${lotId}`
+      )
+      .then(r => {
+        this.lotsBatches.set(
+          lotId,
+          r.data.map(o => ({ ...o, id: o.batchId.toString() }))
+        );
       })
       .catch(error => {
         console.error(error);
