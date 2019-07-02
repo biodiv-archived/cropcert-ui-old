@@ -2,9 +2,10 @@ import { navigate } from "gatsby";
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
-import http from "/@utils/http";
 import { getRedirect } from "/@utils/auth";
+import { formattedTimeStamp } from "/@utils/basic";
+import { GLOBAL_LIMIT, TOAST_TYPE } from "/@utils/constants";
+import http from "/@utils/http";
 
 export class LotStore {
   @observable lazyListHasMore = true;
@@ -80,22 +81,20 @@ export class LotStore {
   }
 
   @action
-  processLot(rows) {
-    const _requests = rows.map(r =>
-      http.post(`${process.env.ENDPOINT_TRACEABILITY}/processing`, {
-        lotName: r.cells[1].value,
-        ids: [r.id],
+  dispatchLot(lotIDs) {
+    http
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch`, {
+        ids: lotIDs,
+        timeToFactory: formattedTimeStamp(),
       })
-    );
-    Promise.all(_requests)
       .then(r => {
         console.log(r);
-        notify.show(`✅ Lot(s) Processed Successfully`, TOAST_TYPE.SUCCESS);
+        notify.show(`✅ Lot(s) Dispatched Successfully`, TOAST_TYPE.SUCCESS);
       })
       .catch(error => {
         console.error(error);
         notify.show(
-          "❌ There was some error while processing lots",
+          "❌ There was some error while dispatching lots",
           TOAST_TYPE.ERROR
         );
       });

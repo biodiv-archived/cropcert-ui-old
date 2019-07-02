@@ -3,6 +3,7 @@ import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import { window } from "browser-monads";
 import { Button, DataTable } from "carbon-components-react";
 import { If } from "control-statements";
+import { observer } from "mobx-react";
 import React, { Component } from "react";
 import {
   FieldControl,
@@ -14,8 +15,7 @@ import {
 import { FIELDS_DRY, FIELDS_WET } from "../../batch/list/header.constants";
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
-import { getToday, toFriendlyCellValue } from "/@utils/basic";
-import { observer } from "mobx-react";
+import { getToday } from "/@utils/basic";
 
 interface IState {
   totalWeight;
@@ -58,7 +58,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
     const form = FormBuilder.group({
       batchIds: [batchIds, Validators.required],
       totalWeight: [totalWeight, Validators.required],
-      lotName: [`${this.ccName}_Lot_${new Date().toISOString()}`],
+      lotName: [`${this.ccName}_Lot_${getToday()}`],
       date: [getToday(), Validators.required],
       timestamp: [new Date(), Validators.required],
       type: [this.lotType],
@@ -116,9 +116,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
                       {rows.map(row => (
                         <TableRow key={row.id}>
                           {row.cells.map(cell => (
-                            <TableCell key={cell.id}>
-                              {toFriendlyCellValue(cell)}
-                            </TableCell>
+                            <TableCell key={cell.id}>{cell.value}</TableCell>
                           ))}
                         </TableRow>
                       ))}

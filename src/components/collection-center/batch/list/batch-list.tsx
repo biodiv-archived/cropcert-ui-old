@@ -16,6 +16,10 @@ import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
 import { navigate } from "gatsby";
 import MultiSelect from "@khanacademy/react-multi-select";
+import { toJS } from "mobx";
+import { getToday } from "/@utils/basic";
+import { COStore } from "/@stores/co.store";
+import { getUser, getCurrentUser } from "/@utils/auth";
 
 const {
   TableContainer,
@@ -43,6 +47,7 @@ interface IProps {
 @observer
 export default class BatchListComponent extends Component<IProps, IState> {
   batchingStore = new BatchingStore();
+  coStore = new COStore();
 
   constructor(props) {
     super(props);
@@ -55,12 +60,27 @@ export default class BatchListComponent extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    const _user = getCurrentUser();
+    this.coStore.getByCoId(_user["coCode"]);
     this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCodes);
   }
 
   handleSubmit = (modalType, form) => {
     this.batchingStore.updateBatchInfo(modalType, form);
     this.closeModal();
+  };
+
+  generateLotName = selectedRows => {
+    const selectedRowsIds = selectedRows.map(r => r.id);
+    const selectedBatchCCIds = this.batchingStore.batches.reduce(
+      (array, item) =>
+        selectedRowsIds.includes(item.id) ? [...array, item.ccCode] : array,
+      []
+    );
+    const _ccs = this.props.accessibleCCs
+      .filter(cc => selectedBatchCCIds.includes(cc.id))
+      .map(c => c.ccName);
+    return _ccs.length > 1 ? this.coStore.coOne["coName"] : _ccs[0];
   };
 
   renderDataTable = ({
@@ -87,7 +107,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
                   selectedRows,
                   lotType: this.state.batchType,
                   ccCode: this.state.ccCodes,
-                  ccName: `TODO___`,
+                  ccName: this.generateLotName(selectedRows),
                 },
               });
             }}
@@ -98,6 +118,18 @@ export default class BatchListComponent extends Component<IProps, IState> {
       </div>
 
       <div className="bx--row">
+        <div className="bx--col-lg-2">
+          <ContentSwitcher
+            className="eco--button-switcher"
+            onChange={({ name }) => {
+              this.setState({ batchType: name });
+              this.batchingStore.lazyList(true, name, this.state.ccCodes);
+            }}
+          >
+            <Switch name="DRY" text="DRY" />
+            <Switch name="WET" text="WET" />
+          </ContentSwitcher>
+        </div>
         <div className="bx--col-lg-4 bx--col-md-12">
           <MultiSelect
             options={this.props.accessibleCCs}
@@ -109,18 +141,6 @@ export default class BatchListComponent extends Component<IProps, IState> {
               this.batchingStore.lazyList(true, this.state.batchType, selected);
             }}
           />
-        </div>
-        <div className="bx--col-lg-2 bx--offset-lg-6">
-          <ContentSwitcher
-            className="eco--button-switcher"
-            onChange={({ name }) => {
-              this.setState({ batchType: name });
-              this.batchingStore.lazyList(true, name, this.state.ccCodes);
-            }}
-          >
-            <Switch name="DRY" text="DRY" />
-            <Switch name="WET" text="WET" />
-          </ContentSwitcher>
         </div>
       </div>
 

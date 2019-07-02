@@ -12,14 +12,6 @@ export const LOT_BASIC = [
     header: "Quantity",
   },
   {
-    key: "timeToFactory",
-    header: "Time To Factory",
-  },
-  {
-    key: "timestamp",
-    header: "Timestamp",
-  },
-  {
     key: "type",
     header: "Type",
   },

@@ -1,12 +1,12 @@
-import "./list.scss";
-
 import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import { navigate } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 import { LOT_BASIC } from "./header.constants";
 import { LotStore } from "/@stores/lot.store";
+import { toJS } from "mobx";
 
 const {
   TableContainer,
@@ -21,11 +21,24 @@ const {
 } = DataTable;
 
 @observer
-export default class MergeLotListComponent extends Component {
+export default class DispatchLotComponent extends Component {
   lotStore = new LotStore();
 
   componentDidMount() {
     this.lotStore.lazyListLot(true);
+  }
+
+  dispatchLotSummery(selectedRows) {
+    const _sRows = selectedRows.map(r => r.id);
+    navigate("/cooperative/lot/dispatch-summery", {
+      state: {
+        rows: toJS(this.lotStore.lots).filter(lot => {
+          return _sRows.includes(lot.id.toString());
+        }),
+        header: LOT_BASIC,
+        lotIDs: _sRows,
+      },
+    });
   }
 
   renderDataTable = ({
@@ -44,23 +57,13 @@ export default class MergeLotListComponent extends Component {
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
             kind="primary"
-            className="eco--button-table-primary multiple"
+            className="eco--button-table-primary"
             disabled={selectedRows.length <= 0}
             onClick={() => {
-              alert("TODO");
+              this.dispatchLotSummery(selectedRows);
             }}
           >
-            Merge & Process
-          </Button>
-          <Button
-            kind="primary"
-            className="eco--button-table-primary multiple"
-            disabled={selectedRows.length <= 0}
-            onClick={() => {
-              this.lotStore.processLot(selectedRows);
-            }}
-          >
-            Process
+            Disatch
           </Button>
         </div>
       </div>

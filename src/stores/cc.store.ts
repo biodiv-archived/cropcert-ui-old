@@ -41,7 +41,7 @@ export class CCStore {
 
     const _user = getCurrentUser();
     const _endpoint = hasAccess([ROLES.COOPERATIVE])
-      ? `cc/coOperativeId/${_user["factoryCode"]}` // As of now key is wrong but code is of CoOperative
+      ? `cc/coOperativeId/${_user["coCode"]}` // As of now key is wrong but code is of CoOperative
       : `cc/${_user["ccCode"]}`;
     http
       .get(`${process.env.ENDPOINT_ENTITY}/${_endpoint}`)
@@ -52,7 +52,7 @@ export class CCStore {
           label: `${c.ccId} - ${c.ccName}`,
           value: c.ccId,
           id: c.ccId,
-          ccName: c.ccName
+          ccName: c.ccName,
         }));
       })
       .catch(error => {

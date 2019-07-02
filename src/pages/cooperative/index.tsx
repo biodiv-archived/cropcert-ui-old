@@ -26,7 +26,7 @@ export default function FactoryIndexPage() {
         <Tile
           title="Dispatch Lots"
           description="Dispatch Lots to Factory/Union"
-          to="lot/merge-process"
+          to="lot/dispatch-lots"
         />
         <Tile
           title="Process Lots"
