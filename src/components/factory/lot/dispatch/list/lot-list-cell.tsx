@@ -2,13 +2,13 @@ import Edit from "@carbon/icons-react/es/edit/16";
 import { DataTable } from "carbon-components-react";
 import React from "react";
 
-import { MODAL_TYPE } from "./header.constants";
+import { MODAL_TYPES } from "/@utils/constants";
 import { toFriendlyCellValue } from "/@utils/basic";
 
 const { TableCell } = DataTable;
 
 export default function LotListCell(cell, id, openModal) {
-  return Object.values(MODAL_TYPE).includes(cell.info.header) ? (
+  return Object.values(MODAL_TYPES).includes(cell.info.header) ? (
     <TableCell key={cell.id}>
       {toFriendlyCellValue(cell)}
       &emsp;

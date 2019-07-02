@@ -2,7 +2,7 @@ import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
 import { formattedTimeStamp } from "/@utils/basic";
-import { GLOBAL_LIMIT, TOAST_TYPE } from "/@utils/constants";
+import { GLOBAL_LIMIT, TOAST_TYPE, MODAL_TYPES } from "/@utils/constants";
 import http from "/@utils/http";
 
 export class LotStore {
@@ -89,9 +89,9 @@ export class LotStore {
   }
 
   @action
-  dispatchLot(lotIDs) {
+  dispatchLot(lotIDs, to = "factory") {
     http
-      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch`, {
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
         ids: lotIDs,
         timeToFactory: formattedTimeStamp(),
       })
@@ -108,10 +108,39 @@ export class LotStore {
       });
   }
 
+  processUpdateLotInfo(modalType, modalData) {
+    console.log(modalData);
+    switch (modalType) {
+      case MODAL_TYPES.MILLING_TIME:
+        return {
+          id: modalData.id,
+          millingTime: `${modalData.date} ${modalData.time}:00`,
+        };
+
+      case MODAL_TYPES.OUTTURN:
+        return { id: modalData.id, outTurn: modalData.value };
+    }
+  }
+
   @action
-  updateLotInfo(modalType, modalData) {
-    console.log(modalType, modalData);
-    alert("TODO");
+  updateLotInfo(modalType, modalData, lotStatus) {
+    http
+      .put(
+        `${process.env.ENDPOINT_TRACEABILITY}/lot/${modalType}`,
+        this.processUpdateLotInfo(modalType, modalData)
+      )
+      .then(r => {
+        console.info(lotStatus, r);
+        this.lazyListLot(true, lotStatus);
+        notify.show(`✅ Lot(s) Updated Successfully`, TOAST_TYPE.SUCCESS);
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while updating lot(s)",
+          TOAST_TYPE.ERROR
+        );
+      });
   }
 
   private transformBatches = (data, reset) => {

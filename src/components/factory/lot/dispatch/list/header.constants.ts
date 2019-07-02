@@ -1,3 +1,5 @@
+import { MODAL_TYPES } from "/@utils/constants";
+
 export const LOT_BASIC = [
   {
     key: "id",
@@ -14,6 +16,42 @@ export const LOT_BASIC = [
   {
     key: "type",
     header: "Type",
+  },
+];
+
+export const LOT_FACTORY = [
+  ...LOT_BASIC,
+  {
+    key: MODAL_TYPES.MILLING_TIME,
+    header: "Milling Time",
+  },
+  {
+    key: MODAL_TYPES.OUTTURN,
+    header: "Out Turn",
+  },
+];
+
+export const LOT_UNION_GREEN = [
+  ...LOT_BASIC,
+  {
+    key: "green",
+    header: "Green Report",
+  },
+];
+
+export const LOT_UNION_CUPPING = [
+  ...LOT_BASIC,
+  {
+    key: "cupping",
+    header: "Cupping",
+  },
+];
+
+export const LOT_UNION_GRN = [
+  ...LOT_BASIC,
+  {
+    key: "grn",
+    header: "GRN",
   },
 ];
 

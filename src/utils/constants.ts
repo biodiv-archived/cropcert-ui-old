@@ -45,6 +45,40 @@ export const LOT_STATUS = {
   AT_UNION: "AtUnion",
 };
 
+export const LOT_ACTIONS = {
+  AT_CO_OPERATIVE: {
+    title: "Lots",
+    action: "Dispatch",
+    endpoint: "/cooperative/lot/dispatch-summery",
+  },
+  AT_FACTORY: {
+    title: "Milling Lots",
+    action: "Done Milling",
+    endpoint: "/cooperative/lot/milling-summery",
+  },
+  AT_UNION_GRN: {
+    title: "Add GRN",
+    action: "NA",
+    endpoint: "NA",
+  },
+  AT_UNION_GREEN: {
+    title: "Add Green Report",
+    action: "NA",
+    endpoint: "NA",
+  },
+  AT_UNION_CUPPING: {
+    title: "Add Cupping Report",
+    action: "NA",
+    endpoint: "NA",
+  },
+};
+
+export const MODAL_TYPES = {
+  MILLING_TIME: "millingTime",
+  OUTTURN: "outTurn",
+  PERCHMENT_QUANTITY: "perchmentQuantity",
+};
+
 export const MAP: { MAP_CENTER: [number, number]; [key: string]: any } = {
   MAP_CENTER: [0.4363, 30.1675],
   MARKER_MERGEOPTIONS: {

@@ -6,9 +6,17 @@ import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 import ExpandRow from "./expandrow";
-import { LOT_BASIC } from "./header.constants";
+import {
+  LOT_BASIC,
+  LOT_FACTORY,
+  LOT_UNION_CUPPING,
+  LOT_UNION_GREEN,
+  LOT_UNION_GRN,
+} from "./header.constants";
+import LotListCell from "./lot-list-cell";
+import LotListModal from "./lot-list-modal";
 import { LotStore } from "/@stores/lot.store";
-import { LOT_STATUS } from "/@utils/constants";
+import { LOT_ACTIONS, LOT_STATUS } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -24,17 +32,59 @@ const {
   TableExpandRow,
 } = DataTable;
 
+interface IState {
+  lotType;
+  modalData;
+  isModalOpen;
+}
+
+interface IProps {
+  lotStatus;
+  action;
+  title;
+  endpoint;
+}
+
 @observer
-export default class DispatchLotComponent extends Component {
+export default class DispatchLotComponent extends Component<IProps, IState> {
   lotStore = new LotStore();
 
-  componentDidMount() {
-    this.lotStore.lazyListLot(true, LOT_STATUS.AT_CO_OPERATIVE);
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      modalData: { type: null, id: null, value: null },
+      isModalOpen: false,
+    };
   }
 
-  dispatchLotSummery(selectedRows) {
+  componentDidMount() {
+    this.lotStore.lazyListLot(true, this.props.lotStatus);
+  }
+
+  openModal = (modalType, id, value) => {
+    this.setState({
+      modalData: {
+        modalType,
+        id,
+        value,
+      },
+      isModalOpen: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  handleSubmit = (modalType, form) => {
+    this.lotStore.updateLotInfo(modalType, form, this.props.lotStatus);
+    this.closeModal();
+  };
+
+  toLotSummery(selectedRows) {
     const _sRows = selectedRows.map(r => r.id);
-    navigate("/cooperative/lot/dispatch-summery", {
+    navigate(this.props.endpoint, {
       state: {
         rows: toJS(this.lotStore.lots).filter(lot => {
           return _sRows.includes(lot.id.toString());
@@ -44,6 +94,42 @@ export default class DispatchLotComponent extends Component {
       },
     });
   }
+
+  getHeader = () => {
+    switch (this.props.action) {
+      case LOT_ACTIONS.AT_FACTORY.action:
+        return LOT_FACTORY;
+
+      case LOT_ACTIONS.AT_UNION_GRN.action:
+        return LOT_UNION_GRN;
+
+      case LOT_ACTIONS.AT_UNION_GREEN.action:
+        return LOT_UNION_GREEN;
+
+      case LOT_ACTIONS.AT_UNION_CUPPING.action:
+        return LOT_UNION_CUPPING;
+
+      default:
+        return LOT_BASIC;
+    }
+  };
+
+  renderActionButton = selectedRows => {
+    return this.props.action !== "NA" ? (
+      <Button
+        kind="primary"
+        className="eco--button-table-primary"
+        disabled={selectedRows.length <= 0}
+        onClick={() => {
+          this.toLotSummery(selectedRows);
+        }}
+      >
+        {this.props.action}
+      </Button>
+    ) : (
+      ""
+    );
+  };
 
   renderDataTable = ({
     rows,
@@ -56,19 +142,10 @@ export default class DispatchLotComponent extends Component {
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">Lots</h1>
+          <h1 className="eco--title">{this.props.title}</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
-          <Button
-            kind="primary"
-            className="eco--button-table-primary"
-            disabled={selectedRows.length <= 0}
-            onClick={() => {
-              this.dispatchLotSummery(selectedRows);
-            }}
-          >
-            Disatch
-          </Button>
+          {this.renderActionButton(selectedRows)}
         </div>
       </div>
       <br />
@@ -103,9 +180,9 @@ export default class DispatchLotComponent extends Component {
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell => (
-                        <TableCell key={cell.id}>{cell.value}</TableCell>
-                      ))}
+                      {row.cells.map(cell =>
+                        LotListCell(cell, row.id, this.openModal)
+                      )}
                     </TableExpandRow>
                     {row.isExpanded && (
                       <ExpandRow
@@ -127,9 +204,15 @@ export default class DispatchLotComponent extends Component {
   render() {
     return (
       <>
+        <LotListModal
+          isModalOpen={this.state.isModalOpen}
+          closeModal={this.closeModal}
+          handleSubmit={this.handleSubmit}
+          modalData={this.state.modalData}
+        />
         <DataTable
           rows={this.lotStore.lots || []}
-          headers={LOT_BASIC}
+          headers={this.getHeader()}
           render={this.renderDataTable}
         />
       </>

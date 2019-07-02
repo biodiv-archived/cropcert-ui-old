@@ -5,7 +5,7 @@ import {
   LotListModalFormDate,
   LotListModalFormNumber,
 } from "./lot-list-modal-forms";
-import { MODAL_TYPE } from "./header.constants";
+import { MODAL_TYPES } from "/@utils/constants";
 
 interface IProps {
   isModalOpen;
@@ -28,7 +28,7 @@ export default class LotListModal extends Component<IProps> {
             title={this.props.modalData.modalType}
             closeModal={this.props.closeModal}
           />
-          {this.props.modalData.modalType !== MODAL_TYPE.OUTTURN ? (
+          {this.props.modalData.modalType !== MODAL_TYPES.OUTTURN ? (
             <LotListModalFormDate
               modalData={this.props.modalData}
               handleSubmit={this.props.handleSubmit}
