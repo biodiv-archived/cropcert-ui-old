@@ -37,6 +37,14 @@ export const LCS = {
   ERROR: "error",
 };
 
+export const LOT_STATUS = {
+  AT_COLLECTION_CENTER: "AtCollectionCenter",
+  AT_CO_OPERATIVE: "AtCoOperative",
+  IN_TRANSPORT: "InTransport",
+  AT_FACTORY: "AtFactory",
+  AT_UNION: "AtUnion",
+};
+
 export const MAP: { MAP_CENTER: [number, number]; [key: string]: any } = {
   MAP_CENTER: [0.4363, 30.1675],
   MARKER_MERGEOPTIONS: {

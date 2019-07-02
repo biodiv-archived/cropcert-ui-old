@@ -10,6 +10,7 @@ import LotListCell from "./lot-list-cell";
 import LotListModal from "./lot-list-modal";
 
 import ExpandRow from "./lot-list-expandrow";
+import { LOT_STATUS } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -45,7 +46,7 @@ export default class LotListComponent extends Component<{}, IState> {
   }
 
   componentDidMount() {
-    this.lotStore.lazyListLot(true, "processing");
+    this.lotStore.lazyListLot(true, LOT_STATUS.AT_CO_OPERATIVE, "processing");
   }
 
   openModal = (modalType, id, value) => {
@@ -102,7 +103,9 @@ export default class LotListComponent extends Component<{}, IState> {
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
-          rows.length > 0 ? this.lotStore.lazyListLot(false) : null;
+          rows.length > 0
+            ? this.lotStore.lazyListLot(false, LOT_STATUS.AT_CO_OPERATIVE)
+            : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
         loader={

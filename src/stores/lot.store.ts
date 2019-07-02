@@ -22,12 +22,12 @@ export class LotStore {
   }
 
   @action
-  lazyListLot(reset, type = "lot") {
+  lazyListLot(reset, status, type = "lot") {
     if (reset) {
       this._offset = 0;
     }
     http
-      .get(`${process.env.ENDPOINT_TRACEABILITY}/${type}/all`, {
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/${type}/all/${status}`, {
         params: {
           limit: this._limit,
           offset: this._offset,

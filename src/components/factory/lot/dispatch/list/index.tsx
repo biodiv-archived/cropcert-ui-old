@@ -1,13 +1,14 @@
 import { Button, DataTable, InlineLoading } from "carbon-components-react";
 import { navigate } from "gatsby";
+import { toJS } from "mobx";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
+import ExpandRow from "./expandrow";
 import { LOT_BASIC } from "./header.constants";
 import { LotStore } from "/@stores/lot.store";
-import { toJS } from "mobx";
-import ExpandRow from "./expandrow";
+import { LOT_STATUS } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -28,7 +29,7 @@ export default class DispatchLotComponent extends Component {
   lotStore = new LotStore();
 
   componentDidMount() {
-    this.lotStore.lazyListLot(true);
+    this.lotStore.lazyListLot(true, LOT_STATUS.AT_CO_OPERATIVE);
   }
 
   dispatchLotSummery(selectedRows) {
@@ -74,7 +75,9 @@ export default class DispatchLotComponent extends Component {
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
-          rows.length > 0 ? this.lotStore.lazyListLot(false) : null;
+          rows.length > 0
+            ? this.lotStore.lazyListLot(false, LOT_STATUS.AT_CO_OPERATIVE)
+            : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
         loader={
