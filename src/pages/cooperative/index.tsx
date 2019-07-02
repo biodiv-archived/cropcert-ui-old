@@ -9,29 +9,25 @@ export default function FactoryIndexPage() {
   return (
     <Layout roles={[ROLES.COOPERATIVE]}>
       <SEO title="Collection Center" />
-      <h1 className="eco--title">My Dashboard</h1>
+      <h1 className="eco--title">Collection Center Actions</h1>
       <div className="bx--row">
         <Tile
           title="Create Batch"
           description="Create batch from collections"
           to="../collection-center/batch/collect"
         />
+      </div>
+      <h1 className="eco--title">Cooperative Actions</h1>
+      <div className="bx--row">
         <Tile
           title="Create Lot"
           description="Create lot from batches"
           to="../collection-center/batch/list"
         />
-      </div>
-      <div className="bx--row">
         <Tile
           title="Dispatch Lots"
-          description="Dispatch Lots to Factory/Union"
+          description="Dispatch Lots to Factory"
           to="lot/dispatch-lots"
-        />
-        <Tile
-          title="Process Lots"
-          description="Lots from Collection Center"
-          to="lot/list"
         />
       </div>
     </Layout>
