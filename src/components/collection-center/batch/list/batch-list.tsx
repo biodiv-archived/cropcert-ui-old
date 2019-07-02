@@ -1,11 +1,12 @@
+import MultiSelect from "@khanacademy/react-multi-select";
 import {
   Button,
   ContentSwitcher,
   DataTable,
   InlineLoading,
   Switch,
-  Dropdown,
 } from "carbon-components-react";
+import { navigate } from "gatsby";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -14,12 +15,8 @@ import BatchListCell from "./batch-list-cell";
 import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
-import { navigate } from "gatsby";
-import MultiSelect from "@khanacademy/react-multi-select";
-import { toJS } from "mobx";
-import { getToday } from "/@utils/basic";
 import { COStore } from "/@stores/co.store";
-import { getUser, getCurrentUser } from "/@utils/auth";
+import { getCurrentUser } from "/@utils/auth";
 
 const {
   TableContainer,

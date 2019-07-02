@@ -91,6 +91,7 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
         }),
         header: LOT_BASIC,
         lotIDs: _sRows,
+        ...this.props,
       },
     });
   }

@@ -71,7 +71,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
       batchesRows: _batchesRows,
       totalWeight,
       lotForm: form,
-      lotCreationStatus: LCS.NOT_CREATED,
+      lotCreationStatus: LCS.NOT_DONE,
     };
   }
 
@@ -89,11 +89,11 @@ export default class LotCreateComponent extends Component<{}, IState> {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({ lotCreationStatus: LCS.CREATING });
+    this.setState({ lotCreationStatus: LCS.PROCESSING });
     this.lotStore
       .createLotfromBatches(this.genBatchJSON())
       .then(response => {
-        this.setState({ lotCreationStatus: LCS.CREATED });
+        this.setState({ lotCreationStatus: LCS.DONE });
       })
       .catch(error => {
         this.setState({ lotCreationStatus: LCS.ERROR });
@@ -168,7 +168,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
                   className="btn btn-primary btn-lg btn-block"
                   type="submit"
                   disabled={
-                    invalid || this.state.lotCreationStatus !== LCS.NOT_CREATED
+                    invalid || this.state.lotCreationStatus !== LCS.NOT_DONE
                   }
                 >
                   Create Lot
@@ -183,7 +183,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
 
   renderSwitch = () => {
     switch (this.state.lotCreationStatus) {
-      case LCS.NOT_CREATED:
+      case LCS.NOT_DONE:
         return this.state.batchesRows.length > 0 ? (
           <FieldGroup
             control={this.state.lotForm}
@@ -193,7 +193,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
           <>Please select collections first</>
         );
 
-      case LCS.CREATED:
+      case LCS.DONE:
         return (
           <>
             <InlineNotification

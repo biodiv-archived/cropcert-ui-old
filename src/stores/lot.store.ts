@@ -89,23 +89,11 @@ export class LotStore {
   }
 
   @action
-  dispatchLot(lotIDs, to = "factory") {
-    http
-      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
-        ids: lotIDs,
-        timeToFactory: formattedTimeStamp(),
-      })
-      .then(r => {
-        console.log(r);
-        notify.show(`✅ Lot(s) Dispatched Successfully`, TOAST_TYPE.SUCCESS);
-      })
-      .catch(error => {
-        console.error(error);
-        notify.show(
-          "❌ There was some error while dispatching lots",
-          TOAST_TYPE.ERROR
-        );
-      });
+  dispatchLot(lotIDs, timeKey, to = "factory") {
+    return http.put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
+      ids: lotIDs,
+      [timeKey]: formattedTimeStamp(),
+    });
   }
 
   processUpdateLotInfo(modalType, modalData) {

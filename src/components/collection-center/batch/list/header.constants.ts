@@ -7,10 +7,6 @@ export const FIELDS_DRY = [
     key: "batchName",
     header: "Batch Name",
   },
-  // {
-  //   key: "date",
-  //   header: "Batched On",
-  // },
   {
     key: "quantity",
     header: "Total Quantity",
@@ -30,10 +26,6 @@ export const FIELDS_WET = [
     key: "quantity",
     header: "Total Quantity",
   },
-  // {
-  //   key: "date",
-  //   header: "Batched On",
-  // },
   {
     key: "startTime",
     header: "Start Time",

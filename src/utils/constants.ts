@@ -31,9 +31,9 @@ export const CAS_AUTH_URL =
 export const CAS_LOGOUT_URL = process.env.ENDPOINT_CAS + "/logout";
 
 export const LCS = {
-  NOT_CREATED: "not_created",
-  CREATING: "creating",
-  CREATED: "created",
+  NOT_DONE: "not_done",
+  PROCESSING: "creating",
+  DONE: "done",
   ERROR: "error",
 };
 
@@ -49,12 +49,18 @@ export const LOT_ACTIONS = {
   AT_CO_OPERATIVE: {
     title: "Lots",
     action: "Dispatch",
+    back: "/cooperative/lot/dispatch-lots",
     endpoint: "/cooperative/lot/dispatch-summery",
+    to: "factory",
+    toKey: "timeToFactory",
   },
   AT_FACTORY: {
     title: "Milling Lots",
     action: "Done Milling",
-    endpoint: "/cooperative/lot/milling-summery",
+    back: "/union/factory/",
+    endpoint: "/union/factory/milling-summery",
+    to: "union",
+    toKey: "dispatchTime",
   },
   AT_UNION_GRN: {
     title: "Add GRN",

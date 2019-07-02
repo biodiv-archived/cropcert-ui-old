@@ -99,6 +99,10 @@ a.bx--header__menu-item[role="menuitem"]:hover svg {
   min-height: 1em;
 }
 
+[data-child-row="true"] > td {
+  background: #fff !important;
+}
+
 .ml-2 {
   margin-left: 1rem;
 }

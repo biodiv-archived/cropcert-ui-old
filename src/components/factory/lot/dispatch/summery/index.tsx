@@ -1,10 +1,11 @@
-import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import { Button, DataTable, InlineNotification } from "carbon-components-react";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
-import InfiniteScroll from "react-infinite-scroller";
 
 import { LotStore } from "/@stores/lot.store";
-import { navigate } from "gatsby";
+import { LCS } from "/@utils/constants";
+import { Link } from "gatsby";
+import { getRedirect } from "/@utils/auth";
 
 const {
   TableContainer,
@@ -16,35 +17,61 @@ const {
   TableHeader,
 } = DataTable;
 
+interface IState {
+  requestStatus;
+}
+
 @observer
-export default class DispatchSummeryComponent extends Component {
+export default class DispatchSummeryComponent extends Component<{}, IState> {
   lotStore = new LotStore();
-  summeryRows = (window.history.state || {}).rows || [];
-  summeryHeader = (window.history.state || {}).header || [];
-  summeryLotIDs = (window.history.state || {}).lotIDs || [];
+  history = window.history.state || {};
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      requestStatus: LCS.NOT_DONE,
+    };
+  }
 
   componentDidMount() {
-    console.log(this.summeryLotIDs);
-    if (this.summeryRows.length === 0) {
-      navigate("/cooperative/lot/dispatch-lots");
+    console.log(this.history.rows);
+    if (this.history.rows.length === 0) {
+      console.warn("No Data!");
     }
   }
+
+  onConfirm = () => {
+    this.setState({ requestStatus: LCS.PROCESSING });
+    this.lotStore
+      .dispatchLot(
+        this.history.lotIDs || [],
+        this.history.toKey || "",
+        this.history.to || ""
+      )
+      .then(r => {
+        console.log(r);
+        this.setState({ requestStatus: LCS.DONE });
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ requestStatus: LCS.ERROR });
+      });
+  };
 
   renderDataTable = ({ rows, headers, getHeaderProps, getRowProps }) => (
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">Dispatch Summery</h1>
+          <h1 className="eco--title">{this.history.title} Summery</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
           <Button
             kind="primary"
             className="eco--button-table-primary"
-            onClick={() => {
-              this.lotStore.dispatchLot(this.summeryLotIDs);
-            }}
+            disabled={this.state.requestStatus !== LCS.NOT_DONE}
+            onClick={this.onConfirm}
           >
-            Confirm Dispatch
+            Confirm {this.history.action}
           </Button>
         </div>
       </div>
@@ -75,14 +102,53 @@ export default class DispatchSummeryComponent extends Component {
   );
 
   render() {
-    return (
-      <>
-        <DataTable
-          rows={this.summeryRows || []}
-          headers={this.summeryHeader}
-          render={this.renderDataTable}
-        />
-      </>
-    );
+    switch (this.state.requestStatus) {
+      case LCS.NOT_DONE:
+        return (
+          <DataTable
+            rows={this.history.rows || []}
+            headers={this.history.header || []}
+            render={this.renderDataTable}
+          />
+        );
+
+      case LCS.DONE:
+        return (
+          <div>
+            <br />
+            <InlineNotification
+              kind="success"
+              lowContrast
+              title="Success"
+              subtitle={`${this.history.title} completed successfully`}
+            />
+            <Link
+              to={getRedirect()}
+              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary"
+            >
+              Go to Dashboard
+            </Link>
+            <Link
+              to={this.history.back}
+              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary ml-2"
+            >
+              Go Back
+            </Link>
+          </div>
+        );
+
+      case LCS.ERROR:
+        return (
+          <InlineNotification
+            kind="error"
+            lowContrast
+            title="Error"
+            subtitle="There was some error while creating lot"
+          />
+        );
+
+      default:
+        return <>...</>;
+    }
   }
 }
