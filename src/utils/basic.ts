@@ -1,5 +1,3 @@
-import { MODAL_TYPES } from "./constants";
-
 export const getToday = () => {
   const local = new Date();
   local.setMinutes(local.getMinutes() - local.getTimezoneOffset());

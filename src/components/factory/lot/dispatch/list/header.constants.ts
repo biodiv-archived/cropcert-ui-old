@@ -55,8 +55,8 @@ export const LOT_UNION_CUPPING = [
 export const LOT_UNION_GRN = [
   ...LOT_BASIC,
   {
-    key: MODAL_TYPES.GRN,
-    header: "GNR",
+    key: MODAL_TYPES.GRN_NUMBER,
+    header: "GRN Number",
   },
 ];
 

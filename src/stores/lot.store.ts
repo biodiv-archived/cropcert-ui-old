@@ -108,7 +108,7 @@ export class LotStore {
       case MODAL_TYPES.OUTTURN:
         return { id: modalData.id, outTurn: modalData.value };
 
-      case MODAL_TYPES.GRN:
+      case MODAL_TYPES.GRN_NUMBER:
         return { id: modalData.id, grnNumber: modalData.value };
     }
   }

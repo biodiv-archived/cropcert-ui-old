@@ -26,7 +26,7 @@ export default class LotListModal extends Component<IProps> {
           />
         );
 
-      case MODAL_TYPES.GRN:
+      case MODAL_TYPES.GRN_NUMBER:
         return (
           <LotListModalFormString
             modalData={this.props.modalData}

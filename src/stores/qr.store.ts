@@ -4,6 +4,7 @@ import { notify } from "react-notify-toast";
 
 import { TOAST_TYPE } from "/@utils/constants";
 import http from "/@utils/http";
+import { getRedirect } from "/@utils/auth";
 
 export class QualityStore {
   @action
@@ -15,7 +16,7 @@ export class QualityStore {
           `✅ Quality Report #${response.data.id} Created Successfully`,
           TOAST_TYPE.SUCCESS
         );
-        navigate("/cooperative");
+        navigate(getRedirect());
       })
       .catch(error => {
         console.error(error);
@@ -35,7 +36,7 @@ export class QualityStore {
           `✅ Cupping Report #${response.data.id} Created Successfully`,
           TOAST_TYPE.SUCCESS
         );
-        navigate("/cooperative");
+        navigate(getRedirect());
       })
       .catch(error => {
         console.error(error);

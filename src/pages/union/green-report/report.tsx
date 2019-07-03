@@ -6,6 +6,7 @@ import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
 import QAComponent from "/@components/cooperative/lot/qa";
 import { ROLES } from "/@utils/constants";
+import { LotStore } from "/@stores/lot.store";
 
 interface IState {
   lotId;
@@ -16,25 +17,21 @@ interface IState {
 export default class QuantitativeAnalysisPage extends Component<{}, IState> {
   isCSR = typeof location !== "undefined";
 
+  lotStore = new LotStore();
+
   constructor(props) {
     super(props);
     this.state = {
-      lotId: this.isCSR ? parse(location.search).lotId : 0,
-      lotInfo: null,
+      lotId: this.isCSR ? parse(location.search).id : 0,
+      lotInfo: {
+        cfa: "__CFA__",
+        cc_code: 1,
+      },
     };
   }
 
   componentWillMount() {
-    // TODO: fetch lot info dynamically
-    setTimeout(() => {
-      this.setState({
-        lotInfo: {
-          cfa: "__CFA__",
-          cc_code: 1,
-          coffee_type: "WET",
-        },
-      });
-    }, 100);
+    this.lotStore.getLotById(this.state.lotId);
   }
 
   render() {
@@ -42,7 +39,12 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
       <Layout roles={[ROLES.UNION]}>
         <SEO title={`Green Analysis - Lot#${this.state.lotId}`} />
         <h1 className="eco--title">Green Analysis</h1>
-        {this.state.lotInfo !== null && <QAComponent {...this.state} />}
+        {this.lotStore.lotsBatch.has(this.state.lotId) && (
+          <QAComponent
+            {...this.state}
+            {...this.lotStore.lotsBatch.get(this.state.lotId)}
+          />
+        )}
       </Layout>
     );
   }

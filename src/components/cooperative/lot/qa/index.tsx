@@ -9,27 +9,41 @@ import {
 } from "react-reactive-form";
 
 import { QualityStore } from "/@stores/qr.store";
-import { getToday } from "/@utils/basic";
+import { getToday, formattedDate } from "/@utils/basic";
 import { textInput, dateInput, numberInput } from "/@components/@core/form";
 
 interface IProps {
   lotId;
   lotInfo;
+  lotName;
+  type;
+  outTurn;
+  quantity;
 }
 
 @observer
 export default class QAComponent extends Component<IProps> {
   qualityStore = new QualityStore();
 
+  constructor(props) {
+    super(props);
+    console.log(this.props);
+  }
+
+  getOutTurn = () => {
+    return ((this.props.outTurn * 100) / this.props.quantity).toFixed(2);
+  };
+
   state = {
     form: FormBuilder.group({
-      lotName: [this.props.lotId, Validators.required],
+      lotName: [this.props.lotName, Validators.required],
+      lotId: [this.props.lotId, Validators.required],
       date: [getToday(), Validators.required],
       cfa: [this.props.lotInfo.cfa, Validators.required],
       ccCode: [this.props.lotInfo.cc_code, Validators.required],
 
-      coffeeType: [this.props.lotInfo.coffee_type, Validators.required],
-      overTurnPercentage: [100, Validators.required],
+      coffeeType: [this.props.type, Validators.required],
+      overTurnPercentage: [this.getOutTurn(), Validators.required],
       mc: ["", Validators.required],
 
       // Grades
@@ -133,7 +147,7 @@ export default class QAComponent extends Component<IProps> {
             <FieldControl
               name="date"
               render={dateInput}
-              meta={{ label: "Lot Reception Date", readOnly: true }}
+              meta={{ label: "Lot Reception Date" }}
             />
           </div>
           <div className="bx--col-lg-3 bx--col-sm-12">
@@ -176,60 +190,64 @@ export default class QAComponent extends Component<IProps> {
           </div>
         </div>
 
-        <h3 className="eco--form-title">
-          Quality Grading - {this.gradeTotal()}
-        </h3>
-        <div className="bx--row">
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeAA"
-              render={numberInput}
-              meta={{ label: "AA" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeA"
-              render={numberInput}
-              meta={{ label: "A" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeB"
-              render={numberInput}
-              meta={{ label: "B" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeAB"
-              render={numberInput}
-              meta={{ label: "AB" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeC"
-              render={numberInput}
-              meta={{ label: "C" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradePB"
-              render={numberInput}
-              meta={{ label: "PB" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="gradeTriage"
-              render={numberInput}
-              meta={{ label: "gradeTriage" }}
-            />
-          </div>
-        </div>
+        {this.props.type === "WET" && (
+          <>
+            <h3 className="eco--form-title">
+              Quality Grading - {this.gradeTotal()}
+            </h3>
+            <div className="bx--row">
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeAA"
+                  render={numberInput}
+                  meta={{ label: "AA" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeA"
+                  render={numberInput}
+                  meta={{ label: "A" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeB"
+                  render={numberInput}
+                  meta={{ label: "B" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeAB"
+                  render={numberInput}
+                  meta={{ label: "AB" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeC"
+                  render={numberInput}
+                  meta={{ label: "C" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradePB"
+                  render={numberInput}
+                  meta={{ label: "PB" }}
+                />
+              </div>
+              <div className="bx--col-lg-3 bx--col-sm-12">
+                <FieldControl
+                  name="gradeTriage"
+                  render={numberInput}
+                  meta={{ label: "gradeTriage" }}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <h3 className="eco--form-title">
           Severe Defects - {this.severeDefectsTotal()}

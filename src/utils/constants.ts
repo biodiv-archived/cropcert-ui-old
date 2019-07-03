@@ -83,7 +83,7 @@ export const LOT_ACTIONS = {
 export const MODAL_TYPES = {
   MILLING_TIME: "millingTime",
   OUTTURN: "outTurn",
-  GRN: "grn",
+  GRN_NUMBER: "grnNumber",
   PERCHMENT_QUANTITY: "perchmentQuantity",
 };
 

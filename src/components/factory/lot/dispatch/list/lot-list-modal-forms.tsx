@@ -120,7 +120,7 @@ export class LotListModalFormString extends Component<IProps> {
                     <FieldControl
                       name="value"
                       render={textInput}
-                      meta={{ label: "GNR" }}
+                      meta={{ label: "GRN" }}
                     />
                   </div>
                 </div>

@@ -27,7 +27,7 @@ export default function LotListCell(cell, id, openModal) {
   ) : Object.keys(LOT_LINK_ACTIONS).includes(cell.info.header) ? (
     <TableCell key={cell.id}>
       <Link to={LOT_LINK_ACTIONS[cell.info.header] + id}>
-        Update {cell.info.header} &rarr;
+        {cell.info.header} &rarr;
       </Link>
     </TableCell>
   ) : (

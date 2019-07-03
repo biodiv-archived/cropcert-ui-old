@@ -8,7 +8,7 @@ import { ROLES, LOT_STATUS, LOT_ACTIONS } from "/@utils/constants";
 export default function LotGRNPage() {
   return (
     <Layout roles={[ROLES.AUTHORIZED]}>
-      <SEO title="Lots GNR" />
+      <SEO title="Lots GRN" />
       <DispatchLotComponent
         {...LOT_ACTIONS.AT_UNION_GRN}
         lotStatus={LOT_STATUS.AT_UNION}

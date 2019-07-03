@@ -7,6 +7,7 @@ import SEO from "/@components/@core/seo.component";
 import CuppingComponent from "/@components/cooperative/lot/cupping";
 import { getCurrentUser } from "/@utils/auth";
 import { ROLES } from "/@utils/constants";
+import { LotStore } from "/@stores/lot.store";
 
 interface IState {
   lotId;
@@ -16,27 +17,23 @@ interface IState {
 @observer
 export default class CuppingList extends Component<{}, IState> {
   isCSR = typeof location !== "undefined";
+  lotStore = new LotStore();
 
   constructor(props) {
     super(props);
+    const _cu = getCurrentUser() || {};
     this.state = {
-      lotId: this.isCSR ? parse(location.search).lotId : 0,
-      lotInfo: null,
+      lotId: this.isCSR ? parse(location.search).id : 0,
+      lotInfo: {
+        cfa: "__CFA__",
+        cc_code: 1,
+        cupper: _cu.hasOwnProperty("userName") || "NA",
+      },
     };
   }
 
   componentWillMount() {
-    const _cu = getCurrentUser() || {};
-    setTimeout(() => {
-      this.setState({
-        lotInfo: {
-          cfa: "__CFA__",
-          cc_code: 1,
-          coffee_type: "WET",
-          cupper: _cu.hasOwnProperty("userName") || "NA",
-        },
-      });
-    }, 100);
+    this.lotStore.getLotById(this.state.lotId);
   }
 
   render() {
@@ -44,7 +41,12 @@ export default class CuppingList extends Component<{}, IState> {
       <Layout roles={[ROLES.UNION]}>
         <SEO title={`Quality Report - Lot#${this.state.lotId}`} />
         <h1 className="eco--title">Cupping</h1>
-        {this.state.lotInfo !== null && <CuppingComponent {...this.state} />}
+        {this.lotStore.lotsBatch.has(this.state.lotId) && (
+          <CuppingComponent
+            {...this.state}
+            {...this.lotStore.lotsBatch.get(this.state.lotId)}
+          />
+        )}
       </Layout>
     );
   }
