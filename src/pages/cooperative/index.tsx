@@ -8,13 +8,26 @@ import { ROLES } from "/@utils/constants";
 export default function FactoryIndexPage() {
   return (
     <Layout roles={[ROLES.COOPERATIVE]}>
-      <SEO title="Factory" />
-      <h1 className="eco--title">My Dashboard</h1>
+      <SEO title="Collection Center" />
+      <h1 className="eco--title">Collection Center Actions</h1>
       <div className="bx--row">
         <Tile
-          title="Processed Lots"
-          description="Processed lots from factories"
-          to="lots/list"
+          title="Create Batch"
+          description="Create batch from collections"
+          to="../collection-center/batch/collect"
+        />
+      </div>
+      <h1 className="eco--title">Cooperative Actions</h1>
+      <div className="bx--row">
+        <Tile
+          title="Create Lot"
+          description="Create lot from batches"
+          to="../collection-center/batch/list"
+        />
+        <Tile
+          title="Dispatch Lots"
+          description="Dispatch Lots to Factory"
+          to="lot/dispatch-lots"
         />
       </div>
     </Layout>

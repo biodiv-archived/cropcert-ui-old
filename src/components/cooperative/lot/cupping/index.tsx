@@ -15,6 +15,10 @@ import { textInput, dateInput, numberInput } from "/@components/@core/form";
 interface IProps {
   lotId;
   lotInfo;
+  lotName;
+  type;
+  outTurn;
+  quantity;
 }
 
 @observer
@@ -23,13 +27,14 @@ export default class CuppingComponent extends Component<IProps> {
 
   state = {
     form: FormBuilder.group({
-      lotName: [this.props.lotId, Validators.required],
+      lotName: [this.props.lotName, Validators.required],
+      lotId: [this.props.lotId, Validators.required],
       date: [getToday(), Validators.required],
       cfa: [this.props.lotInfo.cfa, Validators.required],
       ccCode: [this.props.lotInfo.cc_code, Validators.required],
 
       cupper: [this.props.lotInfo.cupper, Validators.required],
-      sampleType: [this.props.lotInfo.coffee_type, Validators.required],
+      sampleType: [this.props.type, Validators.required],
 
       // Params
       fragranceAroma: [0, Validators.required],

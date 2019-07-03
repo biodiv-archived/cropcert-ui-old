@@ -4,12 +4,8 @@ export const FIELDS_DRY = [
     header: "Batch Id",
   },
   {
-    key: "ccCode",
-    header: "CC Code",
-  },
-  {
-    key: "date",
-    header: "Batched On",
+    key: "batchName",
+    header: "Batch Name",
   },
   {
     key: "quantity",
@@ -23,16 +19,12 @@ export const FIELDS_WET = [
     header: "Batch Id",
   },
   {
-    key: "ccCode",
-    header: "CC Code",
+    key: "batchName",
+    header: "Batch Name",
   },
   {
     key: "quantity",
     header: "Total Quantity",
-  },
-  {
-    key: "date",
-    header: "Batched On",
   },
   {
     key: "startTime",

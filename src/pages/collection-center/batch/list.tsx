@@ -23,6 +23,7 @@ export default class BatchListPage extends Component {
         <SEO title="Batch List" />
         <If condition={this.ccStore.accessibleCCs.length > 0}>
           <BatchListComponent
+            title="Create Lot"
             accessibleCCs={toJS(this.ccStore.accessibleCCs)}
           />
         </If>

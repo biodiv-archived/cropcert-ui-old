@@ -8,6 +8,7 @@ import InfiniteScroll from "react-infinite-scroller";
 
 import { LOT_BASIC } from "./header.constants";
 import { LotStore } from "/@stores/lot.store";
+import { LOT_STATUS } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -41,7 +42,7 @@ export default class CoopLotListComponent extends Component<{}, IState> {
   }
 
   componentDidMount() {
-    this.lotStore.lazyListLot(true);
+    this.lotStore.lazyListLot(true, LOT_STATUS.AT_CO_OPERATIVE);
   }
 
   openModal = (modalType, id, value) => {
@@ -82,7 +83,9 @@ export default class CoopLotListComponent extends Component<{}, IState> {
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
-          rows.length > 0 ? this.lotStore.lazyListLot(false) : null;
+          rows.length > 0
+            ? this.lotStore.lazyListLot(false, LOT_STATUS.AT_CO_OPERATIVE)
+            : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
         loader={

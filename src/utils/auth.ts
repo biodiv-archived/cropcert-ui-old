@@ -72,10 +72,10 @@ export const getRedirect = () => {
       return "/admin";
     case ROLES.COLLECTION_CENTER:
       return "/collection-center";
-    case ROLES.FACTORY:
-      return "/factory";
     case ROLES.COOPERATIVE:
       return "/cooperative";
+    case ROLES.UNION:
+      return "/union";
     default:
       return "/401";
   }

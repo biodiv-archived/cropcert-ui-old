@@ -17,9 +17,10 @@ export const ROLES = {
   UNAUTHORIZED: "role_unauthorized",
   AUTHORIZED: "authorized",
   FARMER: "farmer",
-  COLLECTION_CENTER: "manager",
-  FACTORY: "factory",
+  COLLECTION_CENTER: "cc",
   COOPERATIVE: "co",
+  FACTORY: "factory",
+  UNION: "union",
   ADMIN: "admin",
 };
 export const CAS_AUTH_URL =
@@ -28,6 +29,63 @@ export const CAS_AUTH_URL =
   w.location.origin +
   "/auth/continue";
 export const CAS_LOGOUT_URL = process.env.ENDPOINT_CAS + "/logout";
+
+export const LCS = {
+  NOT_DONE: "not_done",
+  PROCESSING: "creating",
+  DONE: "done",
+  ERROR: "error",
+};
+
+export const LOT_STATUS = {
+  AT_COLLECTION_CENTER: "AtCollectionCenter",
+  AT_CO_OPERATIVE: "AtCoOperative",
+  IN_TRANSPORT: "InTransport",
+  AT_FACTORY: "AtFactory",
+  AT_UNION: "AtUnion",
+};
+
+export const LOT_ACTIONS = {
+  AT_CO_OPERATIVE: {
+    title: "Lots",
+    action: "Dispatch",
+    back: "/cooperative/lot/dispatch-lots",
+    endpoint: "/cooperative/lot/dispatch-summery",
+    to: "factory",
+    toKey: "timeToFactory",
+  },
+  AT_FACTORY: {
+    title: "Milling Lots",
+    action: "Done Milling",
+    back: "/union/factory/",
+    endpoint: "/union/factory/milling-summery",
+    to: "union",
+    toKey: "dispatchTime",
+  },
+  AT_UNION_GRN: {
+    title: "Add GRN",
+    action: "NA",
+    endpoint: "NA",
+    to: "grn",
+  },
+  AT_UNION_GREEN: {
+    title: "Add Green Report",
+    action: "NA",
+    endpoint: "NA",
+  },
+  AT_UNION_CUPPING: {
+    title: "Add Cupping Report",
+    action: "NA",
+    endpoint: "NA",
+  },
+};
+
+export const MODAL_TYPES = {
+  MILLING_TIME: "millingTime",
+  OUTTURN: "outTurn",
+  GRN_NUMBER: "grnNumber",
+  PERCHMENT_QUANTITY: "perchmentQuantity",
+};
 
 export const MAP: { MAP_CENTER: [number, number]; [key: string]: any } = {
   MAP_CENTER: [0.4363, 30.1675],

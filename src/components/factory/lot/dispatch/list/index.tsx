@@ -1,15 +1,22 @@
 import { Button, DataTable, InlineLoading } from "carbon-components-react";
 import { navigate } from "gatsby";
+import { toJS } from "mobx";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
-import { LOT_BASIC } from "./header.constants";
-import { LotStore } from "/@stores/lot.store";
+import ExpandRow from "./expandrow";
+import {
+  LOT_BASIC,
+  LOT_FACTORY,
+  LOT_UNION_CUPPING,
+  LOT_UNION_GREEN,
+  LOT_UNION_GRN,
+} from "./header.constants";
 import LotListCell from "./lot-list-cell";
 import LotListModal from "./lot-list-modal";
-
-import ExpandRow from "./lot-list-expandrow";
+import { LotStore } from "/@stores/lot.store";
+import { LOT_ACTIONS, LOT_STATUS } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -31,8 +38,15 @@ interface IState {
   isModalOpen;
 }
 
+interface IProps {
+  lotStatus;
+  action;
+  title;
+  endpoint;
+}
+
 @observer
-export default class LotListComponent extends Component<{}, IState> {
+export default class DispatchLotComponent extends Component<IProps, IState> {
   lotStore = new LotStore();
 
   constructor(props) {
@@ -45,7 +59,7 @@ export default class LotListComponent extends Component<{}, IState> {
   }
 
   componentDidMount() {
-    this.lotStore.lazyListLot(true, "processing");
+    this.lotStore.lazyListLot(true, this.props.lotStatus);
   }
 
   openModal = (modalType, id, value) => {
@@ -64,8 +78,58 @@ export default class LotListComponent extends Component<{}, IState> {
   };
 
   handleSubmit = (modalType, form) => {
-    this.lotStore.updateLotInfo(modalType, form);
+    this.lotStore.updateLotInfo(modalType, form, this.props.lotStatus);
     this.closeModal();
+  };
+
+  toLotSummery(selectedRows) {
+    const _sRows = selectedRows.map(r => r.id);
+    navigate(this.props.endpoint, {
+      state: {
+        rows: toJS(this.lotStore.lots).filter(lot => {
+          return _sRows.includes(lot.id.toString());
+        }),
+        header: LOT_BASIC,
+        lotIDs: _sRows,
+        ...this.props,
+      },
+    });
+  }
+
+  getHeader = () => {
+    switch (this.props.title) {
+      case LOT_ACTIONS.AT_FACTORY.title:
+        return LOT_FACTORY;
+
+      case LOT_ACTIONS.AT_UNION_GRN.title:
+        return LOT_UNION_GRN;
+
+      case LOT_ACTIONS.AT_UNION_GREEN.title:
+        return LOT_UNION_GREEN;
+
+      case LOT_ACTIONS.AT_UNION_CUPPING.title:
+        return LOT_UNION_CUPPING;
+
+      default:
+        return LOT_BASIC;
+    }
+  };
+
+  renderActionButton = selectedRows => {
+    return this.props.action !== "NA" ? (
+      <Button
+        kind="primary"
+        className="eco--button-table-primary"
+        disabled={selectedRows.length <= 0}
+        onClick={() => {
+          this.toLotSummery(selectedRows);
+        }}
+      >
+        {this.props.action}
+      </Button>
+    ) : (
+      ""
+    );
   };
 
   renderDataTable = ({
@@ -79,30 +143,19 @@ export default class LotListComponent extends Component<{}, IState> {
     <>
       <div className="bx--row">
         <div className="bx--col-lg-6 bx--col-md-12">
-          <h1 className="eco--title">Process Lot(s)</h1>
+          <h1 className="eco--title">{this.props.title}</h1>
         </div>
         <div className="bx--col-lg-6 bx--col-md-12 text-right">
-          <Button
-            kind="primary"
-            className="eco--button-table-primary"
-            disabled={selectedRows.length <= 0}
-            onClick={() => {
-              alert("TODO");
-              // console.log(selectedRows);
-              // navigate("/collection-center/lot-processing/create", {
-              //   state: { selectedRows },
-              // });
-            }}
-          >
-            Send to Union
-          </Button>
+          {this.renderActionButton(selectedRows)}
         </div>
       </div>
       <br />
       <InfiniteScroll
         pageStart={0}
         loadMore={() => {
-          rows.length > 0 ? this.lotStore.lazyListLot(false) : null;
+          rows.length > 0
+            ? this.lotStore.lazyListLot(false, LOT_STATUS.AT_CO_OPERATIVE)
+            : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
         loader={
@@ -134,9 +187,9 @@ export default class LotListComponent extends Component<{}, IState> {
                     </TableExpandRow>
                     {row.isExpanded && (
                       <ExpandRow
-                        colSpan={headers.length + 2}
-                        lotId={row.cells[1].value}
                         lotStore={this.lotStore}
+                        colSpan={headers.length + 2}
+                        lotId={row.id}
                       />
                     )}
                   </React.Fragment>
@@ -158,9 +211,10 @@ export default class LotListComponent extends Component<{}, IState> {
           handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
         />
+        {console.log(this.getHeader())}
         <DataTable
           rows={this.lotStore.lots || []}
-          headers={LOT_BASIC}
+          headers={this.getHeader()}
           render={this.renderDataTable}
         />
       </>

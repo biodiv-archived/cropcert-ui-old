@@ -4,7 +4,7 @@ export const getToday = () => {
   return local.toJSON().slice(0, 10);
 };
 
-export const formattedDate = d => {
+export const formattedDate = (d = new Date()) => {
   d = new Date(d || new Date().getTime());
   let month = "" + (d.getMonth() + 1);
   let day = "" + d.getDate();
@@ -16,7 +16,7 @@ export const formattedDate = d => {
   return [year, month, day].join("-");
 };
 
-export const formattedTime = d => {
+export const formattedTime = (d = new Date()) => {
   d = new Date(d || new Date().getTime());
   let m = "" + d.getMinutes();
   let h = "" + d.getHours();
@@ -27,17 +27,14 @@ export const formattedTime = d => {
   return [h, m].join(":");
 };
 
+export const formattedTimeStamp = (d = new Date()) => {
+  return `${formattedDate(d)} ${formattedTime(d)}:00`;
+};
+
 export const toFriendlyCellValue = c => {
-  if (["perchmentQuantity", "processingTime", "outTurn"].includes(c.info.header)) {
-    return c.value || "NA";
-  }
-  const d = new Date(c.value);
-  if (d.getFullYear() < 2000) {
-    return c.value;
-  }
-  let mm: any = d.getMonth() + 1;
-  if (mm < 9) mm = "0" + mm;
-  let dd: any = d.getDay() + 1;
-  if (dd < 9) dd = "0" + dd;
-  return `${d.getFullYear()}-${mm}-${dd} ${d.getHours()}:${d.getMinutes()}`;
+  return c.value
+    ? c.id.toLowerCase().includes("time")
+      ? formattedTimeStamp(new Date(c.value))
+      : c.value
+    : "NA";
 };

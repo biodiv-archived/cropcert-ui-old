@@ -90,7 +90,7 @@ export class BatchingStore {
   }
 
   @action
-  lazyList(reset, type, ccCode) {
+  lazyList(reset, type, ccCodes) {
     if (reset) {
       this._offset = 0;
     }
@@ -99,7 +99,7 @@ export class BatchingStore {
         `${process.env.ENDPOINT_TRACEABILITY}/${this.getEndpoint(type)}/cc`,
         {
           params: {
-            ccCode,
+            ccCodes: ccCodes.toString() || "-1",
             limit: this._limit,
             offset: this._offset,
           },

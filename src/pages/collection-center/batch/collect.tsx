@@ -18,9 +18,9 @@ export default class CollectionCollectPage extends Component {
 
   render() {
     return (
-      <Layout roles={[ROLES.COLLECTION_CENTER, ROLES.FACTORY]}>
+      <Layout roles={[ROLES.COLLECTION_CENTER, ROLES.COOPERATIVE]}>
         <SEO title="Collect Collection" />
-        <h1 className="eco--title">Collect Batch</h1>
+        <h1 className="eco--title">Create Batch</h1>
         <If condition={this.ccStore.accessibleCCs.length > 0}>
           <BatchCollect accessibleCCs={this.ccStore.accessibleCCs} />
         </If>

@@ -1,8 +1,18 @@
 import { Button } from "carbon-components-react";
 import React, { Component } from "react";
-import { FieldControl, FieldGroup, FormBuilder, Validators } from "react-reactive-form";
+import {
+  FieldControl,
+  FieldGroup,
+  FormBuilder,
+  Validators,
+} from "react-reactive-form";
 
-import { dateInput, numberInput, selectInput, textInput } from "/@components/@core/form";
+import {
+  dateInput,
+  numberInput,
+  selectInput,
+  textInput,
+} from "/@components/@core/form";
 import { BatchingStore } from "/@stores/batching.store";
 import { hasAccess } from "/@utils/auth";
 import { getToday } from "/@utils/basic";
@@ -24,7 +34,7 @@ export default class BatchCollect extends Component<IProps> {
       ccCode: [this.props.accessibleCCs[0].value, Validators.required],
       quantity: ["", Validators.required],
       date: [getToday(), Validators.required],
-      timestamp: [new Date(), Validators.required],
+      createdOn: [new Date(), Validators.required],
       type: [this.typeOptions[0].value],
       note: [,],
     });
@@ -32,7 +42,13 @@ export default class BatchCollect extends Component<IProps> {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.batchingStore.collect(this.collectForm.value);
+    const _cc = this.props.accessibleCCs.find(
+      cc => cc.id.toString() === this.collectForm.value.ccCode.toString()
+    );
+    this.batchingStore.collect({
+      ...this.collectForm.value,
+      batchName: `${_cc.ccName}_${getToday()}`,
+    });
   };
 
   renderFieldGroup = ({ get, invalid }) => {
@@ -46,7 +62,7 @@ export default class BatchCollect extends Component<IProps> {
               meta={{
                 label: "Collection Center",
                 options: this.props.accessibleCCs,
-                readOnly: !hasAccess([ROLES.FACTORY]),
+                readOnly: !hasAccess([ROLES.COOPERATIVE]),
               }}
             />
           </div>
@@ -87,7 +103,7 @@ export default class BatchCollect extends Component<IProps> {
           </div>
         </div>
         <Button type="submit" disabled={invalid}>
-          Collect Batch
+          Create Batch
         </Button>
       </form>
     );
