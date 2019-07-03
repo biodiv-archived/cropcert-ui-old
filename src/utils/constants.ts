@@ -80,6 +80,11 @@ export const LOT_ACTIONS = {
   },
 };
 
+export const TYPE_OPTIONS = {
+  DRY: { label: "Dry", value: "DRY" },
+  WET: { label: "Wet", value: "WET" },
+};
+
 export const MODAL_TYPES = {
   MILLING_TIME: "millingTime",
   OUTTURN: "outTurn",

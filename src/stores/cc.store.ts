@@ -53,6 +53,7 @@ export class CCStore {
           value: c.ccId,
           id: c.ccId,
           ccName: c.ccName,
+          type: c.type,
         }));
       })
       .catch(error => {
