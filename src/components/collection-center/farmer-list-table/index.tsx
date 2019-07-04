@@ -58,6 +58,7 @@ export default class FarmerListTable extends Component {
               loader={
                 <Loading
                   key={rows.length}
+                  withOverlay={false}
                   description="Loading data..."
                 />
               }
@@ -87,9 +88,7 @@ export default class FarmerListTable extends Component {
                         ))}
                         <TableCell>
                           <Link
-                            to={`/collection-center/farmer/view?farmerId=${
-                              row.id
-                            }`}
+                            to={`/collection-center/farmer/view?farmerId=${row.id}`}
                           >
                             View &rarr;
                           </Link>
@@ -103,7 +102,11 @@ export default class FarmerListTable extends Component {
           </If>
           <If condition={rows.length < 1}>
             <If condition={this.farmerStore.lazyListHasMore}>
-              <Loading description="Loading data..." />
+              <Loading
+                key={rows.length}
+                withOverlay={false}
+                description="Loading data..."
+              />
             </If>
             <If condition={!this.farmerStore.lazyListHasMore}>
               No Farmer found!

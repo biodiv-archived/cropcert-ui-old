@@ -36,7 +36,6 @@ export class AuthStore {
 
   getAll(path = "ping") {
     http.get(`${process.env.ENDPOINT_USER}/${path}`);
-    http.get(`${process.env.ENDPOINT_ENTITY}/${path}`);
     http.get(`${process.env.ENDPOINT_TRACEABILITY}/${path}`);
   }
 

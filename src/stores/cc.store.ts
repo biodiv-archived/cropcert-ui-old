@@ -14,7 +14,7 @@ export class CCStore {
   @action
   list(reset) {
     http
-      .get(`${process.env.ENDPOINT_ENTITY}/cc/all`)
+      .get(`${process.env.ENDPOINT_USER}/cc/all`)
       .then(r => {
         if (Array.isArray(r.data)) {
           this.transformCollections(r.data, reset);
@@ -41,10 +41,10 @@ export class CCStore {
 
     const _user = getCurrentUser();
     const _endpoint = hasAccess([ROLES.COOPERATIVE])
-      ? `cc/coOperativeId/${_user["coCode"]}` // As of now key is wrong but code is of CoOperative
+      ? `cc/coOperativeId/${_user["coCode"]}`
       : `cc/${_user["ccCode"]}`;
     http
-      .get(`${process.env.ENDPOINT_ENTITY}/${_endpoint}`)
+      .get(`${process.env.ENDPOINT_USER}/${_endpoint}`)
       .then(r => {
         let _list = Array.isArray(r.data) ? r.data : [r.data];
         this.accessibleCCs = _list.map(c => ({
@@ -69,7 +69,7 @@ export class CCStore {
   get() {
     const ccId = parse(location.search).ccId;
     http
-      .get(`${process.env.ENDPOINT_ENTITY}/cc/${ccId}`)
+      .get(`${process.env.ENDPOINT_USER}/cc/${ccId}`)
       .then(r => {
         this.ccOne = r.data;
       })

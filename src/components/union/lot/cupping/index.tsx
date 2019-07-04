@@ -16,6 +16,8 @@ interface IProps {
   outTurn;
   quantity;
   grnNumber;
+  coOperativeName;
+  ccNames;
 }
 
 @observer
@@ -28,7 +30,7 @@ export default class CuppingComponent extends Component<IProps> {
       lotId: Yup.string().required(),
       date: Yup.date().required(),
       cfa: Yup.string().required(),
-      ccCode: Yup.string().required(),
+      ccName: Yup.string().required(),
 
       cupper: Yup.string().required(),
       sampleType: Yup.string().required(),
@@ -56,8 +58,8 @@ export default class CuppingComponent extends Component<IProps> {
       lotName: this.props.lotName,
       lotId: this.props.lotId,
       date: getToday(),
-      cfa: this.props.lotInfo.cfa,
-      ccCode: this.props.lotInfo.cc_code,
+      cfa: this.props.coOperativeName,
+      ccName: this.props.ccNames.toString(),
 
       cupper: this.props.lotInfo.cupper,
       sampleType: this.props.type,
@@ -96,7 +98,7 @@ export default class CuppingComponent extends Component<IProps> {
       v.cleanCup +
       v.overAll -
       (v.taint + v.fault);
-    return typeof _t === "number" ? _t.toFixed(2) : "NaN";
+    return typeof _t === "number" ? _t.toFixed(2) : "0";
   };
 
   handleSubmit = (values, actions) => {
@@ -111,6 +113,14 @@ export default class CuppingComponent extends Component<IProps> {
     <form className="bx--form" onSubmit={handleSubmit}>
       <h3 className="eco--form-title">Lot Information</h3>
       <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="GRN Number"
+            name="grnNumber"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
             label="Lot Name"
@@ -130,7 +140,7 @@ export default class CuppingComponent extends Component<IProps> {
         </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
-            label="Cooperative"
+            label="Cooperative Name"
             name="cfa"
             component={textInput}
             readOnly={true}
@@ -138,8 +148,8 @@ export default class CuppingComponent extends Component<IProps> {
         </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
-            label="Origin"
-            name="ccCode"
+            label="Collection Center Name(s)"
+            name="ccName"
             component={textInput}
             readOnly={true}
           />
@@ -149,14 +159,6 @@ export default class CuppingComponent extends Component<IProps> {
           <Field
             label="Sample Type"
             name="sampleType"
-            component={textInput}
-            readOnly={true}
-          />
-        </div>
-        <div className="bx--col-lg-3 bx--col-sm-12">
-          <Field
-            label="GRN Number"
-            name="grnNumber"
             component={textInput}
             readOnly={true}
           />

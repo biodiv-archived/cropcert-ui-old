@@ -160,7 +160,11 @@ export default class BatchListComponent extends Component<IProps, IState> {
         }}
         hasMore={this.batchingStore.lazyListHasMore}
         loader={
-          <Loading key={rows.length} description="Loading data..." />
+          <Loading
+            key={rows.length}
+            withOverlay={false}
+            description="Loading data..."
+          />
         }
       >
         <TableContainer>

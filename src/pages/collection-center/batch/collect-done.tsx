@@ -6,7 +6,7 @@ import MessageComponent from "/@components/@core/message";
 import { ROLES } from "/@utils/constants";
 
 export default function BatchCreateDonePage() {
-  const id = parse(location.search).id || -1;
+  const id = parse(location.search).id || "";
   const type = parse(location.search).type || "error";
   return (
     <Layout roles={[ROLES.AUTHORIZED]}>

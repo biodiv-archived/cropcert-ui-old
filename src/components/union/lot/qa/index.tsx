@@ -16,6 +16,8 @@ interface IProps {
   outTurn;
   quantity;
   grnNumber;
+  coOperativeName;
+  ccNames;
 }
 
 @observer
@@ -32,7 +34,7 @@ export default class GreenReport extends Component<IProps> {
       lotId: Yup.string().required(),
       date: Yup.date().required(),
       cfa: Yup.string().required(),
-      ccCode: Yup.string().required(),
+      ccName: Yup.string().required(),
 
       coffeeType: Yup.string().required(),
       overTurnPercentage: Yup.string().required(),
@@ -72,8 +74,8 @@ export default class GreenReport extends Component<IProps> {
       lotName: this.props.lotName,
       lotId: this.props.lotId,
       date: getToday(),
-      cfa: this.props.lotInfo.cfa,
-      ccCode: this.props.lotInfo.cc_code,
+      cfa: this.props.coOperativeName,
+      ccName: this.props.ccNames.toString(),
 
       coffeeType: this.props.type,
       overTurnPercentage: this.getOutTurn(),
@@ -120,7 +122,7 @@ export default class GreenReport extends Component<IProps> {
       v.gradeC +
       v.gradePB +
       v.gradeTriage;
-    return v.coffeeType === "WET" ? (typeof _t === "number" ? _t : "NaN") : 100;
+    return v.coffeeType === "WET" ? (typeof _t === "number" ? _t : "0") : 100;
   };
 
   severeDefectsTotal = v => {
@@ -131,7 +133,7 @@ export default class GreenReport extends Component<IProps> {
       v.fungasDamaged +
       v.em +
       v.severeInsect;
-    return typeof _t === "number" ? _t : "Nan";
+    return typeof _t === "number" ? _t : "0";
   };
 
   lessSevereDefectsTotal = v => {
@@ -146,7 +148,7 @@ export default class GreenReport extends Component<IProps> {
       v.brokenChipped +
       v.husks +
       v.pinHole;
-    return typeof _t === "number" ? _t : "Nan";
+    return typeof _t === "number" ? _t : "0";
   };
 
   outTurnFAQ = v => {
@@ -162,9 +164,9 @@ export default class GreenReport extends Component<IProps> {
         ((qualityGrading - (severeDefectsTotal + lessSevereDefectsTotal)) /
           qualityGrading) *
         100
-      );
+      ).toFixed(2);
     }
-    return "NaN";
+    return "";
   };
 
   handleSubmit = (values, actions) => {
@@ -180,6 +182,14 @@ export default class GreenReport extends Component<IProps> {
     <form className="bx--form" onSubmit={handleSubmit}>
       <h3 className="eco--form-title">Lot Information</h3>
       <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="GRN Number"
+            name="grnNumber"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
             label="Lot Name"
@@ -198,7 +208,7 @@ export default class GreenReport extends Component<IProps> {
         </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
-            label="Cooperative"
+            label="Cooperative Name"
             name="cfa"
             component={textInput}
             readOnly={true}
@@ -206,8 +216,8 @@ export default class GreenReport extends Component<IProps> {
         </div>
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
-            label="CC Name"
-            name="ccCode"
+            label="Collection Center Name(s)"
+            name="ccName"
             component={textInput}
             readOnly={true}
           />
@@ -236,14 +246,6 @@ export default class GreenReport extends Component<IProps> {
             name="mc"
             component={textInput}
             type="number"
-          />
-        </div>
-        <div className="bx--col-lg-3 bx--col-sm-12">
-          <Field
-            label="GRN Number"
-            name="grnNumber"
-            component={textInput}
-            readOnly={true}
           />
         </div>
       </div>
@@ -445,7 +447,8 @@ export default class GreenReport extends Component<IProps> {
       </div>
 
       <h3 className="eco--form-title">
-        Out turn FAQ - {this.outTurnFAQ(values)}%
+        {this.props.type === "DRY" ? "Out turn FAQ " : "Out turn "} -
+        {this.outTurnFAQ(values)}%
       </h3>
 
       <Button type="submit" disabled={!isValid}>
@@ -455,6 +458,7 @@ export default class GreenReport extends Component<IProps> {
   );
 
   render() {
+    console.log(this.props);
     return (
       <Formik
         {...this.greenForm}

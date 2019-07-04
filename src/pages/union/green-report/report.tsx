@@ -7,6 +7,7 @@ import SEO from "/@components/@core/seo.component";
 import GreenReport from "../../../components/union/lot/qa";
 import { ROLES } from "/@utils/constants";
 import { LotStore } from "/@stores/lot.store";
+import { toJS } from "mobx";
 
 interface IState {
   lotId;
@@ -44,8 +45,8 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
           this.lotStore.lotsOrigins.has(this.state.lotId) && (
             <GreenReport
               {...this.state}
-              {...this.lotStore.lotsOrigins.get(this.state.lotId)}
-              {...this.lotStore.lotsBatch.get(this.state.lotId)}
+              {...toJS(this.lotStore.lotsOrigins.get(this.state.lotId))}
+              {...toJS(this.lotStore.lotsBatch.get(this.state.lotId))}
             />
           )}
       </Layout>

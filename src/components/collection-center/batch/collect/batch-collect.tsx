@@ -115,16 +115,14 @@ export default class BatchCollect extends Component<IProps, IState> {
                   type="number"
                 />
               </div>
-              {this.state.typeOptions.length > 1 && (
-                <div className="bx--col-lg-4 bx--col-sm-12">
-                  <Field
-                    label="Batch Type"
-                    name="type"
-                    component={selectInput}
-                    options={this.state.typeOptions}
-                  />
-                </div>
-              )}
+              <div className="bx--col-lg-4 bx--col-sm-12">
+                <Field
+                  label="Batch Type"
+                  name="type"
+                  component={selectInput}
+                  options={this.state.typeOptions}
+                />
+              </div>
             </div>
             <div className="bx--row">
               <div className="bx--col-lg-8 bx--col-sm-12">

@@ -37,7 +37,7 @@ export class FarmerStore {
     http.get(`${process.env.ENDPOINT_USER}/farmer/${farmerId}`).then(r => {
       this.singleFarmer = r.data;
       http
-        .get(`${process.env.ENDPOINT_ENTITY}/cc/${r.data.ccCode}`)
+        .get(`${process.env.ENDPOINT_USER}/cc/${r.data.ccCode}`)
         .then(r1 => {
           this.singleFarmerCC = r1.data;
         });

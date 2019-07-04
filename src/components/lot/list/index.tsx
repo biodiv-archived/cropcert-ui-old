@@ -160,7 +160,13 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
             : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
-        loader={<Loading key={rows.length} description="Loading data..." />}
+        loader={
+          <Loading
+            withOverlay={false}
+            key={rows.length}
+            description="Loading data..."
+          />
+        }
       >
         <TableContainer>
           <Table>

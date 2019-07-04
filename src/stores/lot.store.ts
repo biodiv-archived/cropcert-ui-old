@@ -78,13 +78,15 @@ export class LotStore {
   @action
   getOriginByLotId(lotId) {
     http
-      .get(`${process.env.ENDPOINT_TRACEABILITY}/lot/origin?lotId=${lotId}`)
+      .get(
+        `${process.env.ENDPOINT_TRACEABILITY}/lotCreation/lot/origin?lotId=${lotId}`
+      )
       .then(r => {
         http
           .get(
             `${
               process.env.ENDPOINT_USER
-            }/cc/origin?batchIds=${r.data.toString()}`
+            }/cc/origin?ccCodes=${r.data.toString()}`
           )
           .then(o => {
             this.lotsOrigins.set(lotId, o.data);
