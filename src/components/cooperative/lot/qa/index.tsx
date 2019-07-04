@@ -1,16 +1,12 @@
 import { Button } from "carbon-components-react";
+import { Field, Formik } from "formik";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
-import {
-  FieldGroup,
-  FormBuilder,
-  Validators,
-  FieldControl,
-} from "react-reactive-form";
+import * as Yup from "yup";
 
+import { textInput } from "/@components/@core/formik";
 import { QualityStore } from "/@stores/qr.store";
-import { getToday, formattedDate } from "/@utils/basic";
-import { textInput, dateInput, numberInput } from "/@components/@core/form";
+import { getToday } from "/@utils/basic";
 
 interface IProps {
   lotId;
@@ -22,7 +18,7 @@ interface IProps {
 }
 
 @observer
-export default class QAComponent extends Component<IProps> {
+export default class GreenReport extends Component<IProps> {
   qualityStore = new QualityStore();
 
   constructor(props) {
@@ -34,359 +30,424 @@ export default class QAComponent extends Component<IProps> {
     return ((this.props.outTurn * 100) / this.props.quantity).toFixed(2);
   };
 
-  state = {
-    form: FormBuilder.group({
-      lotName: [this.props.lotName, Validators.required],
-      lotId: [this.props.lotId, Validators.required],
-      date: [getToday(), Validators.required],
-      cfa: [this.props.lotInfo.cfa, Validators.required],
-      ccCode: [this.props.lotInfo.cc_code, Validators.required],
+  greenForm = {
+    validationSchema: Yup.object().shape({
+      lotName: Yup.string().required(),
+      lotId: Yup.string().required(),
+      date: Yup.date().required(),
+      cfa: Yup.string().required(),
+      ccCode: Yup.string().required(),
 
-      coffeeType: [this.props.type, Validators.required],
-      overTurnPercentage: [this.getOutTurn(), Validators.required],
-      mc: ["", Validators.required],
+      coffeeType: Yup.string().required(),
+      overTurnPercentage: Yup.string().required(),
+      mc: Yup.number().required(),
 
       // Grades
-      gradeAA: [0, Validators.required],
-      gradeA: [0, Validators.required],
-      gradeB: [0, Validators.required],
-      gradeAB: [0, Validators.required],
-      gradeC: [0, Validators.required],
-      gradePB: [0, Validators.required],
-      gradeTriage: [0, Validators.required],
+      gradeAA: Yup.number().required(),
+      gradeA: Yup.number().required(),
+      gradeB: Yup.number().required(),
+      gradeAB: Yup.number().required(),
+      gradeC: Yup.number().required(),
+      gradePB: Yup.number().required(),
+      gradeTriage: Yup.number().required(),
 
       // Severe defects
-      fullBlack: [0, Validators.required],
-      fullSour: [0, Validators.required],
-      pods: [0, Validators.required],
-      fungasDamaged: [0, Validators.required],
-      em: [0, Validators.required],
-      severeInsect: [0, Validators.required],
+      fullBlack: Yup.number().required(),
+      fullSour: Yup.number().required(),
+      pods: Yup.number().required(),
+      fungasDamaged: Yup.number().required(),
+      em: Yup.number().required(),
+      severeInsect: Yup.number().required(),
 
       // Less Severe defects
-      partialBlack: [0, Validators.required],
-      partialSour: [0, Validators.required],
-      patchment: [0, Validators.required],
-      floatersChalky: [0, Validators.required],
-      immature: [0, Validators.required],
-      withered: [0, Validators.required],
-      shells: [0, Validators.required],
-      brokenChipped: [0, Validators.required],
-      husks: [0, Validators.required],
-      pinHole: [0, Validators.required],
+      partialBlack: Yup.number().required(),
+      partialSour: Yup.number().required(),
+      patchment: Yup.number().required(),
+      floatersChalky: Yup.number().required(),
+      immature: Yup.number().required(),
+      withered: Yup.number().required(),
+      shells: Yup.number().required(),
+      brokenChipped: Yup.number().required(),
+      husks: Yup.number().required(),
+      pinHole: Yup.number().required(),
     }),
+    initialValues: {
+      lotName: this.props.lotName,
+      lotId: this.props.lotId,
+      date: getToday(),
+      cfa: this.props.lotInfo.cfa,
+      ccCode: this.props.lotInfo.cc_code,
+
+      coffeeType: this.props.type,
+      overTurnPercentage: this.getOutTurn(),
+
+      // Severe defects
+      fullBlack: 0,
+      fullSour: 0,
+      pods: 0,
+      fungasDamaged: 0,
+      em: 0,
+      severeInsect: 0,
+
+      // Less Severe defects
+      partialBlack: 0,
+      partialSour: 0,
+      patchment: 0,
+      floatersChalky: 0,
+      immature: 0,
+      withered: 0,
+      shells: 0,
+      brokenChipped: 0,
+      husks: 0,
+      pinHole: 0,
+    },
   };
 
-  gradeTotal = () => {
-    const _v = this.state.form.value;
-    return (
-      parseInt(_v.gradeAA.toString()) +
-      parseInt(_v.gradeA.toString()) +
-      parseInt(_v.gradeB.toString()) +
-      parseInt(_v.gradeAB.toString()) +
-      parseInt(_v.gradeC.toString()) +
-      parseInt(_v.gradePB.toString()) +
-      parseInt(_v.gradeTriage.toString())
-    );
+  qualityGrading = v => {
+    const _t =
+      v.gradeAA +
+      v.gradeA +
+      v.gradeB +
+      v.gradeAB +
+      v.gradeC +
+      v.gradePB +
+      v.gradeTriage;
+    return v.coffeeType === "WET" ? (typeof _t === "number" ? _t : "NaN") : 100;
   };
 
-  severeDefectsTotal = () => {
-    const _v = this.state.form.value;
-    return (
-      parseInt(_v.fullBlack.toString()) +
-      parseInt(_v.fullSour.toString()) +
-      parseInt(_v.pods.toString()) +
-      parseInt(_v.fungasDamaged.toString()) +
-      parseInt(_v.em.toString()) +
-      parseInt(_v.severeInsect.toString())
-    );
+  severeDefectsTotal = v => {
+    const _t =
+      v.fullBlack +
+      v.fullSour +
+      v.pods +
+      v.fungasDamaged +
+      v.em +
+      v.severeInsect;
+    return typeof _t === "number" ? _t : "Nan";
   };
 
-  lessSevereDefectsTotal = () => {
-    const _v = this.state.form.value;
-    return (
-      parseInt(_v.partialBlack.toString()) +
-      parseInt(_v.partialSour.toString()) +
-      parseInt(_v.patchment.toString()) +
-      parseInt(_v.floatersChalky.toString()) +
-      parseInt(_v.immature.toString()) +
-      parseInt(_v.withered.toString()) +
-      parseInt(_v.shells.toString()) +
-      parseInt(_v.brokenChipped.toString()) +
-      parseInt(_v.husks.toString()) +
-      parseInt(_v.pinHole.toString())
-    );
+  lessSevereDefectsTotal = v => {
+    const _t =
+      v.partialBlack +
+      v.partialSour +
+      v.patchment +
+      v.floatersChalky +
+      v.immature +
+      v.withered +
+      v.shells +
+      v.brokenChipped +
+      v.husks +
+      v.pinHole;
+    return typeof _t === "number" ? _t : "Nan";
   };
 
-  outturnTotal = () => {
-    return 100 - (this.severeDefectsTotal() + this.lessSevereDefectsTotal());
+  outTurnFAQ = v => {
+    const qualityGrading = this.qualityGrading(v);
+    const severeDefectsTotal = this.severeDefectsTotal(v);
+    const lessSevereDefectsTotal = this.lessSevereDefectsTotal(v);
+    if (
+      typeof qualityGrading === "number" &&
+      typeof severeDefectsTotal === "number" &&
+      typeof lessSevereDefectsTotal === "number"
+    ) {
+      return (
+        ((qualityGrading - (severeDefectsTotal + lessSevereDefectsTotal)) /
+          qualityGrading) *
+        100
+      );
+    }
+    return "NaN";
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  handleSubmit = (values, actions) => {
+    console.log(values);
+    actions.setSubmitting(false);
     this.qualityStore.createQualityReport({
-      ...this.state.form.value,
-      percentageOutTurn: this.outturnTotal(),
+      ...values,
+      percentageOutTurn: this.outTurnFAQ(values),
       timestamp: new Date().getTime(),
     });
   };
 
-  renderFieldGroup = ({ get, invalid }) => {
-    return (
-      <form className="bx--form" onSubmit={this.handleSubmit}>
-        <h3 className="eco--form-title">Lot Information</h3>
-        <div className="bx--row">
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="lotName"
-              render={textInput}
-              meta={{ label: "Lot Name", readOnly: true }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="date"
-              render={dateInput}
-              meta={{ label: "Lot Reception Date" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="cfa"
-              render={textInput}
-              meta={{ label: "CFA", readOnly: true }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="ccCode"
-              render={textInput}
-              meta={{ label: "CC Code", readOnly: true }}
-            />
-          </div>
+  renderGreenForm = ({ handleSubmit, isValid, values }) => (
+    <form className="bx--form" onSubmit={handleSubmit}>
+      <h3 className="eco--form-title">Lot Information</h3>
+      <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Lot Name"
+            name="lotName"
+            component={textInput}
+            readOnly={true}
+          />
         </div>
-
-        <div className="bx--row">
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="coffeeType"
-              render={textInput}
-              meta={{ label: "Coffee Type" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="overTurnPercentage"
-              render={numberInput}
-              meta={{ label: "Outturn Percentage" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="mc"
-              render={numberInput}
-              meta={{ label: "Moisture Content" }}
-            />
-          </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Lot Reception Date"
+            name="date"
+            component={textInput}
+            type="date"
+          />
         </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Cooperative"
+            name="cfa"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="CC Name"
+            name="ccCode"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
+      </div>
 
-        {this.props.type === "WET" && (
-          <>
-            <h3 className="eco--form-title">
-              Quality Grading - {this.gradeTotal()}
-            </h3>
-            <div className="bx--row">
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeAA"
-                  render={numberInput}
-                  meta={{ label: "AA" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeA"
-                  render={numberInput}
-                  meta={{ label: "A" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeB"
-                  render={numberInput}
-                  meta={{ label: "B" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeAB"
-                  render={numberInput}
-                  meta={{ label: "AB" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeC"
-                  render={numberInput}
-                  meta={{ label: "C" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradePB"
-                  render={numberInput}
-                  meta={{ label: "PB" }}
-                />
-              </div>
-              <div className="bx--col-lg-3 bx--col-sm-12">
-                <FieldControl
-                  name="gradeTriage"
-                  render={numberInput}
-                  meta={{ label: "gradeTriage" }}
-                />
-              </div>
+      <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Coffee Type"
+            name="coffeeType"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Outturn Percentage"
+            name="overTurnPercentage"
+            component={textInput}
+            type="number"
+            readOnly={true}
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Moisture Content"
+            name="mc"
+            component={textInput}
+            type="number"
+          />
+        </div>
+      </div>
+
+      {this.props.type === "WET" && (
+        <>
+          <h3 className="eco--form-title">
+            Quality Grading - {this.qualityGrading(values)}
+          </h3>
+          <div className="bx--row">
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="AA"
+                name="gradeAA"
+                component={textInput}
+                type="number"
+              />
             </div>
-          </>
-        )}
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="A"
+                name="gradeA"
+                component={textInput}
+                type="number"
+              />
+            </div>
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="B"
+                name="gradeB"
+                component={textInput}
+                type="number"
+              />
+            </div>
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="AB"
+                name="gradeAB"
+                component={textInput}
+                type="number"
+              />
+            </div>
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="C"
+                name="gradeC"
+                component={textInput}
+                type="number"
+              />
+            </div>
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="PB"
+                name="gradePB"
+                component={textInput}
+                type="number"
+              />
+            </div>
+            <div className="bx--col-lg-3 bx--col-sm-12">
+              <Field
+                label="Triage"
+                name="gradeTriage"
+                component={textInput}
+                type="number"
+              />
+            </div>
+          </div>
+        </>
+      )}
 
-        <h3 className="eco--form-title">
-          Severe Defects - {this.severeDefectsTotal()}
-        </h3>
-        <div className="bx--row">
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="fullBlack"
-              render={numberInput}
-              meta={{ label: "Full Black" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="fullSour"
-              render={numberInput}
-              meta={{ label: "Full Sour" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="pods"
-              render={numberInput}
-              meta={{ label: "Pods" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="fungasDamaged"
-              render={numberInput}
-              meta={{ label: "Fungas Damaged" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="em"
-              render={numberInput}
-              meta={{ label: "E M" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="severeInsect"
-              render={numberInput}
-              meta={{ label: "Severe Insect" }}
-            />
-          </div>
+      <h3 className="eco--form-title">
+        Severe Defects - {this.severeDefectsTotal(values)}
+      </h3>
+      <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Full Black"
+            name="fullBlack"
+            component={textInput}
+            type="number"
+          />
         </div>
-
-        <h3 className="eco--form-title">
-          Less Severe Defects - {this.lessSevereDefectsTotal()}
-        </h3>
-        <div className="bx--row">
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="partialBlack"
-              render={numberInput}
-              meta={{ label: "Partial Black" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="partialSour"
-              render={numberInput}
-              meta={{ label: "Partial Sour" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="patchment"
-              render={numberInput}
-              meta={{ label: "Patchment" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="floatersChalky"
-              render={numberInput}
-              meta={{ label: "Floaters/Chalky" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="immature"
-              render={numberInput}
-              meta={{ label: "Immature" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="withered"
-              render={numberInput}
-              meta={{ label: "Withered" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="shells"
-              render={numberInput}
-              meta={{ label: "Shells" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="brokenChipped"
-              render={numberInput}
-              meta={{ label: "Broken/Chipped" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="husks"
-              render={numberInput}
-              meta={{ label: "Husks" }}
-            />
-          </div>
-          <div className="bx--col-lg-3 bx--col-sm-12">
-            <FieldControl
-              name="pinHole"
-              render={numberInput}
-              meta={{ label: "Pin Hole" }}
-            />
-          </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Full Sour"
+            name="fullSour"
+            component={textInput}
+            type="number"
+          />
         </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field label="Pods" name="pods" component={textInput} type="number" />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Fungas Damaged"
+            name="fungasDamaged"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field label="E M" name="em" component={textInput} type="number" />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Severe Insect"
+            name="severeInsect"
+            component={textInput}
+            type="number"
+          />
+        </div>
+      </div>
 
-        <h3 className="eco--form-title">
-          Out turn FAQ - {this.outturnTotal()}%
-        </h3>
+      <h3 className="eco--form-title">
+        Less Severe Defects - {this.lessSevereDefectsTotal(values)}
+      </h3>
+      <div className="bx--row">
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Partial Black"
+            name="partialBlack"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Partial Sour"
+            name="partialSour"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Patchment"
+            name="patchment"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Floaters/Chalky"
+            name="floatersChalky"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Immature"
+            name="immature"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Withered"
+            name="withered"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Shells"
+            name="shells"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Broken/Chipped"
+            name="brokenChipped"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Husks"
+            name="husks"
+            component={textInput}
+            type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="Pin Hole"
+            name="pinHole"
+            component={textInput}
+            type="number"
+          />
+        </div>
+      </div>
 
-        <Button type="submit" disabled={invalid}>
-          Submit
-        </Button>
-      </form>
-    );
-  };
+      <h3 className="eco--form-title">
+        Out turn FAQ - {this.outTurnFAQ(values)}%
+      </h3>
+
+      <Button type="submit" disabled={!isValid}>
+        Submit
+      </Button>
+    </form>
+  );
 
   render() {
     return (
-      <FieldGroup control={this.state.form} render={this.renderFieldGroup} />
+      <Formik
+        {...this.greenForm}
+        onSubmit={this.handleSubmit}
+        render={this.renderGreenForm}
+      />
     );
   }
 }

@@ -4,7 +4,7 @@ import React, { Component } from "react";
 
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
-import QAComponent from "/@components/cooperative/lot/qa";
+import GreenReport from "/@components/cooperative/lot/qa";
 import { ROLES } from "/@utils/constants";
 import { LotStore } from "/@stores/lot.store";
 
@@ -40,7 +40,7 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
         <SEO title={`Green Analysis - Lot#${this.state.lotId}`} />
         <h1 className="eco--title">Green Analysis</h1>
         {this.lotStore.lotsBatch.has(this.state.lotId) && (
-          <QAComponent
+          <GreenReport
             {...this.state}
             {...this.lotStore.lotsBatch.get(this.state.lotId)}
           />
