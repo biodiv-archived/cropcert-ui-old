@@ -1,191 +1,145 @@
-import { ModalFooter } from "carbon-components-react";
-import React, { Component } from "react";
-import {
-  FieldControl,
-  FieldGroup,
-  FormBuilder,
-  Validators,
-} from "react-reactive-form";
+import { Field, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
-import { dateInput, numberInput, textInput } from "/@components/@core/form";
+import { textInput } from "/@components/@core/formik";
 import { formattedDate, formattedTime } from "/@utils/basic";
 
 interface IProps {
   modalData;
   handleSubmit;
+  modalDataType?;
 }
 
-interface IState {
-  dateForm;
-}
+export const LotListModalFormDate = (props: IProps) => {
+  const [form, setForm] = useState(null as any);
 
-export class LotListModalFormDate extends Component<IProps, IState> {
-  dateForm = FormBuilder.group({
-    id: [this.props.modalData.id, Validators.required],
-    date: [formattedDate(this.props.modalData.value), Validators.required],
-    time: [
-      formattedTime(this.props.modalData.value),
-      [
-        Validators.required,
-        Validators.pattern("([01]?[0-9]|2[0-3]):[0-5][0-9]"),
-      ],
-    ],
-  });
-
-  componentDidUpdate() {
-    this.dateForm.setValue({
-      id: this.props.modalData.id,
-      date: formattedDate(this.props.modalData.value),
-      time: formattedTime(this.props.modalData.value),
+  useEffect(() => {
+    setForm({
+      validationSchema: Yup.object().shape({
+        date: Yup.date().required(),
+        time: Yup.string()
+          .matches(
+            new RegExp("^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$"),
+            "HH:MM"
+          )
+          .required(),
+      }),
+      initialValues: {
+        id: props.modalData.id,
+        date: formattedDate(props.modalData.value),
+        time: formattedTime(props.modalData.value),
+      },
     });
-  }
+  }, [props.modalData]);
 
-  hs = e => {
-    e.preventDefault();
-    this.props.handleSubmit(
-      this.props.modalData.modalType,
-      this.dateForm.value
-    );
+  const submitForm = (values, actions) => {
+    actions.setSubmitting(false);
+    props.handleSubmit(props.modalData.modalType, values);
   };
 
-  render() {
-    return (
-      <FieldGroup
-        control={this.dateForm}
-        render={() => (
-          <>
+  return form ? (
+    <Formik
+      {...form}
+      enableReinitialize
+      onSubmit={submitForm}
+      isInitialValid={!props.modalData.value}
+      render={({ handleSubmit, isValid }) => {
+        return (
+          <form className="bx--form" onSubmit={handleSubmit}>
             <div className="eco--modal-container">
-              <form className="bx--form" onSubmit={this.hs}>
-                <div className="bx--row">
-                  <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
-                      name="date"
-                      render={dateInput}
-                      meta={{ label: "Date" }}
-                    />
-                  </div>
-                  <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
-                      name="time"
-                      render={textInput}
-                      meta={{ label: "Time" }}
-                    />
-                  </div>
+              <div className="bx--row">
+                <div className="bx--col-lg-6 bx--col-sm-12">
+                  <Field
+                    label="Date"
+                    name="date"
+                    component={textInput}
+                    type="date"
+                  />
                 </div>
-              </form>
+                <div className="bx--col-lg-6 bx--col-sm-12">
+                  <Field label="Time" name="time" component={textInput} />
+                </div>
+              </div>
             </div>
-            <ModalFooter
-              primaryButtonText="Save"
-              onRequestSubmit={this.hs}
-              primaryButtonDisabled={this.dateForm.invalid}
-            />
-          </>
-        )}
-      />
-    );
-  }
-}
+            <div className="bx--modal-footer">
+              <button
+                className="bx--btn bx--btn--primary"
+                disabled={!isValid}
+                type="submit"
+              >
+                Save {props.modalData.title}
+              </button>
+            </div>
+          </form>
+        );
+      }}
+    />
+  ) : (
+    <>Loading...</>
+  );
+};
 
-export class LotListModalFormString extends Component<IProps> {
-  stringForm = FormBuilder.group({
-    id: [this.props.modalData.id, Validators.required],
-    value: [this.props.modalData.value, Validators.required],
-  });
+export const LotListModalForm = (props: IProps) => {
+  const [form, setForm] = useState(null as any);
 
-  componentDidUpdate() {
-    this.stringForm.setValue({
-      id: this.props.modalData.id,
-      value: this.props.modalData.value,
+  useEffect(() => {
+    setForm({
+      validationSchema: Yup.object().shape({
+        value:
+          props.modalDataType === "number"
+            ? Yup.number()
+                .max(props.modalData.max)
+                .required()
+            : Yup.string().required(),
+      }),
+      initialValues: {
+        id: props.modalData.id,
+        value: props.modalData.value,
+      },
     });
-  }
+  }, [props.modalData, props.modalDataType]);
 
-  hs = e => {
-    e.preventDefault();
-    this.props.handleSubmit(
-      this.props.modalData.modalType,
-      this.stringForm.value
-    );
+  const submitForm = (values, actions) => {
+    actions.setSubmitting(false);
+    props.handleSubmit(props.modalData.modalType, values);
   };
 
-  render() {
-    return (
-      <FieldGroup
-        control={this.stringForm}
-        render={() => (
-          <>
+  return form ? (
+    <Formik
+      {...form}
+      enableReinitialize
+      onSubmit={submitForm}
+      isInitialValid={props.modalData.value}
+      render={({ handleSubmit, isValid }) => {
+        return (
+          <form className="bx--form" onSubmit={handleSubmit}>
             <div className="eco--modal-container">
-              <form className="bx--form" onSubmit={this.hs}>
-                <div className="bx--row">
-                  <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
-                      name="value"
-                      render={textInput}
-                      meta={{ label: "GRN" }}
-                    />
-                  </div>
+              <div className="bx--row">
+                <div className="bx--col-lg-6 bx--col-sm-12">
+                  <Field
+                    label={props.modalData.title}
+                    name="value"
+                    component={textInput}
+                    type={props.modalDataType}
+                  />
                 </div>
-              </form>
+              </div>
             </div>
-            <ModalFooter
-              primaryButtonText="Save"
-              onRequestSubmit={this.hs}
-              primaryButtonDisabled={this.stringForm.invalid}
-            />
-          </>
-        )}
-      />
-    );
-  }
-}
-
-export class LotListModalFormNumber extends Component<IProps> {
-  numberForm = FormBuilder.group({
-    id: [this.props.modalData.id, Validators.required],
-    value: [this.props.modalData.value, Validators.required],
-  });
-
-  componentDidUpdate() {
-    this.numberForm.setValue({
-      id: this.props.modalData.id,
-      value: this.props.modalData.value,
-    });
-  }
-
-  hs = e => {
-    e.preventDefault();
-    this.props.handleSubmit(
-      this.props.modalData.modalType,
-      this.numberForm.value
-    );
-  };
-
-  render() {
-    return (
-      <FieldGroup
-        control={this.numberForm}
-        render={() => (
-          <>
-            <div className="eco--modal-container">
-              <form className="bx--form" onSubmit={this.hs}>
-                <div className="bx--row">
-                  <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
-                      name="value"
-                      render={numberInput}
-                      meta={{ label: "Perchment Quantity" }}
-                    />
-                  </div>
-                </div>
-              </form>
+            <div className="bx--modal-footer">
+              <button
+                className="bx--btn bx--btn--primary"
+                disabled={!isValid}
+                type="submit"
+              >
+                Save {props.modalData.title}
+              </button>
             </div>
-            <ModalFooter
-              primaryButtonText="Save"
-              onRequestSubmit={this.hs}
-              primaryButtonDisabled={this.numberForm.invalid}
-            />
-          </>
-        )}
-      />
-    );
-  }
-}
+          </form>
+        );
+      }}
+    />
+  ) : (
+    <>Loading...</>
+  );
+};

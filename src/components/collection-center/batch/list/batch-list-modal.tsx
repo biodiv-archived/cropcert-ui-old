@@ -24,8 +24,8 @@ export default class BatchListModal extends Component<IProps> {
           onClose={this.props.closeModal}
         >
           <ModalHeader
-            label="Update Batch Information"
-            title={this.props.modalData.modalType}
+            label="Update Information"
+            title={this.props.modalData.title}
             closeModal={this.props.closeModal}
           />
           {this.props.modalData.modalType !== MODAL_TYPE.PERCHMENT_QUANTITY ? (

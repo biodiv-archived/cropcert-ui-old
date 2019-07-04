@@ -18,6 +18,7 @@ import { BatchingStore } from "/@stores/batching.store";
 import { COStore } from "/@stores/co.store";
 import { getCurrentUser, hasAccess } from "/@utils/auth";
 import { ROLES } from "/@utils/constants";
+import { toJS } from "mobx";
 
 const {
   TableContainer,
@@ -180,9 +181,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
                   <React.Fragment key={row.id}>
                     <TableRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell =>
-                        BatchListCell(cell, row.id, this.openModal)
-                      )}
+                      {this.preRenderRow(row)}
                     </TableRow>
                   </React.Fragment>
                 );
@@ -194,12 +193,21 @@ export default class BatchListComponent extends Component<IProps, IState> {
     </>
   );
 
-  openModal = (modalType, id, value) => {
+  preRenderRow = row => {
+    const actualRow = this.batchingStore.batches.find(r => r.id === row.id);
+    return row.cells.map(cell =>
+      BatchListCell(cell, row.id, this.openModal, toJS(actualRow))
+    );
+  };
+
+  openModal = (modalType, id, value, max, title) => {
     this.setState({
       modalData: {
         modalType,
         id,
         value,
+        max,
+        title,
       },
       isModalOpen: true,
     });

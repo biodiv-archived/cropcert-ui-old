@@ -62,12 +62,14 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
     this.lotStore.lazyListLot(true, this.props.lotStatus);
   }
 
-  openModal = (modalType, id, value) => {
+  openModal = (modalType, id, value, max, title) => {
     this.setState({
       modalData: {
         modalType,
         id,
         value,
+        max,
+        title,
       },
       isModalOpen: true,
     });
@@ -181,9 +183,7 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell =>
-                        LotListCell(cell, row.id, this.openModal)
-                      )}
+                      {this.preRenderRow(row)}
                     </TableExpandRow>
                     {row.isExpanded && (
                       <ExpandRow
@@ -201,6 +201,13 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
       </InfiniteScroll>
     </>
   );
+
+  preRenderRow = row => {
+    const actualRow = this.lotStore.lots.find(r => r.id === row.id);
+    return row.cells.map(cell =>
+      LotListCell(cell, row.id, this.openModal, toJS(actualRow))
+    );
+  };
 
   render() {
     return (

@@ -3,13 +3,13 @@ import { DataTable } from "carbon-components-react";
 import React from "react";
 
 import { MODAL_TYPES } from "/@utils/constants";
-import { toFriendlyCellValue } from "/@utils/basic";
+import { toFriendlyCellValue, camelCaseToStartCase } from "/@utils/basic";
 import { LOT_LINK_ACTIONS } from "./header.constants";
 import { Link } from "gatsby";
 
 const { TableCell } = DataTable;
 
-export default function LotListCell(cell, id, openModal) {
+export default function LotListCell(cell, id, openModal, actualRow) {
   return Object.values(MODAL_TYPES).includes(cell.info.header) ? (
     <TableCell key={cell.id}>
       {toFriendlyCellValue(cell)}
@@ -18,7 +18,13 @@ export default function LotListCell(cell, id, openModal) {
         className="eco--btn-transparent"
         aria-label="Edit"
         onClick={() => {
-          openModal(cell.info.header, id, cell.value || 0);
+          openModal(
+            cell.info.header,
+            id,
+            cell.value || 0,
+            actualRow.quantity,
+            camelCaseToStartCase(cell.info.header)
+          );
         }}
       >
         <Edit />
