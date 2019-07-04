@@ -4,7 +4,7 @@ import React, { Component } from "react";
 
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
-import CuppingComponent from "/@components/cooperative/lot/cupping";
+import CuppingComponent from "/@components/union/lot/cupping";
 import { getCurrentUser } from "/@utils/auth";
 import { ROLES } from "/@utils/constants";
 import { LotStore } from "/@stores/lot.store";

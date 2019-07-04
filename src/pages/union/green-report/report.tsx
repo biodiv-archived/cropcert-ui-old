@@ -4,7 +4,7 @@ import React, { Component } from "react";
 
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
-import GreenReport from "/@components/cooperative/lot/qa";
+import GreenReport from "../../../components/union/lot/qa";
 import { ROLES } from "/@utils/constants";
 import { LotStore } from "/@stores/lot.store";
 

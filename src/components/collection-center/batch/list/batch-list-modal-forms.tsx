@@ -78,16 +78,18 @@ export class BatchListModalFormDate extends Component<IProps, IState> {
 }
 
 export class BatchListModalFormNumber extends Component<IProps, IState> {
-  dateForm;
+  dateForm = {
+    validationSchema: Yup.object().shape({
+      qty: Yup.number().required(),
+    }),
+    initialValues: {
+      qty: this.props.modalData.value,
+    },
+  };
 
   componentDidUpdate() {
-    this.dateForm = {
-      validationSchema: Yup.object().shape({
-        qty: Yup.number().required(),
-      }),
-      initialValues: {
-        qty: this.props.modalData.value,
-      },
+    this.dateForm.initialValues = {
+      qty: this.props.modalData.value,
     };
   }
 

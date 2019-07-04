@@ -11,7 +11,10 @@ import {
   Validators,
 } from "react-reactive-form";
 
-import { FIELDS_DRY, FIELDS_WET } from "../../batch/list/header.constants";
+import {
+  FIELDS_DRY,
+  FIELDS_WET,
+} from "../../collection-center/batch/list/header.constants";
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
 import { getToday } from "/@utils/basic";
