@@ -15,16 +15,12 @@ interface IProps {
   type;
   outTurn;
   quantity;
+  grnNumber;
 }
 
 @observer
 export default class GreenReport extends Component<IProps> {
   qualityStore = new QualityStore();
-
-  constructor(props) {
-    super(props);
-    console.log(this.props);
-  }
 
   getOutTurn = () => {
     return ((this.props.outTurn * 100) / this.props.quantity).toFixed(2);
@@ -41,6 +37,7 @@ export default class GreenReport extends Component<IProps> {
       coffeeType: Yup.string().required(),
       overTurnPercentage: Yup.string().required(),
       mc: Yup.number().required(),
+      grnNumber: Yup.string().required(),
 
       // Grades
       gradeAA: Yup.number().required(),
@@ -81,6 +78,7 @@ export default class GreenReport extends Component<IProps> {
       coffeeType: this.props.type,
       overTurnPercentage: this.getOutTurn(),
       mc: "",
+      grnNumber: this.props.grnNumber,
 
       // Grades
       gradeAA: "",
@@ -170,7 +168,6 @@ export default class GreenReport extends Component<IProps> {
   };
 
   handleSubmit = (values, actions) => {
-    console.log(values);
     actions.setSubmitting(false);
     this.qualityStore.createQualityReport({
       ...values,
@@ -215,9 +212,7 @@ export default class GreenReport extends Component<IProps> {
             readOnly={true}
           />
         </div>
-      </div>
 
-      <div className="bx--row">
         <div className="bx--col-lg-3 bx--col-sm-12">
           <Field
             label="Coffee Type"
@@ -241,6 +236,14 @@ export default class GreenReport extends Component<IProps> {
             name="mc"
             component={textInput}
             type="number"
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="GRN Number"
+            name="grnNumber"
+            component={textInput}
+            readOnly={true}
           />
         </div>
       </div>

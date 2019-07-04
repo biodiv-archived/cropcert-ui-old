@@ -15,8 +15,13 @@ $focus: $cropcert-primary;
 $brand-01: $cropcert-primary;
 $brand-03: $cropcert-primary;
 
+$hover-primary: darken($cropcert-primary, 15%);
+$hover-primary-text: darken($cropcert-primary, 15%);
 $brand-02: darken($cropcert-primary, 15%);
 $interactive-03: darken($cropcert-primary, 15%);
 $active-primary: darken($cropcert-primary, 15%);
 $active-tertiary: darken($cropcert-primary, 15%);
 $support-04: darken($cropcert-primary, 15%);
+
+$active-primary: darken($cropcert-primary, 20%);
+$focus: $cropcert-primary;

@@ -55,7 +55,6 @@ export default class LotListModal extends Component<IProps> {
             title={this.props.modalData.title}
             closeModal={this.props.closeModal}
           />
-          {console.log(this.props.modalData.modalType)}
           {this.renderModal()}
         </ComposedModal>
       </>

@@ -9,6 +9,7 @@ import { navigate } from "gatsby";
 export class LotStore {
   @observable lazyListHasMore = true;
   @observable lotsBatch = new Map();
+  @observable lotsOrigins = new Map();
   @observable lotsBatches = new Map();
   _offset = 0;
   _limit = GLOBAL_LIMIT;
@@ -75,6 +76,30 @@ export class LotStore {
   }
 
   @action
+  getOriginByLotId(lotId) {
+    http
+      .get(`${process.env.ENDPOINT_TRACEABILITY}/lot/origin?lotId=${lotId}`)
+      .then(r => {
+        http
+          .get(
+            `${
+              process.env.ENDPOINT_USER
+            }/cc/origin?batchIds=${r.data.toString()}`
+          )
+          .then(o => {
+            this.lotsOrigins.set(lotId, o.data);
+          });
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while getting lot information",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
   getBatchsByLotId(lotId) {
     http
       .get(
@@ -112,7 +137,6 @@ export class LotStore {
   }
 
   processUpdateLotInfo(modalType, modalData) {
-    console.log(modalData);
     switch (modalType) {
       case MODAL_TYPES.MILLING_TIME:
         return {

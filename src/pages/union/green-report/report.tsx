@@ -32,6 +32,7 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
 
   componentWillMount() {
     this.lotStore.getLotById(this.state.lotId);
+    this.lotStore.getOriginByLotId(this.state.lotId);
   }
 
   render() {
@@ -39,12 +40,14 @@ export default class QuantitativeAnalysisPage extends Component<{}, IState> {
       <Layout roles={[ROLES.UNION]}>
         <SEO title={`Green Analysis - Lot#${this.state.lotId}`} />
         <h1 className="eco--title">Green Analysis</h1>
-        {this.lotStore.lotsBatch.has(this.state.lotId) && (
-          <GreenReport
-            {...this.state}
-            {...this.lotStore.lotsBatch.get(this.state.lotId)}
-          />
-        )}
+        {this.lotStore.lotsBatch.has(this.state.lotId) &&
+          this.lotStore.lotsOrigins.has(this.state.lotId) && (
+            <GreenReport
+              {...this.state}
+              {...this.lotStore.lotsOrigins.get(this.state.lotId)}
+              {...this.lotStore.lotsBatch.get(this.state.lotId)}
+            />
+          )}
       </Layout>
     );
   }

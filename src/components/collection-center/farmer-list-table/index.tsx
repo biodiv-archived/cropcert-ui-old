@@ -1,6 +1,6 @@
 import "./farmer-table.component.scss";
 
-import { DataTable, InlineLoading } from "carbon-components-react";
+import { DataTable, Loading } from "carbon-components-react";
 import { If } from "control-statements";
 import { Link } from "gatsby";
 import { observer } from "mobx-react";
@@ -56,7 +56,7 @@ export default class FarmerListTable extends Component {
               }}
               hasMore={this.farmerStore.lazyListHasMore}
               loader={
-                <InlineLoading
+                <Loading
                   key={rows.length}
                   description="Loading data..."
                 />
@@ -103,7 +103,7 @@ export default class FarmerListTable extends Component {
           </If>
           <If condition={rows.length < 1}>
             <If condition={this.farmerStore.lazyListHasMore}>
-              <InlineLoading description="Loading data..." />
+              <Loading description="Loading data..." />
             </If>
             <If condition={!this.farmerStore.lazyListHasMore}>
               No Farmer found!

@@ -24,7 +24,7 @@ export class BatchingStore {
       )
       .then(response => {
         navigate(
-          `/collection-center/batch/collect-done?id=${response.data.batchId}&type=success`
+          `/collection-center/batch/collect-done?id=${response.data.batchName}&type=success`
         );
       })
       .catch(error => {

@@ -3,7 +3,7 @@ import {
   Button,
   ContentSwitcher,
   DataTable,
-  InlineLoading,
+  Loading,
   Switch,
 } from "carbon-components-react";
 import { navigate } from "gatsby";
@@ -160,7 +160,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
         }}
         hasMore={this.batchingStore.lazyListHasMore}
         loader={
-          <InlineLoading key={rows.length} description="Loading data..." />
+          <Loading key={rows.length} description="Loading data..." />
         }
       >
         <TableContainer>

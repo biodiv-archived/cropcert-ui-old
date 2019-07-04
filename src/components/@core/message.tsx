@@ -12,9 +12,7 @@ export default function MessageComponent({
 }: any) {
   const getMessage = () => {
     return type === "success"
-      ? id > 0
-        ? `${message} #${id}`
-        : message
+      ? `${message} ${id}`
       : "There was some error while performing this operation please try again";
   };
 
@@ -26,6 +24,7 @@ export default function MessageComponent({
         lowContrast
         title={type}
         subtitle={getMessage()}
+        hideCloseButton={true}
       />
       <Link
         to={getRedirect()}

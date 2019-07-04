@@ -12,7 +12,7 @@ export default function BatchCreateDonePage() {
     <Layout roles={[ROLES.AUTHORIZED]}>
       <MessageComponent
         type={type}
-        message="Batch created with ID"
+        message="Batch created with Name"
         id={id}
         backLink="/collection-center/batch/collect"
         backLinkTitle="Create Another Batch"

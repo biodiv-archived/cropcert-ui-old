@@ -15,6 +15,7 @@ interface IProps {
   type;
   outTurn;
   quantity;
+  grnNumber;
 }
 
 @observer
@@ -31,6 +32,7 @@ export default class CuppingComponent extends Component<IProps> {
 
       cupper: Yup.string().required(),
       sampleType: Yup.string().required(),
+      grnNumber: Yup.string().required(),
 
       // Params
       fragranceAroma: Yup.number().required(),
@@ -59,6 +61,7 @@ export default class CuppingComponent extends Component<IProps> {
 
       cupper: this.props.lotInfo.cupper,
       sampleType: this.props.type,
+      grnNumber: this.props.grnNumber,
 
       // Params
       fragranceAroma: "",
@@ -93,12 +96,11 @@ export default class CuppingComponent extends Component<IProps> {
       v.cleanCup +
       v.overAll -
       (v.taint + v.fault);
-    return typeof _t === "number" ? _t : "NaN";
+    return typeof _t === "number" ? _t.toFixed(2) : "NaN";
   };
 
   handleSubmit = (values, actions) => {
     actions.setSubmitting(false);
-    console.log(values);
     this.qualityStore.createCuppingReport({
       ...values,
       timestamp: new Date().getTime(),
@@ -147,6 +149,14 @@ export default class CuppingComponent extends Component<IProps> {
           <Field
             label="Sample Type"
             name="sampleType"
+            component={textInput}
+            readOnly={true}
+          />
+        </div>
+        <div className="bx--col-lg-3 bx--col-sm-12">
+          <Field
+            label="GRN Number"
+            name="grnNumber"
             component={textInput}
             readOnly={true}
           />

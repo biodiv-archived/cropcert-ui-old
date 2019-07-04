@@ -21,7 +21,6 @@ export default class DispatchSummeryComponent extends Component {
   history = window.history.state || {};
 
   componentDidMount() {
-    console.log(this.history.rows);
     if (this.history.rows.length === 0) {
       console.warn("No Data!");
     }

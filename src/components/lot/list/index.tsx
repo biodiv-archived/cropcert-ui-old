@@ -1,4 +1,4 @@
-import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import { Button, DataTable, Loading } from "carbon-components-react";
 import { navigate } from "gatsby";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -160,9 +160,7 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
             : null;
         }}
         hasMore={this.lotStore.lazyListHasMore}
-        loader={
-          <InlineLoading key={rows.length} description="Loading data..." />
-        }
+        loader={<Loading key={rows.length} description="Loading data..." />}
       >
         <TableContainer>
           <Table>
@@ -218,7 +216,6 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
           handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
         />
-        {console.log(this.getHeader())}
         <DataTable
           rows={this.lotStore.lots || []}
           headers={this.getHeader()}

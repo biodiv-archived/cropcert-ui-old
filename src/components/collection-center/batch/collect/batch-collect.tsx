@@ -68,7 +68,6 @@ export default class BatchCollect extends Component<IProps, IState> {
 
   handleSubmit = (values, actions) => {
     actions.setSubmitting(false);
-    console.log(values);
     this.batchingStore.collect({
       ...values,
       createdOn: new Date(),

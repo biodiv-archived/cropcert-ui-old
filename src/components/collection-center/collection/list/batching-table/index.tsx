@@ -4,7 +4,7 @@ import {
   Button,
   Checkbox,
   DataTable,
-  InlineLoading,
+  Loading,
 } from "carbon-components-react";
 import { If } from "control-statements";
 import { navigate } from "gatsby";
@@ -98,7 +98,7 @@ export default class CollectionListComponent extends Component<IProps, IState> {
               }}
               hasMore={this.collectionStore.lazyListHasMore}
               loader={
-                <InlineLoading
+                <Loading
                   key={rows.length}
                   description="Loading data..."
                 />
