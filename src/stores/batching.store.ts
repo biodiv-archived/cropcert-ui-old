@@ -23,19 +23,13 @@ export class BatchingStore {
         _payload
       )
       .then(response => {
-        console.info(response);
-        notify.show(
-          "✅ Batch Collection done successfully",
-          TOAST_TYPE.SUCCESS
+        navigate(
+          `/collection-center/batch/collect-done?id=${response.data.batchId}&type=success`
         );
-        navigate(getRedirect());
       })
       .catch(error => {
         console.error(error);
-        notify.show(
-          "❌ There was some error while collecting",
-          TOAST_TYPE.ERROR
-        );
+        navigate(`/collection-center/batch/collect-done`);
       });
   }
 

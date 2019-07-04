@@ -1,13 +1,8 @@
-import { ModalFooter } from "carbon-components-react";
+import { Field, Formik } from "formik";
 import React, { Component } from "react";
-import {
-  FieldControl,
-  FieldGroup,
-  FormBuilder,
-  Validators,
-} from "react-reactive-form";
+import * as Yup from "yup";
 
-import { dateInput, numberInput, textInput } from "/@components/@core/form";
+import { textInput } from "/@components/@core/formik";
 import { formattedDate, formattedTime } from "/@utils/basic";
 
 interface IProps {
@@ -20,120 +15,126 @@ interface IState {
 }
 
 export class BatchListModalFormDate extends Component<IProps, IState> {
-  dateForm = FormBuilder.group({
-    id: [this.props.modalData.id, Validators.required],
-    date: [formattedDate(this.props.modalData.value), Validators.required],
-    time: [
-      formattedTime(this.props.modalData.value),
-      [
-        Validators.required,
-        Validators.pattern("([01]?[0-9]|2[0-3]):[0-5][0-9]"),
-      ],
-    ],
-  });
-
-  componentDidUpdate() {
-    this.dateForm.setValue({
-      id: this.props.modalData.id,
+  dateForm = {
+    validationSchema: Yup.object().shape({
+      time: Yup.string()
+        .matches(new RegExp("^([0-1][0-9]|[2][0-3]):([0-5][0-9])$"))
+        .required(),
+      date: Yup.date().required(),
+    }),
+    initialValues: {
       date: formattedDate(this.props.modalData.value),
       time: formattedTime(this.props.modalData.value),
-    });
-  }
+    },
+  };
 
-  hs = e => {
-    e.preventDefault();
-    this.props.handleSubmit(
-      this.props.modalData.modalType,
-      this.dateForm.value
-    );
+  handleSubmit = (values, actions) => {
+    actions.setSubmitting(false);
+    this.props.handleSubmit(this.props.modalData.modalType, {
+      id: this.props.modalData.id,
+      ...values,
+    });
   };
 
   render() {
     return (
-      <FieldGroup
-        control={this.dateForm}
-        render={() => (
-          <>
-            <div className="eco--modal-container">
-              <form className="bx--form" onSubmit={this.hs}>
+      <Formik
+        {...this.dateForm}
+        onSubmit={this.handleSubmit}
+        isInitialValid={true}
+        render={props => {
+          return (
+            <form className="bx--form" onSubmit={props.handleSubmit}>
+              <div className="eco--modal-container">
                 <div className="bx--row">
                   <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
+                    <Field
+                      label="Date"
                       name="date"
-                      render={dateInput}
-                      meta={{ label: "Date" }}
+                      component={textInput}
+                      type="date"
                     />
                   </div>
                   <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
-                      name="time"
-                      render={textInput}
-                      meta={{ label: "Time" }}
-                    />
+                    <Field label="Time" name="time" component={textInput} />
                   </div>
                 </div>
-              </form>
-            </div>
-            <ModalFooter
-              primaryButtonText="Save"
-              onRequestSubmit={this.hs}
-              primaryButtonDisabled={this.dateForm.invalid}
-            />
-          </>
-        )}
+              </div>
+              <div className="bx--modal-footer">
+                <button
+                  className="bx--btn bx--btn--primary"
+                  disabled={!props.isValid}
+                  type="submit"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          );
+        }}
       />
     );
   }
 }
 
-export class BatchListModalFormNumber extends Component<IProps> {
-  numberForm = FormBuilder.group({
-    id: [this.props.modalData.id, Validators.required],
-    qty: [this.props.modalData.value, Validators.required],
-  });
+export class BatchListModalFormNumber extends Component<IProps, IState> {
+  dateForm;
 
   componentDidUpdate() {
-    this.numberForm.setValue({
-      id: this.props.modalData.id,
-      qty: this.props.modalData.value,
-    });
+    this.dateForm = {
+      validationSchema: Yup.object().shape({
+        qty: Yup.number().required(),
+      }),
+      initialValues: {
+        qty: this.props.modalData.value,
+      },
+    };
   }
 
-  hs = e => {
-    e.preventDefault();
-    this.props.handleSubmit(
-      this.props.modalData.modalType,
-      this.numberForm.value
-    );
+  handleSubmit = (values, actions) => {
+    actions.setSubmitting(false);
+    this.props.handleSubmit(this.props.modalData.modalType, {
+      id: this.props.modalData.id,
+      ...values,
+    });
   };
 
   render() {
-    return (
-      <FieldGroup
-        control={this.numberForm}
-        render={() => (
-          <>
-            <div className="eco--modal-container">
-              <form className="bx--form" onSubmit={this.hs}>
+    return this.dateForm ? (
+      <Formik
+        {...this.dateForm}
+        onSubmit={this.handleSubmit}
+        isInitialValid={this.props.modalData.value}
+        render={props => {
+          return (
+            <form className="bx--form" onSubmit={props.handleSubmit}>
+              <div className="eco--modal-container">
                 <div className="bx--row">
                   <div className="bx--col-lg-6 bx--col-sm-12">
-                    <FieldControl
+                    <Field
+                      label="Qty"
                       name="qty"
-                      render={numberInput}
-                      meta={{ label: "Perchment Quantity" }}
+                      component={textInput}
+                      type="number"
                     />
                   </div>
                 </div>
-              </form>
-            </div>
-            <ModalFooter
-              primaryButtonText="Save"
-              onRequestSubmit={this.hs}
-              primaryButtonDisabled={this.numberForm.invalid}
-            />
-          </>
-        )}
+              </div>
+              <div className="bx--modal-footer">
+                <button
+                  className="bx--btn bx--btn--primary"
+                  disabled={!props.isValid}
+                  type="submit"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          );
+        }}
       />
+    ) : (
+      <>Loading...</>
     );
   }
 }

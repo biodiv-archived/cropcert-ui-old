@@ -10,34 +10,18 @@ export default function CCIndexPage() {
     <Layout roles={[ROLES.COLLECTION_CENTER]}>
       <SEO title="Collection Center" />
       <h1 className="eco--title">My Dashboard</h1>
-      {/* <div className="bx--row">
-        <Tile
-          title="Collect"
-          description="Coffee from farmers"
-          to="collection/collect"
-        />
-        <Tile
-          title="Collections"
-          description="List all collections"
-          to="collection/list"
-        />
-      </div> */}
       <div className="bx--row">
         <Tile
           title="Create Batch"
           description="Create batch from collections"
           to="batch/collect"
         />
-        <Tile title="View/Update Batch" description="View/Update Batch" to="batch/list" />
-      </div>
-      {/* <div className="bx--row">
         <Tile
-          title="Add Farmer"
-          description="Create farmer Id"
-          to="farmer/create"
+          title="View/Update Batch"
+          description="View/Update Batch"
+          to="batch/list"
         />
-        <Tile title="Farmers" description="List all farmers" to="farmer/list" />
-      </div> */}
+      </div>
     </Layout>
   );
 }

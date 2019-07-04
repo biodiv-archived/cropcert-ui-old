@@ -4,6 +4,7 @@ import { notify } from "react-notify-toast";
 import { formattedTimeStamp } from "/@utils/basic";
 import { GLOBAL_LIMIT, TOAST_TYPE, MODAL_TYPES } from "/@utils/constants";
 import http from "/@utils/http";
+import { navigate } from "gatsby";
 
 export class LotStore {
   @observable lazyListHasMore = true;
@@ -15,10 +16,16 @@ export class LotStore {
 
   @action
   createLotfromBatches(batchData) {
-    return http.post(
-      `${process.env.ENDPOINT_TRACEABILITY}/lotCreation`,
-      batchData
-    );
+    http
+      .post(`${process.env.ENDPOINT_TRACEABILITY}/lotCreation`, batchData)
+      .then(r => {
+        navigate(
+          `/collection-center/lot/create-done?id=${r.data.id}&type=success`
+        );
+      })
+      .catch(error => {
+        navigate("/collection-center/lot/create-done");
+      });
   }
 
   @action
@@ -90,10 +97,18 @@ export class LotStore {
 
   @action
   dispatchLot(lotIDs, timeKey, to = "factory") {
-    return http.put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
-      ids: lotIDs,
-      [timeKey]: formattedTimeStamp(),
-    });
+    http
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
+        ids: lotIDs,
+        [timeKey]: formattedTimeStamp(),
+      })
+      .then(r => {
+        navigate(`/cooperative/lot/dispatch-done?type=success&to=${to}`);
+      })
+      .catch(error => {
+        console.error(error);
+        navigate(`/cooperative/lot/dispatch-done`);
+      });
   }
 
   processUpdateLotInfo(modalType, modalData) {

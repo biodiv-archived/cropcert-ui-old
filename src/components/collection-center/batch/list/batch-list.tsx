@@ -16,7 +16,8 @@ import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
 import { COStore } from "/@stores/co.store";
-import { getCurrentUser } from "/@utils/auth";
+import { getCurrentUser, hasAccess } from "/@utils/auth";
+import { ROLES } from "/@utils/constants";
 
 const {
   TableContainer,
@@ -58,7 +59,9 @@ export default class BatchListComponent extends Component<IProps, IState> {
 
   componentDidMount() {
     const _user = getCurrentUser();
-    this.coStore.getByCoId(_user["coCode"]);
+    if (!hasAccess([ROLES.COLLECTION_CENTER])) {
+      this.coStore.getByCoId(_user["coCode"]);
+    }
     this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCodes);
   }
 

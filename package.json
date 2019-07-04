@@ -5,10 +5,10 @@
   "version": "0.1.0",
   "author": "Harsh Zalavadiya <harsh@strandls.com>",
   "scripts": {
-    "build": "NODE_ENV=production yarn run licenses && gatsby build --prefix-paths",
-    "develop": "gatsby develop --prefix-paths",
+    "build": "NODE_ENV=production yarn run licenses && gatsby build",
+    "develop": "gatsby develop",
     "start": "npm run develop",
-    "serve": "NODE_ENV=production yarn run licenses && gatsby serve --prefix-paths",
+    "serve": "NODE_ENV=production yarn run licenses && gatsby serve",
     "now-build": "npm run build",
     "type-check": "tsc --noEmit",
     "lint": "tslint --project .",

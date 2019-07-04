@@ -1,8 +1,7 @@
 import ListIcon from "@carbon/icons-react/es/list/20";
 import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import { window } from "browser-monads";
-import { Button, DataTable, InlineNotification } from "carbon-components-react";
-import { Link } from "gatsby";
+import { Button, DataTable } from "carbon-components-react";
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 import {
@@ -15,15 +14,12 @@ import {
 import { FIELDS_DRY, FIELDS_WET } from "../../batch/list/header.constants";
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
-import { getRedirect } from "/@utils/auth";
 import { getToday } from "/@utils/basic";
-import { LCS } from "/@utils/constants";
 
 interface IState {
   totalWeight;
   batchesRows;
   lotForm;
-  lotCreationStatus;
 }
 
 const {
@@ -71,7 +67,6 @@ export default class LotCreateComponent extends Component<{}, IState> {
       batchesRows: _batchesRows,
       totalWeight,
       lotForm: form,
-      lotCreationStatus: LCS.NOT_DONE,
     };
   }
 
@@ -89,15 +84,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({ lotCreationStatus: LCS.PROCESSING });
-    this.lotStore
-      .createLotfromBatches(this.genBatchJSON())
-      .then(response => {
-        this.setState({ lotCreationStatus: LCS.DONE });
-      })
-      .catch(error => {
-        this.setState({ lotCreationStatus: LCS.ERROR });
-      });
+    this.lotStore.createLotfromBatches(this.genBatchJSON());
   };
 
   renderFieldGroup = ({ get, invalid }) => {
@@ -164,15 +151,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
                 KG
               </div>
               <div className="bx--col-lg-7 bx--col-md-12 eco--form-submit">
-                <Button
-                  className="btn btn-primary btn-lg btn-block"
-                  type="submit"
-                  disabled={
-                    invalid || this.state.lotCreationStatus !== LCS.NOT_DONE
-                  }
-                >
-                  Create Lot
-                </Button>
+                <Button type="submit">Create Lot</Button>
               </div>
             </div>
           </div>
@@ -181,59 +160,16 @@ export default class LotCreateComponent extends Component<{}, IState> {
     );
   };
 
-  renderSwitch = () => {
-    switch (this.state.lotCreationStatus) {
-      case LCS.NOT_DONE:
-        return this.state.batchesRows.length > 0 ? (
-          <FieldGroup
-            control={this.state.lotForm}
-            render={this.renderFieldGroup}
-          />
-        ) : (
-          <>Please select collections first</>
-        );
-
-      case LCS.DONE:
-        return (
-          <>
-            <InlineNotification
-              kind="success"
-              lowContrast
-              title="Success"
-              subtitle="Your lot was created successfully"
-            />
-            <Link
-              to={getRedirect()}
-              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary"
-            >
-              Go to Dashboard
-            </Link>
-            <Link
-              to="/collection-center/batch/list/"
-              className="btn btn-primary btn-lg btn-block bx--btn bx--btn--primary ml-2"
-            >
-              Create another lot
-            </Link>
-          </>
-        );
-
-      case LCS.ERROR:
-        return (
-          <InlineNotification
-            kind="error"
-            lowContrast
-            title="Error"
-            subtitle="There was some error while creating lot"
-          />
-        );
-    }
-  };
-
   render() {
     return (
       <>
         <h1 className="eco--title">Create Lot</h1>
-        {this.renderSwitch()}
+        {this.state.batchesRows.length > 0 && (
+          <FieldGroup
+            control={this.state.lotForm}
+            render={this.renderFieldGroup}
+          />
+        )}
       </>
     );
   }
