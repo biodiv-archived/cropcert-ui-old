@@ -23,6 +23,7 @@ interface IState {
   totalWeight;
   batchesRows;
   lotForm;
+  batchIds;
 }
 
 const {
@@ -41,6 +42,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
   batches = (window.history.state || {}).selectedRows || [];
   lotType = (window.history.state || {}).lotType || [];
   ccName = (window.history.state || {}).ccName || [];
+  isFirstStep = (window.history.state || {}).isWetBatchFirstStep || [];
 
   constructor(props) {
     super(props);
@@ -70,6 +72,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
       batchesRows: _batchesRows,
       totalWeight,
       lotForm: form,
+      batchIds,
     };
   }
 
@@ -85,6 +88,10 @@ export default class LotCreateComponent extends Component<{}, IState> {
     };
   };
 
+  handleFirstStep = e => {
+    this.lotStore.finalizeWetBatches(this.state.batchIds);
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     this.lotStore.createLotfromBatches(this.genBatchJSON());
@@ -94,7 +101,11 @@ export default class LotCreateComponent extends Component<{}, IState> {
     return (
       <form className="bx--form" onSubmit={this.handleSubmit}>
         <div className="bx--row">
-          <div className="bx--col-lg-8 bx--col-md-12">
+          <div
+            className={`bx--col-md-12 ${
+              this.isFirstStep ? "bx--col-lg-12" : "bx--col-lg-8"
+            }`}
+          >
             <h2 className="eco--form-title">
               <ListIcon />
               &ensp;{this.state.batchesRows.length} Batches(s)
@@ -130,36 +141,38 @@ export default class LotCreateComponent extends Component<{}, IState> {
               )}
             />
           </div>
-          <div className="bx--col-lg-4 bx--col-md-12">
-            <h2 className="eco--form-title">
-              <SettingsIcon />
-              &ensp;Lot Info
-            </h2>
-            <FieldControl
-              name="lotName"
-              render={textInput}
-              meta={{ label: "Lot Name", readOnly: true }}
-            />
-            <FieldControl
-              name="date"
-              render={textInput}
-              meta={{ label: "Date", readOnly: true }}
-            />
-            <FieldControl
-              name="type"
-              render={textInput}
-              meta={{ label: "Batch Type", readOnly: true }}
-            />
-            <div className="bx--row">
-              <div className="bx--col-lg-5 bx--col-md-12 eco--form-total">
-                {this.state.totalWeight}
-                KG
-              </div>
-              <div className="bx--col-lg-7 bx--col-md-12 eco--form-submit">
-                <Button type="submit">Create Lot</Button>
+          {!this.isFirstStep && (
+            <div className="bx--col-lg-4 bx--col-md-12">
+              <h2 className="eco--form-title">
+                <SettingsIcon />
+                &ensp;Lot Info
+              </h2>
+              <FieldControl
+                name="lotName"
+                render={textInput}
+                meta={{ label: "Lot Name", readOnly: true }}
+              />
+              <FieldControl
+                name="date"
+                render={textInput}
+                meta={{ label: "Date", readOnly: true }}
+              />
+              <FieldControl
+                name="type"
+                render={textInput}
+                meta={{ label: "Batch Type", readOnly: true }}
+              />
+              <div className="bx--row">
+                <div className="bx--col-lg-5 bx--col-md-12 eco--form-total">
+                  {this.state.totalWeight}
+                  KG
+                </div>
+                <div className="bx--col-lg-7 bx--col-md-12 eco--form-submit">
+                  <Button type="submit">Create Lot</Button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </form>
     );
@@ -168,7 +181,25 @@ export default class LotCreateComponent extends Component<{}, IState> {
   render() {
     return (
       <>
-        <h1 className="eco--title">Create Lot</h1>
+        <div className="bx--row">
+          <div className="bx--col-lg-6 bx--col-md-12">
+            <h1 className="eco--title">
+              {this.isFirstStep ? "Finalize Wetbatch" : "Create Lot"}
+            </h1>
+          </div>
+          {this.isFirstStep && (
+            <div className="bx--col-lg-6 bx--col-md-12 text-right">
+              <Button
+                kind="primary"
+                className="eco--button-table-primary"
+                onClick={this.handleFirstStep}
+              >
+                Confirm Finalize Wetbatch
+              </Button>
+            </div>
+          )}
+        </div>
+
         {this.state.batchesRows.length > 0 && (
           <FieldGroup
             control={this.state.lotForm}

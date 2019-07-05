@@ -16,6 +16,11 @@ export default function FactoryIndexPage() {
           description="Create batch from collections"
           to="../collection-center/batch/collect"
         />
+        <Tile
+          title="Update Wet Batch"
+          description="Update wet batch data"
+          to="../collection-center/batch/wetbatch-list"
+        />
       </div>
       <h1 className="eco--title">Cooperative Actions</h1>
       <div className="bx--row">

@@ -41,6 +41,7 @@ interface IState {
 interface IProps {
   accessibleCCs;
   title;
+  isWetBatchOnly;
 }
 
 @observer
@@ -52,7 +53,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
     super(props);
     this.state = {
       ...this.state,
-      batchType: "DRY",
+      batchType: "WET",
       ccCodes: this.props.accessibleCCs.map(i => i.id),
       modalData: { type: null, id: null, value: null },
     };
@@ -63,7 +64,12 @@ export default class BatchListComponent extends Component<IProps, IState> {
     if (!hasAccess([ROLES.COLLECTION_CENTER])) {
       this.coStore.getByCoId(_user["coCode"]);
     }
-    this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCodes);
+    this.batchingStore.lazyList(
+      true,
+      this.state.batchType,
+      this.state.ccCodes,
+      !this.props.isWetBatchOnly
+    );
   }
 
   handleSubmit = (modalType, form) => {
@@ -82,6 +88,18 @@ export default class BatchListComponent extends Component<IProps, IState> {
       .filter(cc => selectedBatchCCIds.includes(cc.id))
       .map(c => c.ccName);
     return _ccs.length > 1 ? this.coStore.coOne["coName"] : _ccs[0];
+  };
+
+  onPrimaryAction = selectedRows => {
+    navigate("/collection-center/lot/create", {
+      state: {
+        selectedRows,
+        isWetBatchFirstStep: this.props.isWetBatchOnly,
+        lotType: this.state.batchType,
+        ccCode: this.state.ccCodes,
+        ccName: this.generateLotName(selectedRows),
+      },
+    });
   };
 
   renderDataTable = ({
@@ -103,34 +121,34 @@ export default class BatchListComponent extends Component<IProps, IState> {
             className="eco--button-table-primary"
             disabled={selectedRows.length <= 0}
             onClick={() => {
-              navigate("/collection-center/lot/create", {
-                state: {
-                  selectedRows,
-                  lotType: this.state.batchType,
-                  ccCode: this.state.ccCodes,
-                  ccName: this.generateLotName(selectedRows),
-                },
-              });
+              this.onPrimaryAction(selectedRows);
             }}
           >
-            Create Lot
+            {this.props.isWetBatchOnly ? "Finalize Wetbatch" : "Create Lot"}
           </Button>
         </div>
       </div>
 
       <div className="bx--row">
-        <div className="bx--col-lg-2">
-          <ContentSwitcher
-            className="eco--button-switcher"
-            onChange={({ name }) => {
-              this.setState({ batchType: name });
-              this.batchingStore.lazyList(true, name, this.state.ccCodes);
-            }}
-          >
-            <Switch name="DRY" text="DRY" />
-            <Switch name="WET" text="WET" />
-          </ContentSwitcher>
-        </div>
+        {!this.props.isWetBatchOnly && (
+          <div className="bx--col-lg-2">
+            <ContentSwitcher
+              className="eco--button-switcher"
+              onChange={({ name }) => {
+                this.setState({ batchType: name });
+                this.batchingStore.lazyList(
+                  true,
+                  name,
+                  this.state.ccCodes,
+                  !this.props.isWetBatchOnly
+                );
+              }}
+            >
+              <Switch name="WET" text="WET" />
+              <Switch name="DRY" text="DRY" />
+            </ContentSwitcher>
+          </div>
+        )}
         <div className="bx--col-lg-4 bx--col-md-12">
           <MultiSelect
             options={this.props.accessibleCCs}
@@ -139,7 +157,12 @@ export default class BatchListComponent extends Component<IProps, IState> {
               this.setState({
                 ccCodes: selected,
               });
-              this.batchingStore.lazyList(true, this.state.batchType, selected);
+              this.batchingStore.lazyList(
+                true,
+                this.state.batchType,
+                selected,
+                !this.props.isWetBatchOnly
+              );
             }}
           />
         </div>
@@ -154,7 +177,8 @@ export default class BatchListComponent extends Component<IProps, IState> {
             ? this.batchingStore.lazyList(
                 false,
                 this.state.batchType,
-                this.state.ccCodes
+                this.state.ccCodes,
+                !this.props.isWetBatchOnly
               )
             : null;
         }}
@@ -200,7 +224,13 @@ export default class BatchListComponent extends Component<IProps, IState> {
   preRenderRow = row => {
     const actualRow = this.batchingStore.batches.find(r => r.id === row.id);
     return row.cells.map(cell =>
-      BatchListCell(cell, row.id, this.openModal, toJS(actualRow))
+      BatchListCell(
+        cell,
+        row.id,
+        this.openModal,
+        toJS(actualRow),
+        this.props.isWetBatchOnly
+      )
     );
   };
 

@@ -8,8 +8,15 @@ import { toJS } from "mobx";
 
 const { TableCell } = DataTable;
 
-export default function BatchListCell(cell, id, openModal, actualRow) {
-  return Object.values(MODAL_TYPE).includes(cell.info.header) ? (
+export default function BatchListCell(
+  cell,
+  id,
+  openModal,
+  actualRow,
+  isWetBatchOnly
+) {
+  return Object.values(MODAL_TYPE).includes(cell.info.header) &&
+    isWetBatchOnly ? (
     <TableCell key={cell.id}>
       {toFriendlyCellValue(cell)}
       &emsp;
@@ -30,6 +37,6 @@ export default function BatchListCell(cell, id, openModal, actualRow) {
       </button>
     </TableCell>
   ) : (
-    <TableCell key={cell.id}>{cell.value}</TableCell>
+    <TableCell key={cell.id}>{toFriendlyCellValue(cell)}</TableCell>
   );
 }

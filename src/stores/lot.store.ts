@@ -30,6 +30,22 @@ export class LotStore {
   }
 
   @action
+  finalizeWetBatches(batchData) {
+    http
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/wetbatch/readyForLot`, {
+        batchIds: batchData,
+      })
+      .then(r => {
+        navigate(
+          `/collection-center/lot/create-done?id=${r.data.lotName}&type=success`
+        );
+      })
+      .catch(error => {
+        navigate("/collection-center/lot/create-done");
+      });
+  }
+
+  @action
   lazyListLot(reset, status, type = "lot") {
     if (reset) {
       this._offset = 0;

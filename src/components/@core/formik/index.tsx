@@ -15,7 +15,7 @@ export const textInput = ({
           type="text"
           id={field.name}
           className="bx--text-input"
-          placeholder={`Enter ${field.name}`}
+          placeholder={`Enter ${label}`}
           {...field}
           {...props}
           {...(hasErrors ? { "data-invalid": true } : {})}

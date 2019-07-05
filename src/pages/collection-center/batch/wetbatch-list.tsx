@@ -10,7 +10,7 @@ import { CCStore } from "/@stores/cc.store";
 import { ROLES } from "/@utils/constants";
 
 @observer
-export default class BatchListPage extends Component {
+export default class WetBatchListPage extends Component {
   ccStore = new CCStore();
 
   componentDidMount() {
@@ -20,11 +20,11 @@ export default class BatchListPage extends Component {
   render() {
     return (
       <Layout roles={[ROLES.AUTHORIZED]}>
-        <SEO title="Batch List" />
+        <SEO title="Update Wet Batch Data" />
         <If condition={this.ccStore.accessibleCCs.length > 0}>
           <BatchListComponent
-            title="Create Lot"
-            isWetBatchOnly={false}
+            title="Wet Batches"
+            isWetBatchOnly={true}
             accessibleCCs={toJS(this.ccStore.accessibleCCs)}
           />
         </If>

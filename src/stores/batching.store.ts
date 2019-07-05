@@ -84,7 +84,7 @@ export class BatchingStore {
   }
 
   @action
-  lazyList(reset, type, ccCodes) {
+  lazyList(reset, type, ccCodes, isReadyForLot = true) {
     if (reset) {
       this._offset = 0;
     }
@@ -96,6 +96,7 @@ export class BatchingStore {
             ccCodes: ccCodes.toString() || "-1",
             limit: this._limit,
             offset: this._offset,
+            ...(type === "WET" ? { isReadyForLot } : {}),
           },
         }
       )
@@ -139,9 +140,22 @@ export class BatchingStore {
 
   private transformBatches = (data, reset) => {
     const rows = data.map(o => {
-      return { ...o, id: o.batchId.toString() };
+      return {
+        ...o,
+        id: o.batchId.toString(),
+        disabled: this.isRowDisabled(o),
+      };
     });
     this.batches = reset ? rows : [...this.batches, ...rows];
+  };
+
+  private isRowDisabled = o => {
+    return o.startTime &&
+      o.fermentationEndTime &&
+      o.dryingEndTime &&
+      o.perchmentQuantity > 0
+      ? false
+      : true;
   };
 
   private getEndpoint = type => {
