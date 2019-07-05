@@ -1,11 +1,6 @@
 import "../../list/batching-table/batching-table.component.scss";
 
-import {
-  Button,
-  Checkbox,
-  DataTable,
-  InlineLoading,
-} from "carbon-components-react";
+import { Button, Checkbox, DataTable, Loading } from "carbon-components-react";
 import { If } from "control-statements";
 import { navigate } from "gatsby";
 import { observer } from "mobx-react";
@@ -98,8 +93,9 @@ export default class CollectionListComponent extends Component<IProps, IState> {
               }}
               hasMore={this.collectionStore.lazyListHasMore}
               loader={
-                <InlineLoading
+                <Loading
                   key={rows.length}
+                  withOverlay={false}
                   description="Loading data..."
                 />
               }

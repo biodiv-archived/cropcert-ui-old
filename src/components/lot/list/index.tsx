@@ -1,4 +1,4 @@
-import { Button, DataTable, InlineLoading } from "carbon-components-react";
+import { Button, DataTable, Loading } from "carbon-components-react";
 import { navigate } from "gatsby";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -62,12 +62,14 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
     this.lotStore.lazyListLot(true, this.props.lotStatus);
   }
 
-  openModal = (modalType, id, value) => {
+  openModal = (modalType, id, value, max, title) => {
     this.setState({
       modalData: {
         modalType,
         id,
         value,
+        max,
+        title,
       },
       isModalOpen: true,
     });
@@ -159,7 +161,11 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
         }}
         hasMore={this.lotStore.lazyListHasMore}
         loader={
-          <InlineLoading key={rows.length} description="Loading data..." />
+          <Loading
+            withOverlay={false}
+            key={rows.length}
+            description="Loading data..."
+          />
         }
       >
         <TableContainer>
@@ -181,9 +187,7 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell =>
-                        LotListCell(cell, row.id, this.openModal)
-                      )}
+                      {this.preRenderRow(row)}
                     </TableExpandRow>
                     {row.isExpanded && (
                       <ExpandRow
@@ -202,6 +206,13 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
     </>
   );
 
+  preRenderRow = row => {
+    const actualRow = this.lotStore.lots.find(r => r.id === row.id);
+    return row.cells.map(cell =>
+      LotListCell(cell, row.id, this.openModal, toJS(actualRow))
+    );
+  };
+
   render() {
     return (
       <>
@@ -211,7 +222,6 @@ export default class DispatchLotComponent extends Component<IProps, IState> {
           handleSubmit={this.handleSubmit}
           modalData={this.state.modalData}
         />
-        {console.log(this.getHeader())}
         <DataTable
           rows={this.lotStore.lots || []}
           headers={this.getHeader()}

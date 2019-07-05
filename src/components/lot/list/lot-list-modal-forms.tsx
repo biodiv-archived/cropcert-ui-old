@@ -8,9 +8,10 @@ import { formattedDate, formattedTime } from "/@utils/basic";
 interface IProps {
   modalData;
   handleSubmit;
+  modalDataType?;
 }
 
-export const BatchListModalFormDate = (props: IProps) => {
+export const LotListModalFormDate = (props: IProps) => {
   const [form, setForm] = useState(null as any);
 
   useEffect(() => {
@@ -79,35 +80,36 @@ export const BatchListModalFormDate = (props: IProps) => {
   );
 };
 
-export const BatchListModalFormNumber = (props: IProps) => {
+export const LotListModalForm = (props: IProps) => {
   const [form, setForm] = useState(null as any);
 
   useEffect(() => {
     setForm({
       validationSchema: Yup.object().shape({
-        qty: Yup.number()
-          .max(props.modalData.max)
-          .required(),
+        value:
+          props.modalDataType === "number"
+            ? Yup.number()
+                .max(props.modalData.max)
+                .required()
+            : Yup.string().required(),
       }),
       initialValues: {
-        qty: props.modalData.value,
+        id: props.modalData.id,
+        value: props.modalData.value,
       },
     });
-  }, [props.modalData]);
+  }, [props.modalData, props.modalDataType]);
 
   const submitForm = (values, actions) => {
     actions.setSubmitting(false);
-    props.handleSubmit(props.modalData.modalType, {
-      id: props.modalData.id,
-      ...values,
-    });
+    props.handleSubmit(props.modalData.modalType, values);
   };
 
   return form ? (
     <Formik
       {...form}
-      onSubmit={submitForm}
       enableReinitialize
+      onSubmit={submitForm}
       isInitialValid={props.modalData.value}
       render={({ handleSubmit, isValid }) => {
         return (
@@ -117,9 +119,9 @@ export const BatchListModalFormNumber = (props: IProps) => {
                 <div className="bx--col-lg-6 bx--col-sm-12">
                   <Field
                     label={props.modalData.title}
-                    name="qty"
+                    name="value"
                     component={textInput}
-                    type="number"
+                    type={props.modalDataType}
                   />
                 </div>
               </div>
@@ -130,7 +132,7 @@ export const BatchListModalFormNumber = (props: IProps) => {
                 disabled={!isValid}
                 type="submit"
               >
-                Save
+                Save {props.modalData.title}
               </button>
             </div>
           </form>

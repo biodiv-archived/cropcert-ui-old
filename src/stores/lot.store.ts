@@ -4,10 +4,12 @@ import { notify } from "react-notify-toast";
 import { formattedTimeStamp } from "/@utils/basic";
 import { GLOBAL_LIMIT, TOAST_TYPE, MODAL_TYPES } from "/@utils/constants";
 import http from "/@utils/http";
+import { navigate } from "gatsby";
 
 export class LotStore {
   @observable lazyListHasMore = true;
   @observable lotsBatch = new Map();
+  @observable lotsOrigins = new Map();
   @observable lotsBatches = new Map();
   _offset = 0;
   _limit = GLOBAL_LIMIT;
@@ -15,10 +17,16 @@ export class LotStore {
 
   @action
   createLotfromBatches(batchData) {
-    return http.post(
-      `${process.env.ENDPOINT_TRACEABILITY}/lotCreation`,
-      batchData
-    );
+    http
+      .post(`${process.env.ENDPOINT_TRACEABILITY}/lotCreation`, batchData)
+      .then(r => {
+        navigate(
+          `/collection-center/lot/create-done?id=${r.data.id}&type=success`
+        );
+      })
+      .catch(error => {
+        navigate("/collection-center/lot/create-done");
+      });
   }
 
   @action
@@ -68,6 +76,32 @@ export class LotStore {
   }
 
   @action
+  getOriginByLotId(lotId) {
+    http
+      .get(
+        `${process.env.ENDPOINT_TRACEABILITY}/lotCreation/lot/origin?lotId=${lotId}`
+      )
+      .then(r => {
+        http
+          .get(
+            `${
+              process.env.ENDPOINT_USER
+            }/cc/origin?ccCodes=${r.data.toString()}`
+          )
+          .then(o => {
+            this.lotsOrigins.set(lotId, o.data);
+          });
+      })
+      .catch(error => {
+        console.error(error);
+        notify.show(
+          "❌ There was some error while getting lot information",
+          TOAST_TYPE.ERROR
+        );
+      });
+  }
+
+  @action
   getBatchsByLotId(lotId) {
     http
       .get(
@@ -90,14 +124,21 @@ export class LotStore {
 
   @action
   dispatchLot(lotIDs, timeKey, to = "factory") {
-    return http.put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
-      ids: lotIDs,
-      [timeKey]: formattedTimeStamp(),
-    });
+    http
+      .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
+        ids: lotIDs,
+        [timeKey]: formattedTimeStamp(),
+      })
+      .then(r => {
+        navigate(`/cooperative/lot/dispatch-done?type=success&to=${to}`);
+      })
+      .catch(error => {
+        console.error(error);
+        navigate(`/cooperative/lot/dispatch-done`);
+      });
   }
 
   processUpdateLotInfo(modalType, modalData) {
-    console.log(modalData);
     switch (modalType) {
       case MODAL_TYPES.MILLING_TIME:
         return {

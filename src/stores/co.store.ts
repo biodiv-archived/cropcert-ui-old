@@ -10,7 +10,7 @@ export class COStore {
   @action
   getByCoId(coId) {
     http
-      .get(`${process.env.ENDPOINT_ENTITY}/co/coCode?coCode=${coId}`)
+      .get(`${process.env.ENDPOINT_USER}/co/coCode?coCode=${coId}`)
       .then(r => {
         this.coOne = r.data;
       })

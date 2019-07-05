@@ -1,11 +1,7 @@
 import { ComposedModal, ModalHeader } from "carbon-components-react";
 import React, { Component } from "react";
 
-import {
-  LotListModalFormDate,
-  LotListModalFormNumber,
-  LotListModalFormString,
-} from "./lot-list-modal-forms";
+import { LotListModalFormDate, LotListModalForm } from "./lot-list-modal-forms";
 import { MODAL_TYPES } from "/@utils/constants";
 
 interface IProps {
@@ -20,7 +16,8 @@ export default class LotListModal extends Component<IProps> {
     switch (this.props.modalData.modalType) {
       case MODAL_TYPES.OUTTURN:
         return (
-          <LotListModalFormNumber
+          <LotListModalForm
+            modalDataType={"number"}
             modalData={this.props.modalData}
             handleSubmit={this.props.handleSubmit}
           />
@@ -28,7 +25,8 @@ export default class LotListModal extends Component<IProps> {
 
       case MODAL_TYPES.GRN_NUMBER:
         return (
-          <LotListModalFormString
+          <LotListModalForm
+            modalDataType={"text"}
             modalData={this.props.modalData}
             handleSubmit={this.props.handleSubmit}
           />
@@ -54,7 +52,7 @@ export default class LotListModal extends Component<IProps> {
         >
           <ModalHeader
             label="Update Lot Information"
-            title={this.props.modalData.modalType}
+            title={this.props.modalData.title}
             closeModal={this.props.closeModal}
           />
           {this.renderModal()}

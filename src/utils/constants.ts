@@ -47,7 +47,7 @@ export const LOT_STATUS = {
 
 export const LOT_ACTIONS = {
   AT_CO_OPERATIVE: {
-    title: "Lots",
+    title: "Dispatch Lots",
     action: "Dispatch",
     back: "/cooperative/lot/dispatch-lots",
     endpoint: "/cooperative/lot/dispatch-summery",
@@ -56,7 +56,7 @@ export const LOT_ACTIONS = {
   },
   AT_FACTORY: {
     title: "Milling Lots",
-    action: "Done Milling",
+    action: "Milling Done",
     back: "/union/factory/",
     endpoint: "/union/factory/milling-summery",
     to: "union",
@@ -69,7 +69,7 @@ export const LOT_ACTIONS = {
     to: "grn",
   },
   AT_UNION_GREEN: {
-    title: "Add Green Report",
+    title: "Green Report",
     action: "NA",
     endpoint: "NA",
   },
@@ -78,6 +78,11 @@ export const LOT_ACTIONS = {
     action: "NA",
     endpoint: "NA",
   },
+};
+
+export const TYPE_OPTIONS = {
+  DRY: { label: "Dry", value: "DRY" },
+  WET: { label: "Wet", value: "WET" },
 };
 
 export const MODAL_TYPES = {

@@ -3,7 +3,7 @@ import {
   Button,
   ContentSwitcher,
   DataTable,
-  InlineLoading,
+  Loading,
   Switch,
 } from "carbon-components-react";
 import { navigate } from "gatsby";
@@ -16,7 +16,9 @@ import BatchListModal from "./batch-list-modal";
 import { FIELDS_DRY, FIELDS_WET } from "./header.constants";
 import { BatchingStore } from "/@stores/batching.store";
 import { COStore } from "/@stores/co.store";
-import { getCurrentUser } from "/@utils/auth";
+import { getCurrentUser, hasAccess } from "/@utils/auth";
+import { ROLES } from "/@utils/constants";
+import { toJS } from "mobx";
 
 const {
   TableContainer,
@@ -58,7 +60,9 @@ export default class BatchListComponent extends Component<IProps, IState> {
 
   componentDidMount() {
     const _user = getCurrentUser();
-    this.coStore.getByCoId(_user["coCode"]);
+    if (!hasAccess([ROLES.COLLECTION_CENTER])) {
+      this.coStore.getByCoId(_user["coCode"]);
+    }
     this.batchingStore.lazyList(true, this.state.batchType, this.state.ccCodes);
   }
 
@@ -156,7 +160,11 @@ export default class BatchListComponent extends Component<IProps, IState> {
         }}
         hasMore={this.batchingStore.lazyListHasMore}
         loader={
-          <InlineLoading key={rows.length} description="Loading data..." />
+          <Loading
+            key={rows.length}
+            withOverlay={false}
+            description="Loading data..."
+          />
         }
       >
         <TableContainer>
@@ -177,9 +185,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
                   <React.Fragment key={row.id}>
                     <TableRow {...getRowProps({ row })}>
                       <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell =>
-                        BatchListCell(cell, row.id, this.openModal)
-                      )}
+                      {this.preRenderRow(row)}
                     </TableRow>
                   </React.Fragment>
                 );
@@ -191,12 +197,21 @@ export default class BatchListComponent extends Component<IProps, IState> {
     </>
   );
 
-  openModal = (modalType, id, value) => {
+  preRenderRow = row => {
+    const actualRow = this.batchingStore.batches.find(r => r.id === row.id);
+    return row.cells.map(cell =>
+      BatchListCell(cell, row.id, this.openModal, toJS(actualRow))
+    );
+  };
+
+  openModal = (modalType, id, value, max, title) => {
     this.setState({
       modalData: {
         modalType,
         id,
         value,
+        max,
+        title,
       },
       isModalOpen: true,
     });

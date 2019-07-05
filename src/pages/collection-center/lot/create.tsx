@@ -2,7 +2,7 @@ import React from "react";
 
 import Layout from "/@components/@core/layout.component";
 import SEO from "/@components/@core/seo.component";
-import LotCreateComponent from "/@components/collection-center/lot/create";
+import LotCreateComponent from "/@components/lot/create";
 import { ROLES } from "/@utils/constants";
 
 export default function LotCreatePage() {
