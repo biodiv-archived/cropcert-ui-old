@@ -91,6 +91,7 @@ export default class BatchListComponent extends Component<IProps, IState> {
   };
 
   onPrimaryAction = selectedRows => {
+    console.log(this.props.isWetBatchOnly);
     navigate("/collection-center/lot/create", {
       state: {
         selectedRows,

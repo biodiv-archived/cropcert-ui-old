@@ -105,7 +105,11 @@ export class BatchingStore {
           if (r.data.length === 0 || r.data.length < this._limit) {
             this.lazyListHasMore = false;
           }
-          this.transformBatches(r.data.filter(o => o.type === type), reset);
+          this.transformBatches(
+            r.data.filter(o => o.type === type),
+            reset,
+            type
+          );
           this._offset += this._limit;
         }
       })
@@ -138,12 +142,12 @@ export class BatchingStore {
       });
   }
 
-  private transformBatches = (data, reset) => {
+  private transformBatches = (data, reset, type) => {
     const rows = data.map(o => {
       return {
         ...o,
         id: o.batchId.toString(),
-        disabled: this.isRowDisabled(o),
+        disabled: type === "WET" ? this.isRowDisabled(o) : false,
       };
     });
     this.batches = reset ? rows : [...this.batches, ...rows];

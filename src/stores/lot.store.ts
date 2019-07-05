@@ -2,9 +2,15 @@ import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
 import { formattedTimeStamp } from "/@utils/basic";
-import { GLOBAL_LIMIT, TOAST_TYPE, MODAL_TYPES } from "/@utils/constants";
+import {
+  GLOBAL_LIMIT,
+  TOAST_TYPE,
+  MODAL_TYPES,
+  ROLES,
+} from "/@utils/constants";
 import http from "/@utils/http";
 import { navigate } from "gatsby";
+import { getCurrentUser, hasAccess } from "/@utils/auth";
 
 export class LotStore {
   @observable lazyListHasMore = true;
@@ -45,34 +51,60 @@ export class LotStore {
       });
   }
 
+  getCoCodes = () => {
+    return new Promise((resolve, reject) => {
+      if (hasAccess([ROLES.COOPERATIVE])) {
+        resolve(getCurrentUser()["coCode"]);
+      } else {
+        http
+          .get(`${process.env.ENDPOINT_USER}/co/union`, {
+            params: {
+              unionCode: getCurrentUser()["unionCode"],
+            },
+          })
+          .then(r => {
+            if (Array.isArray(r.data)) {
+              resolve(r.data.map(co => co.coCode));
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
+    });
+  };
+
   @action
   lazyListLot(reset, status, type = "lot") {
     if (reset) {
       this._offset = 0;
     }
-    http
-      .get(`${process.env.ENDPOINT_TRACEABILITY}/${type}/all/${status}`, {
-        params: {
-          limit: this._limit,
-          offset: this._offset,
-        },
-      })
-      .then(r => {
-        if (Array.isArray(r.data)) {
-          if (r.data.length === 0 || r.data.length < this._limit) {
-            this.lazyListHasMore = false;
+    this.getCoCodes().then((coCodes: any) => {
+      http
+        .get(`${process.env.ENDPOINT_TRACEABILITY}/${type}/all/${status}`, {
+          params: {
+            coCodes: coCodes.toString(),
+            limit: this._limit,
+            offset: this._offset,
+          },
+        })
+        .then(r => {
+          if (Array.isArray(r.data)) {
+            if (r.data.length === 0 || r.data.length < this._limit) {
+              this.lazyListHasMore = false;
+            }
+            this.transformBatches(r.data, reset);
+            this._offset += this._limit;
           }
-          this.transformBatches(r.data, reset);
-          this._offset += this._limit;
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        notify.show(
-          "❌ There was some error while listing batches",
-          TOAST_TYPE.ERROR
-        );
-      });
+        })
+        .catch(error => {
+          console.error(error);
+          notify.show(
+            "❌ There was some error while listing batches",
+            TOAST_TYPE.ERROR
+          );
+        });
+    });
   }
 
   @action

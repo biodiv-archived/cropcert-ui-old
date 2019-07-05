@@ -18,6 +18,7 @@ import {
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
 import { getToday, toFriendlyCellValue } from "/@utils/basic";
+import { getCurrentUser } from "/@utils/auth";
 
 interface IState {
   totalWeight;
@@ -42,7 +43,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
   batches = (window.history.state || {}).selectedRows || [];
   lotType = (window.history.state || {}).lotType || [];
   ccName = (window.history.state || {}).ccName || [];
-  isFirstStep = (window.history.state || {}).isWetBatchFirstStep || [];
+  isFirstStep = (window.history.state || {}).isWetBatchFirstStep || "NA";
 
   constructor(props) {
     super(props);
@@ -85,6 +86,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
       type: _formValues.type,
       batchIds: _formValues.batchIds,
       createdOn: new Date().getTime(),
+      coCode: getCurrentUser()["coCode"],
     };
   };
 
@@ -141,7 +143,7 @@ export default class LotCreateComponent extends Component<{}, IState> {
               )}
             />
           </div>
-          {!this.isFirstStep && (
+          {this.isFirstStep && (
             <div className="bx--col-lg-4 bx--col-md-12">
               <h2 className="eco--form-title">
                 <SettingsIcon />
