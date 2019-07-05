@@ -52,7 +52,7 @@ export default class BatchCollect extends Component<IProps, IState> {
     }),
     initialValues: {
       ccCode: this.props.accessibleCCs[0].value,
-      type: this.getTypeOptions()[0],
+      type: this.getTypeOptions()[0].value,
       quantity: 0,
       date: getToday(),
       note: "",
@@ -85,14 +85,16 @@ export default class BatchCollect extends Component<IProps, IState> {
             <div className="bx--row">
               <div className="bx--col-lg-4 bx--col-sm-12">
                 <Field
-                  label="CC Code"
+                  label="Collection Center Name"
                   name="ccCode"
                   component={selectInput}
                   options={this.props.accessibleCCs}
                   onChange={e => {
+                    const typeOptions = this.getTypeOptions(e.target.value);
                     props.setFieldValue("ccCode", e.target.value);
+                    props.setFieldValue("type", typeOptions[0].value);
                     this.setState({
-                      typeOptions: this.getTypeOptions(e.target.value),
+                      typeOptions: typeOptions,
                     });
                   }}
                 />

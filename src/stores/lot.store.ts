@@ -21,7 +21,7 @@ export class LotStore {
       .post(`${process.env.ENDPOINT_TRACEABILITY}/lotCreation`, batchData)
       .then(r => {
         navigate(
-          `/collection-center/lot/create-done?id=${r.data.id}&type=success`
+          `/collection-center/lot/create-done?id=${r.data.lotName}&type=success`
         );
       })
       .catch(error => {

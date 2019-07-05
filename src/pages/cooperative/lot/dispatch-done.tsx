@@ -14,7 +14,7 @@ export default function LotCreateDonePage() {
       <MessageComponent
         type={type}
         message={`Lot(s) dispatched to ${to}`}
-        id={-1}
+        id=""
         backLink="/cooperative/lot/dispatch-lots"
         backLinkTitle="Dispatch Other Lot(s)"
       />

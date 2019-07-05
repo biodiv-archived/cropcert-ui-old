@@ -17,7 +17,7 @@ import {
 } from "../../collection-center/batch/list/header.constants";
 import { textInput } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
-import { getToday } from "/@utils/basic";
+import { getToday, toFriendlyCellValue } from "/@utils/basic";
 
 interface IState {
   totalWeight;
@@ -118,7 +118,9 @@ export default class LotCreateComponent extends Component<{}, IState> {
                       {rows.map(row => (
                         <TableRow key={row.id}>
                           {row.cells.map(cell => (
-                            <TableCell key={cell.id}>{cell.value}</TableCell>
+                            <TableCell key={cell.id}>
+                              {toFriendlyCellValue(cell)}
+                            </TableCell>
                           ))}
                         </TableRow>
                       ))}

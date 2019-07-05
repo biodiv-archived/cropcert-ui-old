@@ -45,7 +45,7 @@ export const formattedTimeStamp = (d = new Date()) => {
 
 export const toFriendlyCellValue = c => {
   return c.value
-    ? c.id.toLowerCase().includes("time")
+    ? c.id.toLowerCase().includes("time", " on")
       ? formattedTimeStamp(new Date(c.value))
       : c.value
     : "NA";

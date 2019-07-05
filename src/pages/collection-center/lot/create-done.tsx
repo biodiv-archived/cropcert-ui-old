@@ -13,7 +13,7 @@ export default function LotCreateDonePage() {
     <Layout roles={[ROLES.AUTHORIZED]}>
       <MessageComponent
         type={type}
-        message="Lot created with ID"
+        message="Lot created with Name &rarr;"
         id={id}
         backLink="/collection-center/batch/list/"
         backLinkTitle="Create Another Lot"
