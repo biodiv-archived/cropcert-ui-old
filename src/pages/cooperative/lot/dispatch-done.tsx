@@ -6,8 +6,9 @@ import MessageComponent from "/@components/@core/message";
 import { ROLES } from "/@utils/constants";
 
 export default function LotCreateDonePage() {
-  const type = parse(location.search).type || "error";
-  const to = parse(location.search).to || "";
+  const isCSR = typeof location !== "undefined";
+  const type = isCSR ? parse(location.search).type || "error" : "";
+  const to = isCSR ? parse(location.search).to || "" : "";
   return (
     <Layout roles={[ROLES.AUTHORIZED]}>
       <MessageComponent

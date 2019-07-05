@@ -67,7 +67,8 @@ export class CCStore {
 
   @action
   get() {
-    const ccId = parse(location.search).ccId;
+    const isCSR = typeof location !== "undefined";
+    const ccId = isCSR ? parse(location.search).ccId : -1;
     http
       .get(`${process.env.ENDPOINT_USER}/cc/${ccId}`)
       .then(r => {
