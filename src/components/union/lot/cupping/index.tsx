@@ -102,9 +102,10 @@ export default class CuppingComponent extends Component<IProps> {
   };
 
   handleSubmit = (values, actions) => {
+    const { grnNumber, ...v } = values;
     actions.setSubmitting(false);
     this.qualityStore.createCuppingReport({
-      ...values,
+      ...v,
       timestamp: new Date().getTime(),
     });
   };

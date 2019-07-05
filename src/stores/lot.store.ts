@@ -27,7 +27,7 @@ export class LotStore {
       .post(`${process.env.ENDPOINT_TRACEABILITY}/lotCreation`, batchData)
       .then(r => {
         navigate(
-          `/collection-center/lot/create-done?id=${r.data.lotName}&type=success`
+          `/collection-center/lot/create-done?id=${batchData.lotName}&type=success`
         );
       })
       .catch(error => {
@@ -43,7 +43,7 @@ export class LotStore {
       })
       .then(r => {
         navigate(
-          `/collection-center/lot/create-done?id=${r.data.lotName}&type=success`
+          `/collection-center/lot/create-done?operationType=readyForLot&type=success`
         );
       })
       .catch(error => {

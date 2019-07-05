@@ -26,8 +26,6 @@ export default class CuppingList extends Component<{}, IState> {
     this.state = {
       lotId: this.isCSR ? parse(location.search).id : 0,
       lotInfo: {
-        cfa: "__CFA__",
-        cc_code: 1,
         cupper: _cu.hasOwnProperty("userName") || "NA",
       },
     };

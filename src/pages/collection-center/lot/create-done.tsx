@@ -9,15 +9,24 @@ export default function LotCreateDonePage() {
   const isCSR = typeof location !== "undefined";
   const id = isCSR ? parse(location.search).id || "" : "";
   const type = isCSR ? parse(location.search).type || "error" : "";
+  const operationType = isCSR ? parse(location.search).operationType : "";
+
+  const options =
+    operationType === "readyForLot"
+      ? {
+          message: "Wet batch(s) are finalized and ready for Lot",
+          backLink: "/collection-center/batch/wetbatch-list",
+          backLinkTitle: "Update Another Batch",
+        }
+      : {
+          message: "Lot created with Name →",
+          backLink: "/collection-center/batch/list/",
+          backLinkTitle: "Create Another Lot",
+        };
+
   return (
     <Layout roles={[ROLES.AUTHORIZED]}>
-      <MessageComponent
-        type={type}
-        message="Lot created with Name &rarr;"
-        id={id}
-        backLink="/collection-center/batch/list/"
-        backLinkTitle="Create Another Lot"
-      />
+      <MessageComponent type={type} id={id} {...options} />
     </Layout>
   );
 }

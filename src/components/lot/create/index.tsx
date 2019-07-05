@@ -3,7 +3,7 @@ import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import { window } from "browser-monads";
 import { Button, DataTable } from "carbon-components-react";
 import { observer } from "mobx-react";
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FieldControl,
   FieldGroup,
@@ -15,17 +15,13 @@ import {
   FIELDS_DRY,
   FIELDS_WET,
 } from "../../collection-center/batch/list/header.constants";
-import { textInput } from "/@components/@core/form";
+import { textInput as textInput1 } from "/@components/@core/form";
 import { LotStore } from "/@stores/lot.store";
 import { getToday, toFriendlyCellValue } from "/@utils/basic";
 import { getCurrentUser } from "/@utils/auth";
-
-interface IState {
-  totalWeight;
-  batchesRows;
-  lotForm;
-  batchIds;
-}
+import * as Yup from "yup";
+import { selectInput, textInput } from "/@components/@core/formik";
+import { Formik, Field } from "formik";
 
 const {
   TableContainer,
@@ -37,22 +33,25 @@ const {
   TableHeader,
 } = DataTable;
 
-@observer
-export default class LotCreateComponent extends Component<{}, IState> {
-  lotStore = new LotStore();
-  batches = (window.history.state || {}).selectedRows || [];
-  lotType = (window.history.state || {}).lotType || [];
-  ccName = (window.history.state || {}).ccName || [];
-  isFirstStep = (window.history.state || {}).isWetBatchFirstStep || "NA";
+export default function index() {
+  const lotStore = new LotStore();
+  const [quantity, setQuantity] = useState(0);
+  const [rows, setRows] = useState([] as any);
+  const [lotType, setLotType] = useState();
+  const [batchIds, setBatchIds] = useState([] as any);
+  const [isFirstStep, setIsFirstStep] = useState([] as any);
+  const [lotFormInitial, setLotFormInitial] = useState([] as any);
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    const params = window.history.state || {};
+    const batches = params.selectedRows || [];
+    const lotType = params.lotType || "";
 
-    let totalWeight = 0;
+    let quantity = 0;
     let batchIds: number[] = [];
 
-    const _batchesRows = this.batches.map(c => {
-      totalWeight += c.cells[c.cells.length - 1].value;
+    const _batchesRows = batches.map(c => {
+      quantity += c.cells[c.cells.length - 1].value;
       batchIds.push(parseInt(`${c.id}`));
       return c.cells.reduce(
         (acc, c) => ({ ...acc, [c.info.header]: c.value }),
@@ -60,155 +59,145 @@ export default class LotCreateComponent extends Component<{}, IState> {
       );
     });
 
-    const form = FormBuilder.group({
-      batchIds: [batchIds, Validators.required],
-      totalWeight: [totalWeight, Validators.required],
-      lotName: [`${this.ccName}_Lot_${getToday()}`],
-      date: [getToday(), Validators.required],
-      timestamp: [new Date(), Validators.required],
-      type: [this.lotType],
-    });
+    setQuantity(quantity);
+    setBatchIds(batchIds);
+    setRows(_batchesRows);
+    setLotType(lotType);
+    setIsFirstStep(params.isWetBatchFirstStep);
 
-    this.state = {
-      batchesRows: _batchesRows,
-      totalWeight,
-      lotForm: form,
-      batchIds,
-    };
-  }
-
-  genBatchJSON = () => {
-    const _formValues = this.state.lotForm.value;
-    return {
-      lotName: _formValues.lotName,
-      quantity: this.state.totalWeight,
-      timeToFactory: new Date().getTime(),
-      type: _formValues.type,
-      batchIds: _formValues.batchIds,
-      createdOn: new Date().getTime(),
+    setLotFormInitial({
+      date: getToday(),
+      lotName: `${params.ccName}_Lot_${getToday()}`,
+      batchIds: batches.map(b => parseInt(b.id)),
+      quantity,
       coCode: getCurrentUser()["coCode"],
-    };
+      type: lotType,
+    });
+  }, [window.history.state]);
+
+  const handleFirstStep = () => {
+    lotStore.finalizeWetBatches(batchIds);
   };
 
-  handleFirstStep = e => {
-    this.lotStore.finalizeWetBatches(this.state.batchIds);
+  const handleSubmit = (values, actions) => {
+    const { date, ...v } = values;
+    actions.setSubmitting(false);
+    lotStore.createLotfromBatches({
+      ...v,
+      createdOn: new Date().getTime(),
+      timeToFactory: new Date().getTime(),
+    });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.lotStore.createLotfromBatches(this.genBatchJSON());
-  };
-
-  renderFieldGroup = ({ get, invalid }) => {
-    return (
-      <form className="bx--form" onSubmit={this.handleSubmit}>
-        <div className="bx--row">
-          <div
-            className={`bx--col-md-12 ${
-              this.isFirstStep ? "bx--col-lg-12" : "bx--col-lg-8"
-            }`}
-          >
-            <h2 className="eco--form-title">
-              <ListIcon />
-              &ensp;{this.state.batchesRows.length} Batches(s)
-            </h2>
-            <DataTable
-              rows={this.state.batchesRows || []}
-              headers={this.lotType == "DRY" ? FIELDS_DRY : FIELDS_WET}
-              render={({ rows, headers, getHeaderProps }) => (
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        {headers.map(header => (
-                          <TableHeader {...getHeaderProps({ header })}>
-                            {header.header}
-                          </TableHeader>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map(row => (
-                        <TableRow key={row.id}>
-                          {row.cells.map(cell => (
-                            <TableCell key={cell.id}>
-                              {toFriendlyCellValue(cell)}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            />
-          </div>
-          {this.isFirstStep && (
-            <div className="bx--col-lg-4 bx--col-md-12">
-              <h2 className="eco--form-title">
-                <SettingsIcon />
-                &ensp;Lot Info
-              </h2>
-              <FieldControl
-                name="lotName"
-                render={textInput}
-                meta={{ label: "Lot Name", readOnly: true }}
-              />
-              <FieldControl
-                name="date"
-                render={textInput}
-                meta={{ label: "Date", readOnly: true }}
-              />
-              <FieldControl
-                name="type"
-                render={textInput}
-                meta={{ label: "Batch Type", readOnly: true }}
-              />
-              <div className="bx--row">
-                <div className="bx--col-lg-5 bx--col-md-12 eco--form-total">
-                  {this.state.totalWeight}
-                  KG
-                </div>
-                <div className="bx--col-lg-7 bx--col-md-12 eco--form-submit">
-                  <Button type="submit">Create Lot</Button>
-                </div>
-              </div>
-            </div>
-          )}
+  return (
+    <>
+      <div className="bx--row">
+        <div className="bx--col-lg-6 bx--col-md-12">
+          <h1 className="eco--title">
+            {isFirstStep ? "Finalize Wetbatch" : "Create Lot"}
+          </h1>
         </div>
-      </form>
-    );
-  };
-
-  render() {
-    return (
-      <>
-        <div className="bx--row">
-          <div className="bx--col-lg-6 bx--col-md-12">
-            <h1 className="eco--title">
-              {this.isFirstStep ? "Finalize Wetbatch" : "Create Lot"}
-            </h1>
+        {isFirstStep && (
+          <div className="bx--col-lg-6 bx--col-md-12 text-right">
+            <Button
+              kind="primary"
+              className="eco--button-table-primary"
+              onClick={handleFirstStep}
+            >
+              Confirm Finalize Wetbatch
+            </Button>
           </div>
-          {this.isFirstStep && (
-            <div className="bx--col-lg-6 bx--col-md-12 text-right">
-              <Button
-                kind="primary"
-                className="eco--button-table-primary"
-                onClick={this.handleFirstStep}
-              >
-                Confirm Finalize Wetbatch
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {this.state.batchesRows.length > 0 && (
-          <FieldGroup
-            control={this.state.lotForm}
-            render={this.renderFieldGroup}
-          />
         )}
-      </>
-    );
-  }
+      </div>
+
+      {rows.length > 0 && (
+        <Formik
+          initialValues={lotFormInitial}
+          enableReinitialize
+          onSubmit={handleSubmit}
+          render={({ handleSubmit }) => (
+            <form className="bx--form" onSubmit={handleSubmit}>
+              <div className="bx--row">
+                <div
+                  className={`bx--col-md-12 ${
+                    isFirstStep ? "bx--col-lg-12" : "bx--col-lg-8"
+                  }`}
+                >
+                  <h2 className="eco--form-title">
+                    <ListIcon />
+                    &ensp;{rows.length} Batches(s)
+                  </h2>
+                  <DataTable
+                    rows={rows}
+                    headers={lotType == "DRY" ? FIELDS_DRY : FIELDS_WET}
+                    render={({ rows, headers, getHeaderProps }) => (
+                      <TableContainer>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              {headers.map(header => (
+                                <TableHeader {...getHeaderProps({ header })}>
+                                  {header.header}
+                                </TableHeader>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {rows.map(row => (
+                              <TableRow key={row.id}>
+                                {row.cells.map(cell => (
+                                  <TableCell key={cell.id}>
+                                    {toFriendlyCellValue(cell)}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    )}
+                  />
+                </div>
+                {!isFirstStep && (
+                  <div className="bx--col-lg-4 bx--col-md-12">
+                    <h2 className="eco--form-title">
+                      <SettingsIcon />
+                      &ensp;Lot Info
+                    </h2>
+                    <Field
+                      label="Lot Name"
+                      name="lotName"
+                      component={textInput}
+                      readOnly={true}
+                    />
+                    <Field
+                      label="Date"
+                      name="date"
+                      component={textInput}
+                      readOnly={true}
+                    />
+                    <Field
+                      label="Batch Type"
+                      name="type"
+                      component={textInput}
+                      readOnly={true}
+                    />
+                    <div className="bx--row">
+                      <div className="bx--col-lg-5 bx--col-md-12 eco--form-total">
+                        {quantity}
+                        KG
+                      </div>
+                      <div className="bx--col-lg-7 bx--col-md-12 eco--form-submit">
+                        <Button type="submit">Create Lot</Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </form>
+          )}
+        />
+      )}
+    </>
+  );
 }

@@ -42,13 +42,17 @@ export default class GreenReport extends Component<IProps> {
       grnNumber: Yup.string().required(),
 
       // Grades
-      gradeAA: Yup.number().required(),
-      gradeA: Yup.number().required(),
-      gradeB: Yup.number().required(),
-      gradeAB: Yup.number().required(),
-      gradeC: Yup.number().required(),
-      gradePB: Yup.number().required(),
-      gradeTriage: Yup.number().required(),
+      ...(this.props.type === "WET"
+        ? {
+            gradeAA: Yup.number().required(),
+            gradeA: Yup.number().required(),
+            gradeB: Yup.number().required(),
+            gradeAB: Yup.number().required(),
+            gradeC: Yup.number().required(),
+            gradePB: Yup.number().required(),
+            gradeTriage: Yup.number().required(),
+          }
+        : {}),
 
       // Severe defects
       fullBlack: Yup.number().required(),
@@ -170,9 +174,10 @@ export default class GreenReport extends Component<IProps> {
   };
 
   handleSubmit = (values, actions) => {
+    const { grnNumber, ...v } = actions;
     actions.setSubmitting(false);
     this.qualityStore.createQualityReport({
-      ...values,
+      ...v,
       percentageOutTurn: this.outTurnFAQ(values),
       timestamp: new Date().getTime(),
     });
