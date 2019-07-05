@@ -43,14 +43,18 @@ export class BatchingStore {
             ? `${modalData.date} ${modalData.time}:00`
             : modalData.qty,
       })
-      .then(response => {
+      .then(r => {
         this.batches = this.batches.map(_ =>
-          _.batchId === response.data.batchId
-            ? { ...response.data, id: response.data.batchId.toString() }
+          _.batchId === r.data.batchId
+            ? {
+                ...r.data,
+                id: r.data.batchId.toString(),
+                disabled: this.isRowDisabled(r.data),
+              }
             : _
         );
         notify.show(
-          `✅ Batch #${response.data.batchId} Updated Successfully`,
+          `✅ Batch #${r.data.batchId} Updated Successfully`,
           TOAST_TYPE.SUCCESS
         );
       })
@@ -147,17 +151,18 @@ export class BatchingStore {
       return {
         ...o,
         id: o.batchId.toString(),
-        disabled: type === "WET" ? this.isRowDisabled(o) : false,
+        disabled: this.isRowDisabled(o),
       };
     });
     this.batches = reset ? rows : [...this.batches, ...rows];
   };
 
   private isRowDisabled = o => {
-    return o.startTime &&
-      o.fermentationEndTime &&
-      o.dryingEndTime &&
-      o.perchmentQuantity > 0
+    return o.type === "DRY" ||
+      (o.startTime &&
+        o.fermentationEndTime &&
+        o.dryingEndTime &&
+        o.perchmentQuantity > 0)
       ? false
       : true;
   };
