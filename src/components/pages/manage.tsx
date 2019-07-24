@@ -1,14 +1,13 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import CKEditor from "@ckeditor/ckeditor5-react";
+import { exists, window } from "browser-monads";
 import { Button } from "carbon-components-react";
-import SimpleuploadPlugin from "ckeditor5-simple-upload/src/simpleupload";
 import { Field, Formik } from "formik";
 import { useObservable } from "mobx-react-lite";
 import React from "react";
 import * as Yup from "yup";
 
 import { PagesStore } from "../../stores/pages.store";
-import { textAreaInput, textInput } from "../@core/formik";
+import { textInput } from "../@core/formik";
+import { CKEditor, ClassicEditor, SimpleuploadPlugin } from "/@components/@core/CKEditor";
 import { local2utc } from "/@utils/basic";
 
 export default function ManagePage() {
@@ -37,6 +36,25 @@ export default function ManagePage() {
     });
   };
 
+  const Editor = props =>
+    exists(window) ? (
+      <CKEditor
+        editor={ClassicEditor}
+        data="<p></p>"
+        config={{
+          extraPlugins: [SimpleuploadPlugin],
+          simpleUpload: {
+            uploadUrl: "http://localhost:3100/upload",
+          },
+        }}
+        onChange={(event, editor) => {
+          props.setFieldValue("content", editor.getData());
+        }}
+      />
+    ) : (
+      <>Editor</>
+    );
+
   return (
     <Formik
       {...pageForm}
@@ -50,22 +68,7 @@ export default function ManagePage() {
           </div>
           <div className="bx--row">
             <div className="bx--col-lg-4 bx--col-sm-12">
-              <CKEditor
-                editor={ClassicEditor}
-                data="<p></p>"
-                config={{
-                  extraPlugins: [SimpleuploadPlugin],
-                  simpleUpload: {
-                    uploadUrl: "http://localhost:3100/upload",
-                  },
-                }}
-                onChange={(event, editor) => {
-                  props.setFieldValue("content", editor.getData());
-                }}
-                upload={editor => {
-                  console.log("xyz");
-                }}
-              />
+              <Editor props={props} />
             </div>
           </div>
 
