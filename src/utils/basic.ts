@@ -39,7 +39,7 @@ export const toFriendlyCellValue = c => {
 
 export const toUTCDateTime = modalData => {
   const d = dayjs(`${modalData.date} ${modalData.time}`, "MM-DD-YYYY HH:mm");
-  return formattedTimeStamp(local2utc(d.toDate().getTime()));
+  return local2utc(d.toDate().getTime()).getTime();
 };
 
 /*
