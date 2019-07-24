@@ -2,26 +2,17 @@ import ListIcon from "@carbon/icons-react/es/list/20";
 import SettingsIcon from "@carbon/icons-react/es/settings/20";
 import { window } from "browser-monads";
 import { Button, DataTable } from "carbon-components-react";
-import { observer } from "mobx-react";
+import { Field, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import {
-  FieldControl,
-  FieldGroup,
-  FormBuilder,
-  Validators,
-} from "react-reactive-form";
 
 import {
   FIELDS_DRY,
   FIELDS_WET,
 } from "../../collection-center/batch/list/header.constants";
-import { textInput as textInput1 } from "/@components/@core/form";
+import { textInput } from "/@components/@core/formik";
 import { LotStore } from "/@stores/lot.store";
-import { getToday, toFriendlyCellValue } from "/@utils/basic";
 import { getCurrentUser } from "/@utils/auth";
-import * as Yup from "yup";
-import { selectInput, textInput } from "/@components/@core/formik";
-import { Formik, Field } from "formik";
+import { getToday, toFriendlyCellValue, local2utc } from "/@utils/basic";
 
 const {
   TableContainer,
@@ -84,8 +75,8 @@ export default function index() {
     actions.setSubmitting(false);
     lotStore.createLotfromBatches({
       ...v,
-      createdOn: new Date().getTime(),
-      timeToFactory: new Date().getTime(),
+      createdOn: local2utc(),
+      timeToFactory: local2utc(),
     });
   };
 

@@ -28,6 +28,36 @@ export const textInput = ({
   );
 };
 
+export const textAreaInput = ({
+  field,
+  form: { touched, errors },
+  label,
+  ...props
+}) => {
+  const hasErrors = touched[field.name] && errors[field.name];
+  return (
+    <fieldset className="bx--fieldset">
+      <div className="bx--form-item">
+        <label className="bx--label">{label}</label>
+        <div className="bx--text-area__wrapper" style={{ width: "100%" }}>
+          <textarea
+            placeholder={`Enter ${label}`}
+            className="bx--text-area"
+            id={field.name}
+            style={{ width: "100%" }}
+            {...field}
+            {...props}
+            {...(hasErrors ? { "data-invalid": true } : {})}
+          ></textarea>
+          {hasErrors && (
+            <div className="bx--form-requirement">{errors[field.name]}</div>
+          )}
+        </div>
+      </div>
+    </fieldset>
+  );
+};
+
 export const selectInput = ({
   field,
   form: { touched, errors },

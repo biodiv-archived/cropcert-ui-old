@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 import { textInput } from "/@components/@core/formik";
-import { formattedDate, formattedTime } from "/@utils/basic";
+import { formattedDate, formattedTime, utc2local } from "/@utils/basic";
 
 interface IProps {
   modalData;
@@ -14,6 +14,7 @@ export const BatchListModalFormDate = (props: IProps) => {
   const [form, setForm] = useState(null as any);
 
   useEffect(() => {
+    const dl = utc2local(props.modalData.value);
     setForm({
       validationSchema: Yup.object().shape({
         date: Yup.date().required(),
@@ -26,8 +27,8 @@ export const BatchListModalFormDate = (props: IProps) => {
       }),
       initialValues: {
         id: props.modalData.id,
-        date: formattedDate(props.modalData.value),
-        time: formattedTime(props.modalData.value),
+        date: formattedDate(dl),
+        time: formattedTime(dl),
       },
     });
   }, [props.modalData]);

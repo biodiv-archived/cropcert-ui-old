@@ -5,7 +5,7 @@ import * as Yup from "yup";
 
 import { selectInput, textInput } from "/@components/@core/formik";
 import { BatchingStore } from "/@stores/batching.store";
-import { getToday } from "/@utils/basic";
+import { getToday, local2utc } from "/@utils/basic";
 import { TYPE_OPTIONS } from "/@utils/constants";
 
 interface IProps {
@@ -70,7 +70,7 @@ export default class BatchCollect extends Component<IProps, IState> {
     actions.setSubmitting(false);
     this.batchingStore.collect({
       ...values,
-      createdOn: new Date(),
+      createdOn: local2utc(),
       batchName: `${this.getCCById(values.ccCode).ccName}_${getToday()}`,
     });
   };

@@ -1,7 +1,7 @@
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { formattedTimeStamp } from "/@utils/basic";
+import { formattedTimeStamp, local2utc, toUTCDateTime } from "/@utils/basic";
 import {
   GLOBAL_LIMIT,
   TOAST_TYPE,
@@ -175,7 +175,7 @@ export class LotStore {
     http
       .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
         ids: lotIDs,
-        [timeKey]: formattedTimeStamp(),
+        [timeKey]: formattedTimeStamp(local2utc()),
       })
       .then(r => {
         navigate(`/cooperative/lot/dispatch-done?type=success&to=${to}`);
@@ -191,7 +191,7 @@ export class LotStore {
       case MODAL_TYPES.MILLING_TIME:
         return {
           id: modalData.id,
-          millingTime: `${modalData.date} ${modalData.time}:00`,
+          millingTime: toUTCDateTime(modalData),
         };
 
       case MODAL_TYPES.OUTTURN:

@@ -34,6 +34,11 @@ export default function FactoryIndexPage() {
           description="Add Cupping report for Lot(s)"
           to="cupping-report"
         />
+        <Tile
+          title="Pages"
+          description="Manage Static Pages"
+          to="../admin/pages/create"
+        />
       </div>
     </Layout>
   );

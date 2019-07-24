@@ -1,30 +1,15 @@
+import dayjs from "dayjs";
+
 export const getToday = () => {
-  const local = new Date();
-  local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-  return local.toJSON().slice(0, 10);
+  return dayjs().format("YYYY-MM-DD");
 };
 
 export const formattedDate = (d = new Date()) => {
-  d = new Date(d || new Date().getTime());
-  let month = "" + (d.getMonth() + 1);
-  let day = "" + d.getDate();
-  const year = d.getFullYear();
-
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [year, month, day].join("-");
+  return dayjs(d).format("YYYY-MM-DD");
 };
 
 export const formattedTime = (d = new Date()) => {
-  d = new Date(d || new Date().getTime());
-  let m = "" + d.getMinutes();
-  let h = "" + d.getHours();
-
-  if (m.length < 2) m = "0" + m;
-  if (h.length < 2) h = "0" + h;
-
-  return [h, m].join(":");
+  return dayjs(d).format("HH:mm");
 };
 
 export const camelCaseToStartCase = camelCase => {
@@ -41,13 +26,39 @@ export const camelCaseToStartCase = camelCase => {
 };
 
 export const formattedTimeStamp = (d = new Date()) => {
-  return `${formattedDate(d)} ${formattedTime(d)}:00`;
+  return dayjs(d).format("YYYY-MM-DD HH:mm:ss");
 };
 
 export const toFriendlyCellValue = c => {
   return c.value
     ? c.id.toLowerCase().includes("time", " on")
-      ? formattedTimeStamp(new Date(c.value))
+      ? formattedTimeStamp(utc2local(c.value))
       : c.value
     : "NA";
+};
+
+export const toUTCDateTime = modalData => {
+  const d = dayjs(`${modalData.date} ${modalData.time}`, "MM-DD-YYYY HH:mm");
+  return formattedTimeStamp(local2utc(d.toDate().getTime()));
+};
+
+/*
+ * Returns Local date object from given UTC timestamp typically comes from server side
+ */
+export const utc2local = utcTimeStamp => {
+  const dateInUtc = new Date(utcTimeStamp);
+  return new Date(
+    dateInUtc.getTime() - dateInUtc.getTimezoneOffset() * 60 * 1000
+  );
+};
+
+/*
+ * Returns UTC date object from given local timestamp
+ * If not passed returns ready to send UTC timestamp
+ */
+export const local2utc = (localTimeStamp = new Date().getTime()) => {
+  const dateInLocal = new Date(localTimeStamp);
+  return new Date(
+    dateInLocal.getTime() + dateInLocal.getTimezoneOffset() * 60 * 1000
+  );
 };

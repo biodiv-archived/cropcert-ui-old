@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import { textInput } from "/@components/@core/formik";
 import { QualityStore } from "/@stores/qr.store";
-import { getToday } from "/@utils/basic";
+import { getToday, local2utc } from "/@utils/basic";
 
 interface IProps {
   lotId;
@@ -106,7 +106,7 @@ export default class CuppingComponent extends Component<IProps> {
     actions.setSubmitting(false);
     this.qualityStore.createCuppingReport({
       ...v,
-      timestamp: new Date().getTime(),
+      timestamp: local2utc(),
     });
   };
 

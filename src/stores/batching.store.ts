@@ -2,10 +2,11 @@ import { navigate } from "gatsby";
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { TOAST_TYPE, GLOBAL_LIMIT } from "/@utils/constants";
-import http from "/@utils/http";
 import { MODAL_TYPE } from "/@components/collection-center/batch/list/header.constants";
 import { getRedirect } from "/@utils/auth";
+import { toUTCDateTime } from "/@utils/basic";
+import { GLOBAL_LIMIT, TOAST_TYPE } from "/@utils/constants";
+import http from "/@utils/http";
 
 export class BatchingStore {
   @observable lazyListHasMore = true;
@@ -40,7 +41,7 @@ export class BatchingStore {
         id: modalData.id,
         [modalType]:
           modalType !== MODAL_TYPE.PERCHMENT_QUANTITY
-            ? `${modalData.date} ${modalData.time}:00`
+            ? toUTCDateTime(modalData)
             : modalData.qty,
       })
       .then(r => {
