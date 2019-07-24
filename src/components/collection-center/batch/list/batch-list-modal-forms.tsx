@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 import { textInput } from "/@components/@core/formik";
-import { formattedDate, formattedTime, utc2local } from "/@utils/basic";
+import {
+  formattedDate,
+  formattedTime,
+  utc2local,
+  local2utc,
+} from "/@utils/basic";
 
 interface IProps {
   modalData;

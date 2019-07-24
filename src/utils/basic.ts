@@ -43,22 +43,22 @@ export const toUTCDateTime = modalData => {
 };
 
 /*
- * Returns Local date object from given UTC timestamp typically comes from server side
+ * Returns UTC date object from given local timestamp
+ * If not passed returns ready to send UTC timestamp
  */
-export const utc2local = utcTimeStamp => {
-  const dateInUtc = new Date(utcTimeStamp);
+export const local2utc = (localTimeStamp?) => {
+  const dateInLocal = !localTimeStamp ? new Date() : new Date(localTimeStamp);
   return new Date(
-    dateInUtc.getTime() - dateInUtc.getTimezoneOffset() * 60 * 1000
+    dateInLocal.getTime() + dateInLocal.getTimezoneOffset() * 60 * 1000
   );
 };
 
 /*
- * Returns UTC date object from given local timestamp
- * If not passed returns ready to send UTC timestamp
+ * Returns Local date object from given UTC timestamp typically comes from server side
  */
-export const local2utc = (localTimeStamp = new Date().getTime()) => {
-  const dateInLocal = new Date(localTimeStamp);
+export const utc2local = (utcTimeStamp?) => {
+  const dateInUtc = !utcTimeStamp ? local2utc() : new Date(utcTimeStamp);
   return new Date(
-    dateInLocal.getTime() + dateInLocal.getTimezoneOffset() * 60 * 1000
+    dateInUtc.getTime() - dateInUtc.getTimezoneOffset() * 60 * 1000
   );
 };

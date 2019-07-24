@@ -1,16 +1,11 @@
+import { navigate } from "gatsby";
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
-import { formattedTimeStamp, local2utc, toUTCDateTime } from "/@utils/basic";
-import {
-  GLOBAL_LIMIT,
-  TOAST_TYPE,
-  MODAL_TYPES,
-  ROLES,
-} from "/@utils/constants";
-import http from "/@utils/http";
-import { navigate } from "gatsby";
 import { getCurrentUser, hasAccess } from "/@utils/auth";
+import { local2utc, toUTCDateTime } from "/@utils/basic";
+import { GLOBAL_LIMIT, MODAL_TYPES, ROLES, TOAST_TYPE } from "/@utils/constants";
+import http from "/@utils/http";
 
 export class LotStore {
   @observable lazyListHasMore = true;
@@ -175,7 +170,7 @@ export class LotStore {
     http
       .put(`${process.env.ENDPOINT_TRACEABILITY}/lot/dispatch/${to}`, {
         ids: lotIDs,
-        [timeKey]: formattedTimeStamp(local2utc()),
+        [timeKey]: local2utc().getTime(),
       })
       .then(r => {
         navigate(`/cooperative/lot/dispatch-done?type=success&to=${to}`);
