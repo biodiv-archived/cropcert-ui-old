@@ -7,7 +7,29 @@
 const { languages, defaultLanguage } = require("./src/i18n-config");
 const path = require("path");
 
-exports.onCreateWebpackConfig = function({ actions }) {
+exports.onCreateWebpackConfig = function({ stage, actions, loaders }) {
+  let customModules = {};
+
+  if (stage === "build-javascript") {
+    // Turn off source maps
+    actions.setWebpackConfig({
+      devtool: false,
+    });
+  }
+
+  if (stage === "build-html") {
+    customModules = {
+      module: {
+        rules: [
+          {
+            test: /ckeditor/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    };
+  }
+
   actions.setWebpackConfig({
     resolve: {
       alias: {
@@ -18,6 +40,7 @@ exports.onCreateWebpackConfig = function({ actions }) {
         "/@utils": path.resolve(__dirname, "./src/utils"),
       },
     },
+    ...customModules,
   });
 };
 

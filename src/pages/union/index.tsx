@@ -37,7 +37,7 @@ export default function FactoryIndexPage() {
         <Tile
           title="Pages"
           description="Manage Static Pages"
-          to="../admin/pages/create"
+          to="../admin/pages/list"
         />
       </div>
     </Layout>
