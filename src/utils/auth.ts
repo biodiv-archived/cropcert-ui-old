@@ -20,6 +20,19 @@ export const setUser = user => {
   });
 };
 
+export const setPages = pages => {
+  window.localStorage.pages = JSON.stringify(pages);
+};
+
+export const getPages = () => {
+  if (isBrowser) {
+    if (window.localStorage.pages) {
+      return JSON.parse(window.localStorage.pages);
+    }
+  }
+  return [];
+};
+
 export const getToken = () => {
   return getUser().token || "";
 };

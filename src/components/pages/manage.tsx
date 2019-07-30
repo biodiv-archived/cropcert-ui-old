@@ -1,4 +1,5 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import { Button } from "carbon-components-react";
 import SimpleuploadPlugin from "ckeditor5-simple-upload/src/simpleupload";
@@ -52,12 +53,20 @@ export default function ManagePage({ pagesStore, mode, singlePage, id }) {
           <div className="bx--row">
             <div className="bx--col-lg-8 bx--col-sm-12">
               <CKEditor
-                editor={ClassicEditor}
+                editor={DecoupledEditor}
+                onInit={editor => {
+                  editor.ui
+                    .getEditableElement()
+                    .parentElement.insertBefore(
+                      editor.ui.view.toolbar.element,
+                      editor.ui.getEditableElement()
+                    );
+                }}
                 data={props.values.content}
                 config={{
                   extraPlugins: [SimpleuploadPlugin],
                   simpleUpload: {
-                    uploadUrl: "http://localhost:3100/upload",
+                    uploadUrl: `${process.env.ENDPOINT_PAGES}/image`,
                   },
                 }}
                 onChange={(event, editor) => {

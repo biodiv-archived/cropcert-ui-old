@@ -1,11 +1,11 @@
+import { navigate } from "@reach/router";
 import { action, observable } from "mobx";
 import { notify } from "react-notify-toast";
 
 import flatToTree from "/@components/pages/flatToTree";
-import { getCurrentUser } from "/@utils/auth";
+import { getCurrentUser, setPages } from "/@utils/auth";
 import { TOAST_TYPE } from "/@utils/constants";
 import http from "/@utils/http";
-import { navigate } from "@reach/router";
 
 export class PagesStore {
   @observable pages: any[] = [];
@@ -24,7 +24,9 @@ export class PagesStore {
     http
       .get(`${process.env.ENDPOINT_PAGES}/page/all`)
       .then(r => {
-        this.pages = flatToTree(r.data);
+        const tree = flatToTree(r.data);
+        setPages(tree);
+        this.pages = tree;
       })
       .catch(console.error);
   }
