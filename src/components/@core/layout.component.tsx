@@ -25,7 +25,10 @@ export default class Layout extends React.PureComponent<IProps> {
   renderLayout = data => {
     return (
       <If condition={this.isAllowed}>
-        <Header roles={this.props.roles} siteTitle={data.site.siteMetadata.title} />
+        <Header
+          roles={this.props.roles}
+          siteTitle={data.site.siteMetadata.title}
+        />
         <div className="bx--grid eco--grid">{this.props.children}</div>
       </If>
     );
